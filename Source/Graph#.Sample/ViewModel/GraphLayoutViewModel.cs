@@ -7,22 +7,8 @@ namespace GraphSharp.Sample.ViewModel
 
 	public class GraphLayoutViewModel : INotifyPropertyChanged
 	{
-		private bool isSelected;
 		private string layoutAlgorithmType;
 		private PocGraph graph;
-
-		public bool IsSelected
-		{
-			get { return isSelected; }
-			set
-			{
-				if (value != isSelected)
-				{
-					isSelected = value;
-					NotifyChanged("IsSelected");
-				}
-			}
-		}
 
 		public string LayoutAlgorithmType
 		{

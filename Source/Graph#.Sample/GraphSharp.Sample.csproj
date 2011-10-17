@@ -72,7 +72,6 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Contracts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=736440c9b414ea16, processorArchitecture=MSIL" />
     <Reference Include="QuickGraph, Version=3.2.40122.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\QuickGraph.dll</HintPath>
@@ -345,8 +344,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="TestContextualLayout.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -382,6 +379,7 @@
       <SubType>Code</SubType>
     </Compile>
     <None Include="app.config" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="icons\Desktop.ini" />
     <None Include="PoC_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
@@ -393,7 +391,6 @@
     </Compile>
     <Compile Include="PocEdge.cs" />
     <Compile Include="PocGraph.cs" />
-    <Compile Include="PocGraphEditor.cs" />
     <Compile Include="PocSerializeHelper.cs" />
     <Compile Include="PocVertex.cs" />
     <Compile Include="PocVertexToLayoutModeConverter.cs" />

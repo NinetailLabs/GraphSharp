@@ -8,7 +8,6 @@ namespace GraphSharp.Algorithms.Layout.Compound
         where TEdge : IEdge<TVertex>
 		where TGraph : IBidirectionalGraph<TVertex, TEdge>
     {
-        IDictionary<TVertex, Size> Sizes { get; }
         IDictionary<TVertex, Thickness> VertexBorders { get; }
         IDictionary<TVertex, CompoundVertexInnerLayoutType> LayoutTypes { get; }
     }

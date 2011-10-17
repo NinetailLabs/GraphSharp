@@ -45,27 +45,7 @@
     			<ResourceDictionary Source="icons\Warning.xaml"/>
     			<ResourceDictionary Source="icons\Zoom_in.xaml"/>
     			<ResourceDictionary Source="icons\Zoom_out.xaml"/>
-				
-				<!--<ResourceDictionary Source="Themes\BubbleCreme.xaml"/>
-				<ResourceDictionary Source="Themes\BureauBlack.xaml"/>
-				<ResourceDictionary Source="Themes\BureauBlue.xaml"/>-->
-				<ResourceDictionary Source="pack://application:,,,/RibbonControlsLibrary;component/Themes/Office2007Black.xaml"/>
-				<ResourceDictionary Source="Themes\ExpressionDark.xaml"/>
-				<ResourceDictionary Source="Resources\PocGraphDataTemplates.xaml"/>
-				<!--<ResourceDictionary Source="Themes\ExpressionLight.xaml"/>
-				<ResourceDictionary Source="Themes\ShinyBlue.xaml"/>
-				<ResourceDictionary Source="Themes\ShinyRed.xaml"/>
-				<ResourceDictionary Source="Themes\TwilightBlue.xaml"/>
-				<ResourceDictionary Source="Themes\WhistlerBlue.xaml"/>-->
     		</ResourceDictionary.MergedDictionaries>
-			
-			<Style TargetType="{x:Type rb:RibbonWindow}">
-				<Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}" />
-			</Style>
-			
-			<Style TargetType="{x:Type WPFExtensions_Controls:ZoomControl}">
-				<Setter Property="Background" Value="White" />
-			</Style>
     	</ResourceDictionary>
         
 		
