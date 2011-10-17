@@ -264,7 +264,7 @@ namespace GraphSharp.Controls
         {
             VertexControl presenter = _vertexControls[vertex];
             //initialize position
-            if (Graph.Degree(vertex) > 0)
+            if (Graph.ContainsVertex(vertex) && Graph.Degree(vertex) > 0)
             {
                 var pos = new Point();
                 int count = 0;
