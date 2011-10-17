@@ -428,12 +428,19 @@ namespace GraphSharp.Controls
         protected virtual void RunDestructionTransition(Control control, bool dontRemoveAfter)
         {
             if (DestructionTransition == null)
-                return;
-
-            if (dontRemoveAfter)
-                DestructionTransition.Run(AnimationContext, control, AnimationLength);
+            {
+                if (!dontRemoveAfter)
+                {
+                    Children.Remove(control);
+                }
+            }
             else
-                DestructionTransition.Run(AnimationContext, control, AnimationLength, Children.Remove);
+            {
+                if (dontRemoveAfter)
+                    DestructionTransition.Run(AnimationContext, control, AnimationLength);
+                else
+                    DestructionTransition.Run(AnimationContext, control, AnimationLength, Children.Remove);
+            }
         }
     }
 }
