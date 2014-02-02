@@ -197,30 +197,28 @@ namespace GraphSharp.AttachedBehaviours
 	        e.Handled = true;
 	    }
 
-	    private static void OnDragging(object sender, MouseEventArgs e)
-	    {
-	        var obj = sender as DependencyObject;
-	        if (!GetIsDragging(obj))
-	            return;
+        private static void OnDragging(object sender, MouseEventArgs e)
+        {
+            var obj = sender as DependencyObject;
+            if (obj == null)
+                return;
 
-	        Point pos = e.GetPosition(obj as IInputElement);
-	        double horizontalChange = pos.X - GetOriginalX(obj);
-	        double verticalChange = pos.Y - GetOriginalY(obj);
+            if (!GetIsDragging(obj))
+                return;
 
-            const double maxDelta = 35.0;
-            horizontalChange = Math.Min(maxDelta, Math.Max(-maxDelta, horizontalChange));
-            verticalChange = Math.Min(maxDelta, Math.Max(-maxDelta, verticalChange));
+            Point pos = e.GetPosition(obj as IInputElement);
+            double horizontalChange = pos.X - GetOriginalX(obj);
+            double verticalChange = pos.Y - GetOriginalY(obj);
 
-	        if (double.IsNaN(GetX(obj)))
-	            SetX(obj, 0);
-	        if (double.IsNaN(GetY(obj)))
-	            SetY(obj, 0);
+            var currentX = double.IsNaN(GetX(obj)) ? 0.0 : GetX(obj);
+            var currentY = double.IsNaN(GetY(obj)) ? 0.0 : GetY(obj);
 
-	        // move the object
-	        SetX(obj, GetX(obj) + horizontalChange);
-	        SetY(obj, GetY(obj) + verticalChange);
+            horizontalChange /= currentX < 0 ? 30.0 : 10.0;
+            verticalChange /= currentY < 0 ? 30.0 : 10.0;
 
-	        e.Handled = true;
-	    }
+            SetX(obj, currentX + horizontalChange);
+            SetY(obj, currentY + verticalChange);
+            e.Handled = true;
+        }
 	}
 }
