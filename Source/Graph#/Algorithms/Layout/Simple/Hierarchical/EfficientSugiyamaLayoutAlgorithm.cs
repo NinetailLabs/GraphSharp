@@ -1,12 +1,7 @@
 ﻿using System.Collections.Generic;
-using QuickGraph;
 using System.Windows;
-using System.Diagnostics.Contracts;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms;
-using System.Linq;
-using System;
 using GraphSharp.Algorithms.EdgeRouting;
+using QuickGraph;
 
 namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
 {
@@ -17,49 +12,23 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
         where TEdge : IEdge<TVertex>
         where TGraph : IVertexAndEdgeListGraph<TVertex, TEdge>
     {
-        /// <summary>
-        /// The copy of the VisitedGraph which should be laid out.
-        /// </summary>
+        /// <summary>The copy of the VisitedGraph which should be laid out.</summary>
         private IMutableBidirectionalGraph<SugiVertex, SugiEdge> _graph;
 
-        /// <summary>
-        /// Routing points for the edges of the original graph.
-        /// </summary>
-        private readonly IDictionary<TEdge, Point[]> _edgeRoutingPoints =
-            new Dictionary<TEdge, Point[]>();
+        /// <summary>Routing points for the edges of the original graph.</summary>
+        private readonly IDictionary<TEdge, Point[]> _edgeRoutingPoints = new Dictionary<TEdge, Point[]>();
 
-        private readonly IDictionary<TEdge, IList<SugiVertex>> _dummyVerticesOfEdges =
-            new Dictionary<TEdge, IList<SugiVertex>>();
+        private readonly IDictionary<TEdge, IList<SugiVertex>> _dummyVerticesOfEdges = new Dictionary<TEdge, IList<SugiVertex>>();
 
         private readonly IDictionary<TVertex, Size> _vertexSizes;
 
-        private readonly IDictionary<TVertex, SugiVertex> _vertexMap = 
-            new Dictionary<TVertex, SugiVertex>();
+        private readonly IDictionary<TVertex, SugiVertex> _vertexMap = new Dictionary<TVertex, SugiVertex>();
 
-        /// <summary>
-        /// Isolated vertices in the visited graph, which will be handled only in
-        /// the last step of the layout.
-        /// </summary>
+        /// <summary>Isolated vertices in the visited graph, which will be handled only in the last step of the layout.</summary>
         private List<SugiVertex> _isolatedVertices;
 
-        /// <summary>
-        /// Edges that has been involved in cycles in the original graph. (These has
-        /// been reverted during this layout algorithm).
-        /// </summary>
-        private readonly IList<TEdge> _cycleEdges = new List<TEdge>();
-
-        /// <summary>
-        /// It stores the vertices or segments which inside the layers.
-        /// </summary>
-        private readonly IList<IList<SugiVertex>> _layers =
-            new List<IList<SugiVertex>>();
-
-        public EfficientSugiyamaLayoutAlgorithm(
-            TGraph visitedGraph, 
-            EfficientSugiyamaLayoutParameters parameters, 
-            IDictionary<TVertex, Size> vertexSizes)
-            : this(visitedGraph, parameters, null, vertexSizes)
-        { }
+        /// <summary>It stores the vertices or segments which inside the layers.</summary>
+        private readonly IList<IList<SugiVertex>> _layers = new List<IList<SugiVertex>>();
 
         public EfficientSugiyamaLayoutAlgorithm(
             TGraph visitedGraph, 
@@ -71,19 +40,16 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             _vertexSizes = vertexSizes;
         }
 
-        /// <summary>
-        /// Initializes the private _graph field which stores the graph that 
-        /// we operate on.
-        /// </summary>
+        /// <summary>Initializes the private _graph field which stores the graph that we operate on.</summary>
         private void InitTheGraph()
         {
-            //make a copy of the original graph
+            // make a copy of the original graph
             _graph = new BidirectionalGraph<SugiVertex, SugiEdge>();
 
-            //copy the vertices
+            // copy the vertices
             foreach (var vertex in VisitedGraph.Vertices)
             {
-                Size size = new Size();
+                var size = new Size();
                 if (_vertexSizes != null)
                     _vertexSizes.TryGetValue(vertex, out size);
 
@@ -92,7 +58,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
                 _vertexMap[vertex] = vertexWrapper;
             }
 
-            //copy the edges
+            // copy the edges
             foreach (var edge in VisitedGraph.Edges)
             {
                 var edgeWrapper = new SugiEdge(edge, _vertexMap[edge.Source], _vertexMap[edge.Target]);
@@ -104,15 +70,12 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
         {
             InitTheGraph();
 
-            //first step
             DoPreparing();
 
             BuildSparseNormalizedGraph();
             DoCrossingMinimizations();
             CalculatePositions();
         }
-
-        
 
         #region IEdgeRoutingAlgorithm<TVertex,TEdge,TGraph> Members
 

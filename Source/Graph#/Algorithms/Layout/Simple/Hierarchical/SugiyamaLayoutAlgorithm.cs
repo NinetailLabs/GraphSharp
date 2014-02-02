@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 using GraphSharp.Algorithms.EdgeRouting;
 using QuickGraph;
 using QuickGraph.Algorithms.Search;
-using System.Diagnostics;
-using System.Linq;
-using System.Windows;
-using System.Diagnostics.Contracts;
 
 namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
 {
@@ -15,8 +13,6 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
         where TEdge : IEdge<TVertex>
         where TGraph : IVertexAndEdgeListGraph<TVertex, TEdge>
     {
-        #region Private fields, constants
-
         SoftMutableHierarchicalGraph<SugiVertex, SugiEdge> _graph;
 
         readonly Func<TEdge, EdgeTypes> _edgePredicate;
@@ -24,20 +20,17 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
         private int _iteration;
         double _statusInPercent;
 
-        private const int percentOfPreparation = 5;
-        private const int percentOfSugiyama = 60;
-        private const int percentOfIncrementalExtension = 30;
+        private const int PercentOfPreparation = 5;
+        private const int PercentOfSugiyama = 60;
+        private const int PercentOfIncrementalExtension = 30;
 
         private const string ParallelEdgesTag = "ParallelEdges";
-        /*
-                private const string CyclesTag = "Cycles";
-        */
+
         private const string IsolatedVerticesTag = "IsolatedVertices";
         private const string LoopsTag = "Loops";
         private const string GeneralEdgesTag = "GeneralEdges";
         private const string GeneralEdgesBetweenDifferentLayersTag = "GeneralEdgesBetweenDifferentLayers";
         private const string LongEdgesTag = "LongEdges"; //long edges will be replaced with dummy vertices
-        #endregion
 
         public IDictionary<TEdge, Point[]> EdgeRoutes { get; private set; }
 
@@ -393,17 +386,9 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             return hasOptimization;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <param name="step"></param>
-        /// <param name="baryCenter"></param>
-        /// <param name="byRealPosition"></param>
         /// <returns>The index of the layer which is not ordered by <paramref name="baryCenter"/> anymore.
         /// If all of the layers ordered, and phase2 sweep done it returns with -1.</returns>
-        protected int SugiyamaPhase2Sweep( int start, int end, int step, BaryCenter baryCenter, bool byRealPosition )
+        protected int SugiyamaPhase2Sweep(int start, int end, int step, BaryCenter baryCenter, bool byRealPosition)
         {
             CrossCount crossCountDirection = baryCenter == BaryCenter.Up ? CrossCount.Up : CrossCount.Down;
             for ( int i = start; i != end; i += step )
@@ -444,7 +429,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             SugiyamaPhase1Sweep( _layers.Count - 2, -1, -1, BaryCenter.Down, dirty, byRealPosition );
         }
 
-        protected bool SugiyamaPhase1( int startLayerIndex, BaryCenter startBaryCentering, bool ByRealPosition )
+        protected bool SugiyamaPhase1( int startLayerIndex, BaryCenter startBaryCentering, bool byRealPosition )
         {
             if ( _layers.Count < 2 ) return false;
 
@@ -453,38 +438,28 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
 
             if ( startBaryCentering == BaryCenter.Up )
             {
-                sweepDownOptimized = SugiyamaPhase1Sweep( startLayerIndex == -1 ? 1 : startLayerIndex, _layers.Count, 1, BaryCenter.Up, dirty, ByRealPosition );
+                sweepDownOptimized = SugiyamaPhase1Sweep( startLayerIndex == -1 ? 1 : startLayerIndex, _layers.Count, 1, BaryCenter.Up, dirty, byRealPosition );
                 startLayerIndex = -1;
             }
 
-            bool sweepUpOptimized = SugiyamaPhase1Sweep( startLayerIndex == -1 ? _layers.Count - 2 : startLayerIndex, -1, -1, BaryCenter.Down, dirty, ByRealPosition );
+            bool sweepUpOptimized = SugiyamaPhase1Sweep( startLayerIndex == -1 ? _layers.Count - 2 : startLayerIndex, -1, -1, BaryCenter.Down, dirty, byRealPosition );
 
             return sweepUpOptimized || sweepDownOptimized;
         }
 
-        protected bool SugiyamaPhase1( bool byRealPosition )
-        {
-            return SugiyamaPhase1( -1, BaryCenter.Up, byRealPosition );
-        }
-
-        protected bool SugiyamaPhase2( out int unorderedLayerIndex, out BaryCenter baryCentering, bool byRealPosition )
+        protected void SugiyamaPhase2(out int unorderedLayerIndex, out BaryCenter baryCentering, bool byRealPosition)
         {
             //Sweeping up
             unorderedLayerIndex = SugiyamaPhase2Sweep( 1, _layers.Count, 1, BaryCenter.Up, byRealPosition );
             if ( unorderedLayerIndex != -1 )
             {
                 baryCentering = BaryCenter.Up;
-                return false;
+                return;
             }
 
             //Sweeping down
             unorderedLayerIndex = SugiyamaPhase2Sweep( _layers.Count - 2, -1, -1, BaryCenter.Down, byRealPosition );
             baryCentering = BaryCenter.Down;
-            if ( unorderedLayerIndex != -1 )
-                return false;
-
-            //Phase 2 done
-            return true;
         }
 
         protected void SugiyamaLayout()
@@ -500,7 +475,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             double maxIterations = iteration1Left * iteration2Left;
 
             int startLayerIndex = -1;
-            BaryCenter startBaryCentering = BaryCenter.Up;
+            var startBaryCentering = BaryCenter.Up;
 
             while ( changed && ( iteration1Left > 0 || iteration2Left > 0 ) )
             {
@@ -534,7 +509,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
                     changed = true;
                 }
 
-                _statusInPercent += percentOfSugiyama / maxIterations;
+                _statusInPercent += PercentOfSugiyama / maxIterations;
             }
 
             #region Mark the neighbour vertices connected with associative edges
@@ -861,7 +836,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             //Phase 1 - Filters & Removals
             //
             FiltersAndRemovals();
-            _statusInPercent = percentOfPreparation;
+            _statusInPercent = PercentOfPreparation;
 
             //
             //Phase 2 - Layer assignment
@@ -873,7 +848,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             //
             PrepareForSugiyama();
             SugiyamaLayout();
-            _statusInPercent = percentOfPreparation + percentOfSugiyama;
+            _statusInPercent = PercentOfPreparation + PercentOfSugiyama;
 
             //
             //Phase 4 - Horizontal position assignment
@@ -882,8 +857,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             OnIterationEnded( "Position adjusting finished" );
 
             //Phase 5 - Incremental extension, add vertices connected with only general edges
-            //IncrementalExtensionImproved();
-            _statusInPercent = percentOfPreparation + percentOfSugiyama + percentOfIncrementalExtension;
+            _statusInPercent = PercentOfPreparation + PercentOfSugiyama + PercentOfIncrementalExtension;
             _statusInPercent = 100;
         }
 

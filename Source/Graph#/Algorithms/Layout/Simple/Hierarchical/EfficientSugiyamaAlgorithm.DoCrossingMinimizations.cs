@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using QuickGraph;
-using System.Diagnostics.Contracts;
-using GraphSharp;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using QuickGraph;
 
 namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
 {
@@ -23,13 +20,10 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
 
         private AlternatingLayer[] _alternatingLayers;
 
-        /// <summary>
-        /// Minimizes the crossings between the layers by sweeping up and down
-        /// while there could be something optimized.
-        /// </summary>
+        /// <summary>Minimizes the crossings between the layers by sweeping up and down while there could be something optimized.</summary>
         private void DoCrossingMinimizations()
         {
-            int prevCrossings = int.MaxValue;
+            int prevCrossings;
             int crossings = int.MaxValue;
             int phase = 1;
 
@@ -39,36 +33,35 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             for (int i = 0; i < _layers.Count; i++)
                 _crossCounts[i] = int.MaxValue;
 
-            int phase1iterationLeft = 100;
-            int phase2iterationLeft = _layers.Count;
-            bool enableSameMeasureOptimization = true;
-            bool changed = false;
-            bool c = false;
-            bool wasPhase2 = false;
+            int phase1IterationLeft = 100;
+            int phase2IterationLeft = _layers.Count;
+            bool changed;
+            bool wasPhase2;
             do
             {
                 changed = false;
                 prevCrossings = crossings;
                 if (phase == 1)
-                    phase1iterationLeft--;
+                    phase1IterationLeft--;
                 else if (phase == 2)
-                    phase2iterationLeft--;
+                    phase2IterationLeft--;
                 wasPhase2 = (phase == 2);
 
-                crossings = Sweeping(0, _layers.Count - 1, 1, enableSameMeasureOptimization, out c, ref phase);
+                bool c;
+                crossings = Sweeping(0, _layers.Count - 1, 1, true, out c, ref phase);
                 changed = changed || c;
                 if (crossings == 0)
                     break;
 
-                crossings = Sweeping(_layers.Count - 1, 0, -1, enableSameMeasureOptimization, out c, ref phase);
+                crossings = Sweeping(_layers.Count - 1, 0, -1, true, out c, ref phase);
                 changed = changed || c;
-                if (phase == 1 && (!changed || crossings >= prevCrossings) && phase2iterationLeft > 0)
+                if (phase == 1 && (!changed || crossings >= prevCrossings) && phase2IterationLeft > 0)
                     phase = 2;
                 else if (phase == 2)
                     phase = 1;
             } while (crossings > 0 
-                && ((phase2iterationLeft > 0 || wasPhase2) 
-                    || (phase1iterationLeft > 0 && (crossings < prevCrossings) && changed)));
+                && ((phase2IterationLeft > 0 || wasPhase2) 
+                    || (phase1IterationLeft > 0 && (crossings < prevCrossings) && changed)));
         }
 
         /// <summary>
@@ -83,54 +76,53 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
         {
             int crossings = 0;
             changed = false;
-            AlternatingLayer alternatingLayer = null;
-            if (_alternatingLayers[startLayerIndex] == null)
+            if (_alternatingLayers.Length > 0)
             {
-                alternatingLayer = new AlternatingLayer();
-                alternatingLayer.AddRange(_layers[startLayerIndex].OfType<IData>());
-                alternatingLayer.EnsureAlternatingAndPositions();
-                AddAlternatingLayerToSparseCompactionGraph(alternatingLayer, startLayerIndex);
-                _alternatingLayers[startLayerIndex] = alternatingLayer;
-            } else {
-                alternatingLayer = _alternatingLayers[startLayerIndex];
-            }
-                OutputAlternatingLayer(alternatingLayer, startLayerIndex, 0);
-            for (int i = startLayerIndex; i != endLayerIndex; i += step)
-            {
-                int ci = Math.Min(i, i + step);
-                int prevCrossCount = _crossCounts[ci];
-
-                if (_alternatingLayers[i+step] != null) 
+                AlternatingLayer alternatingLayer;
+                if (_alternatingLayers[startLayerIndex] == null)
                 {
-                    alternatingLayer.SetPositions();
-                    _alternatingLayers[i + step].SetPositions();
-                    prevCrossCount = DoCrossCountingAndOptimization(alternatingLayer, _alternatingLayers[i + step], (i < i + step), false, (phase == 2), int.MaxValue);
-                    _crossCounts[ci] = prevCrossCount;
-                }
-
-                int crossCount = CrossingMinimizationBetweenLayers(ref alternatingLayer, i, i + step, enableSameMeasureOptimization, prevCrossCount, phase);
-
-                if (crossCount < prevCrossCount || phase == 2 || changed)
-                {
-                    /* set the sparse compaction graph */
-                    AddAlternatingLayerToSparseCompactionGraph(alternatingLayer, i + step);
-                    ReplaceLayer(alternatingLayer, i + step);
-                    _alternatingLayers[i + step] = alternatingLayer;
-                    OutputAlternatingLayer(alternatingLayer, i + step, crossCount);
-                    _crossCounts[i] = crossCount;
-                    crossings += crossCount;
-                    changed = true;
-                    /*if (phase == 2)
-                    {
-                        Debug.WriteLine("Phase changed on layer " + (i + step));
-                        phase = 1;
-                    }*/
+                    alternatingLayer = new AlternatingLayer();
+                    alternatingLayer.AddRange(_layers[startLayerIndex].OfType<IData>());
+                    alternatingLayer.EnsureAlternatingAndPositions();
+                    AddAlternatingLayerToSparseCompactionGraph(alternatingLayer, startLayerIndex);
+                    _alternatingLayers[startLayerIndex] = alternatingLayer;
                 }
                 else
+                    alternatingLayer = _alternatingLayers[startLayerIndex];
+
+                OutputAlternatingLayer(alternatingLayer, startLayerIndex, 0);
+                for (int i = startLayerIndex; i != endLayerIndex; i += step)
                 {
-                    Debug.WriteLine("Layer " + (i + step) + " has not changed.");
-                    alternatingLayer = _alternatingLayers[i + step];
-                    crossings += prevCrossCount;
+                    int ci = Math.Min(i, i + step);
+                    int prevCrossCount = _crossCounts[ci];
+
+                    if (_alternatingLayers[i + step] != null)
+                    {
+                        alternatingLayer.SetPositions();
+                        _alternatingLayers[i + step].SetPositions();
+                        prevCrossCount = DoCrossCountingAndOptimization(alternatingLayer, _alternatingLayers[i + step], (i < i + step), false, (phase == 2), int.MaxValue);
+                        _crossCounts[ci] = prevCrossCount;
+                    }
+
+                    int crossCount = CrossingMinimizationBetweenLayers(ref alternatingLayer, i, i + step, enableSameMeasureOptimization, prevCrossCount, phase);
+
+                    if (crossCount < prevCrossCount || phase == 2 || changed)
+                    {
+                        /* set the sparse compaction graph */
+                        AddAlternatingLayerToSparseCompactionGraph(alternatingLayer, i + step);
+                        ReplaceLayer(alternatingLayer, i + step);
+                        _alternatingLayers[i + step] = alternatingLayer;
+                        OutputAlternatingLayer(alternatingLayer, i + step, crossCount);
+                        _crossCounts[i] = crossCount;
+                        crossings += crossCount;
+                        changed = true;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Layer " + (i + step) + " has not changed.");
+                        alternatingLayer = _alternatingLayers[i + step];
+                        crossings += prevCrossCount;
+                    }
                 }
             }
             return crossings;
@@ -257,10 +249,10 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             }
 
             _sparseCompationGraphEdgesOfLayer = new List<Edge<Data>>();
-            SugiVertex vertex = null, prevVertex = null;
+            SugiVertex prevVertex = null;
             for (int i = 1; i < nextAlternatingLayer.Count; i += 2)
             {
-                vertex = nextAlternatingLayer[i] as SugiVertex;
+                var vertex = nextAlternatingLayer[i] as SugiVertex;
                 var prevContainer = nextAlternatingLayer[i - 1] as SegmentContainer;
                 var nextContainer = nextAlternatingLayer[i + 1] as SegmentContainer;
                 if (prevContainer != null && prevContainer.Count > 0)
@@ -301,7 +293,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
         private class CrossCounterPair : Pair
         {
             public EdgeTypes Type = EdgeTypes.InnerSegment;
-            public SugiEdge NonInnerSegment = null;
+            public SugiEdge NonInnerSegment;
         }
 
         private class CrossCounterTreeNode
@@ -319,19 +311,17 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             bool reverseVerticesWithSameMeasure,
             int prevCrossCount)
         {
-            IList<CrossCounterPair> virtualEdgePairs, realEdgePairs;
-            IList<SugiEdge> realEdges;
+            IList<CrossCounterPair> realEdgePairs;
             var topLayer = straightSweep ? alternatingLayer : nextAlternatingLayer;
             var bottomLayer = straightSweep ? nextAlternatingLayer : alternatingLayer;
 
-            int firstLayerSize, secondLayerSize;
             var lastOnTopLayer = topLayer[topLayer.Count - 1];
             var lastOnBottomLayer = bottomLayer[bottomLayer.Count - 1];
-            firstLayerSize = lastOnTopLayer.Position + (lastOnTopLayer is ISegmentContainer ? ((ISegmentContainer)lastOnTopLayer).Count : 1);
-            secondLayerSize = lastOnBottomLayer.Position + (lastOnBottomLayer is ISegmentContainer ? ((ISegmentContainer)lastOnBottomLayer).Count : 1);
+            int firstLayerSize = lastOnTopLayer.Position + (lastOnTopLayer is ISegmentContainer ? ((ISegmentContainer)lastOnTopLayer).Count : 1);
+            int secondLayerSize = lastOnBottomLayer.Position + (lastOnBottomLayer is ISegmentContainer ? ((ISegmentContainer)lastOnBottomLayer).Count : 1);
 
-            virtualEdgePairs = FindVirtualEdgePairs(topLayer, bottomLayer);
-            realEdges = FindRealEdges(topLayer);
+            IList<CrossCounterPair> virtualEdgePairs = FindVirtualEdgePairs(topLayer, bottomLayer);
+            IList<SugiEdge> realEdges = FindRealEdges(topLayer);
 
             if (enableSameMeasureOptimization || reverseVerticesWithSameMeasure)
             {
@@ -348,7 +338,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
                 foreach (var realEdge in realEdges)
                     realEdge.SaveMarkedToTemp();
 
-                List<SugiVertex> sortedVertexList = null;
+                List<SugiVertex> sortedVertexList;
                 if (!reverseVerticesWithSameMeasure)
                 {
                     sortedVertexList = new List<SugiVertex>(verticesWithSameMeasure);
@@ -380,14 +370,13 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
                     if (!reverseVerticesWithSameMeasure)
                     {
                         //sort by permutation index and measure
-                        sortedVertexList.Sort(new Comparison<SugiVertex>(
-                            (v1, v2) =>
-                            {
-                                if (v1.MeasuredPosition != v2.MeasuredPosition)
-                                    return Math.Sign(v1.MeasuredPosition - v2.MeasuredPosition);
-                                else
-                                    return v1.PermutationIndex - v2.PermutationIndex;
-                            }));
+                        sortedVertexList.Sort((v1, v2) =>
+                        {
+                            if (v1.MeasuredPosition != v2.MeasuredPosition)
+                                return Math.Sign(v1.MeasuredPosition - v2.MeasuredPosition);
+                            else
+                                return v1.PermutationIndex - v2.PermutationIndex;
+                        });
                     }
 
                     //reinsert the vertices into the layer
@@ -430,7 +419,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
                     edge.LoadMarkedFromTemp();
 
                 //sort by permutation index and measure
-                sortedVertexList.Sort(new Comparison<SugiVertex>((v1, v2) => v1.Position - v2.Position));
+                sortedVertexList.Sort((v1, v2) => v1.Position - v2.Position);
 
                 //reinsert the vertices into the layer
                 ReinsertVerticesIntoLayer(nextAlternatingLayer, verticesWithSameMeasureSet, sortedVertexList);
@@ -575,7 +564,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             return true;
         }
 
-        private bool Permutate(IList<SugiVertex> vertices, int startIndex, int count)
+        private static bool Permutate(IList<SugiVertex> vertices, int startIndex, int count)
         {
             //do the initial ordering
             int n = startIndex + count;
@@ -666,7 +655,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
                 firstIndex *= 2;
             int treeSize = 2 * firstIndex - 1;
             firstIndex -= 1;
-            CrossCounterTreeNode[] tree = new CrossCounterTreeNode[treeSize];
+            var tree = new CrossCounterTreeNode[treeSize];
             for (int i = 0; i < treeSize; i++)
                 tree[i] = new CrossCounterTreeNode();
 
@@ -674,7 +663,6 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             // Count the crossings
             //
             int crossCount = 0;
-            int index;
             foreach (var list in radixByFirst)
             {
                 if (list == null)
@@ -682,7 +670,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
 
                 foreach (var pair in list)
                 {
-                    index = pair.Second + firstIndex;
+                    int index = pair.Second + firstIndex;
                     tree[index].Accumulator += pair.Weight;
                     switch (pair.Type)
                     {
@@ -691,8 +679,6 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
                             break;
                         case EdgeTypes.NonInnerSegment:
                             tree[index].NonInnerSegmentQueue.Enqueue(pair.NonInnerSegment);
-                            break;
-                        default:
                             break;
                     }
                     while (index > 0)
@@ -715,8 +701,6 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
                                         pair.NonInnerSegment.Marked = true;
                                     }
                                     break;
-                                default:
-                                    break;
                             }
                         }
                         index = (index - 1) / 2;
@@ -728,8 +712,6 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
                                 break;
                             case EdgeTypes.NonInnerSegment:
                                 tree[index].NonInnerSegmentQueue.Enqueue(pair.NonInnerSegment);
-                                break;
-                            default:
                                 break;
                         }
                     }
@@ -935,7 +917,6 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
                 else
                 {
                     vertex.MeasuredPosition = oldMeasuredPosition;
-                    //vertex.MeasuredPosition = vertex.Position;
                     vertex.DoNotOpt = true;
                 }
             }
