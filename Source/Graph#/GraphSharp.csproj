@@ -422,7 +422,6 @@
     <Compile Include="Algorithms\Layout\Simple\Hierarchical\EfficientSugiyamaLayoutAlgorithm.HorizontalAssignment.cs" />
     <Compile Include="Algorithms\Layout\Simple\Hierarchical\SugiyamaEdgeRoutings.cs" />
     <Compile Include="Algorithms\Layout\Simple\Tree\SimpleTreeLayoutAlgorithm.Data.cs" />
-    <Compile Include="Algorithms\Layout\Simple\Tree\SimpleTreeLayoutAlgorithm.WidthAndHeightOpt.cs" />
     <Compile Include="Algorithms\Layout\Simple\Tree\SpanningTreeGeneration.cs" />
   </ItemGroup>
   <ItemGroup>

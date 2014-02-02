@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using QuickGraph;
 
 namespace GraphSharp.Algorithms.Layout.Simple.Tree
 {
-    public partial class SimpleTreeLayoutAlgorithm<TVertex, TEdge, TGraph> : DefaultParameterizedLayoutAlgorithmBase<TVertex, TEdge, TGraph, SimpleTreeLayoutParameters>
+    public partial class SimpleTreeLayoutAlgorithm<TVertex, TEdge, TGraph>
         where TVertex : class
         where TEdge : IEdge<TVertex>
         where TGraph : IBidirectionalGraph<TVertex, TEdge>
@@ -22,19 +19,13 @@ namespace GraphSharp.Algorithms.Layout.Simple.Tree
             {
                 LastTranslate = 0;
             }
-
-            /* Width and Height Optimization */
-
         }
 
         class VertexData
         {
-            public TVertex parent;
-            public double translate;
-            public double position;
-
-            /* Width and Height Optimization */
-
+            public TVertex Parent;
+            public double Translate;
+            public double Position;
         }
     }
 }

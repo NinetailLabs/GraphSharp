@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
-using QuickGraph;
 using System.Windows;
-using System.Diagnostics;
+using QuickGraph;
 using QuickGraph.Algorithms.Search;
 using QuickGraph.Collections;
 
@@ -15,19 +13,16 @@ namespace GraphSharp.Algorithms.Layout.Simple.Tree
         where TEdge : IEdge<TVertex>
         where TGraph : IBidirectionalGraph<TVertex, TEdge>
     {
-        private BidirectionalGraph<TVertex, Edge<TVertex>> spanningTree;
-        readonly IDictionary<TVertex, Size> sizes;
-        readonly IDictionary<TVertex, VertexData> data = new Dictionary<TVertex, VertexData>();
-        readonly IList<Layer> layers = new List<Layer>();
-        int direction;
+        private BidirectionalGraph<TVertex, Edge<TVertex>> _spanningTree;
+        readonly IDictionary<TVertex, Size> _sizes;
+        readonly IDictionary<TVertex, VertexData> _data = new Dictionary<TVertex, VertexData>();
+        readonly IList<Layer> _layers = new List<Layer>();
+        int _direction;
 
         public SimpleTreeLayoutAlgorithm( TGraph visitedGraph, IDictionary<TVertex, Point> vertexPositions, IDictionary<TVertex, Size> vertexSizes, SimpleTreeLayoutParameters parameters )
             : base( visitedGraph, vertexPositions, parameters )
         {
-            //Contract.Requires( vertexSizes != null );
-            //Contract.Requires( visitedGraph.Vertices.All( v => vertexSizes.ContainsKey( v ) ) );
-
-            sizes = new Dictionary<TVertex, Size>( vertexSizes );
+            _sizes = new Dictionary<TVertex, Size>( vertexSizes );
         }
 
         protected override void InternalCompute()
@@ -35,24 +30,23 @@ namespace GraphSharp.Algorithms.Layout.Simple.Tree
             if ( Parameters.Direction == LayoutDirection.LeftToRight || Parameters.Direction == LayoutDirection.RightToLeft )
             {
                 //change the sizes
-                foreach ( var sizePair in sizes.ToArray() )
-                    sizes[sizePair.Key] = new Size( sizePair.Value.Height, sizePair.Value.Width );
+                foreach ( var sizePair in _sizes.ToArray() )
+                    _sizes[sizePair.Key] = new Size( sizePair.Value.Height, sizePair.Value.Width );
             }
 
             if ( Parameters.Direction == LayoutDirection.RightToLeft || Parameters.Direction == LayoutDirection.BottomToTop )
-                direction = -1;
+                _direction = -1;
             else
-                direction = 1;
+                _direction = 1;
 
             GenerateSpanningTree();
-            //DoWidthAndHeightOptimization();
 
             //first layout the vertices with 0 in-edge
-            foreach ( var source in spanningTree.Vertices.Where( v => spanningTree.InDegree( v ) == 0 ) )
+            foreach ( var source in _spanningTree.Vertices.Where( v => _spanningTree.InDegree( v ) == 0 ) )
                 CalculatePosition( source, null, 0 );
 
             //then the others
-            foreach ( var source in spanningTree.Vertices )
+            foreach ( var source in _spanningTree.Vertices )
                 CalculatePosition( source, null, 0 );
 
             AssignPositions();
@@ -60,56 +54,57 @@ namespace GraphSharp.Algorithms.Layout.Simple.Tree
 
         private void GenerateSpanningTree()
         {
-            spanningTree = new BidirectionalGraph<TVertex, Edge<TVertex>>( false );
-            spanningTree.AddVertexRange( VisitedGraph.Vertices );
+            _spanningTree = new BidirectionalGraph<TVertex, Edge<TVertex>>(false);
+            _spanningTree.AddVertexRange(VisitedGraph.Vertices);
             IQueue<TVertex> vb = new QuickGraph.Collections.Queue<TVertex>();
-            vb.Enqueue( VisitedGraph.Vertices.OrderBy( v => VisitedGraph.InDegree( v ) ).First() );
-            switch ( Parameters.SpanningTreeGeneration )
+            if (VisitedGraph.VertexCount > 0)
+                vb.Enqueue(VisitedGraph.Vertices.OrderBy(v => VisitedGraph.InDegree(v)).First());
+            switch (Parameters.SpanningTreeGeneration)
             {
                 case SpanningTreeGeneration.BFS:
                     var bfsAlgo = new BreadthFirstSearchAlgorithm<TVertex, TEdge>( VisitedGraph, vb, new Dictionary<TVertex, GraphColor>() );
-                    bfsAlgo.TreeEdge += e => spanningTree.AddEdge( new Edge<TVertex>( e.Source, e.Target ) );
+                    bfsAlgo.TreeEdge += e => _spanningTree.AddEdge( new Edge<TVertex>( e.Source, e.Target ) );
                     bfsAlgo.Compute();
                     break;
                 case SpanningTreeGeneration.DFS:
                     var dfsAlgo = new DepthFirstSearchAlgorithm<TVertex, TEdge>( VisitedGraph );
-                    dfsAlgo.TreeEdge += e => spanningTree.AddEdge( new Edge<TVertex>( e.Source, e.Target ) );
+                    dfsAlgo.TreeEdge += e => _spanningTree.AddEdge( new Edge<TVertex>( e.Source, e.Target ) );
                     dfsAlgo.Compute();
                     break;
             }
         }
 
-        protected double CalculatePosition( TVertex v, TVertex parent, int l )
+        protected double CalculatePosition(TVertex v, TVertex parent, int l)
         {
-            if ( data.ContainsKey( v ) )
+            if (_data.ContainsKey(v))
                 return -1; //this vertex is already layed out
 
-            while ( l >= layers.Count )
-                layers.Add( new Layer() );
+            while (l >= _layers.Count)
+                _layers.Add(new Layer());
 
-            var layer = layers[l];
-            var size = sizes[v];
-            var d = new VertexData { parent = parent };
-            data[v] = d;
+            var layer = _layers[l];
+            var size = _sizes[v];
+            var d = new VertexData { Parent = parent };
+            _data[v] = d;
 
             layer.NextPosition += size.Width / 2.0;
             if ( l > 0 )
             {
-                layer.NextPosition += layers[l - 1].LastTranslate;
-                layers[l - 1].LastTranslate = 0;
+                layer.NextPosition += _layers[l - 1].LastTranslate;
+                _layers[l - 1].LastTranslate = 0;
             }
             layer.Size = Math.Max( layer.Size, size.Height + Parameters.LayerGap );
             layer.Vertices.Add( v );
-            if ( spanningTree.OutDegree( v ) == 0 )
+            if ( _spanningTree.OutDegree( v ) == 0 )
             {
-                d.position = layer.NextPosition;
+                d.Position = layer.NextPosition;
             }
             else
             {
                 double minPos = double.MaxValue;
                 double maxPos = -double.MaxValue;
                 //first put the children
-                foreach ( var child in spanningTree.OutEdges( v ).Select( e => e.Target ) )
+                foreach ( var child in _spanningTree.OutEdges( v ).Select( e => e.Target ) )
                 {
                     double childPos = CalculatePosition( child, v, l + 1 );
                     if ( childPos >= 0 )
@@ -119,18 +114,18 @@ namespace GraphSharp.Algorithms.Layout.Simple.Tree
                     }
                 }
                 if ( minPos != double.MaxValue )
-                    d.position = ( minPos + maxPos ) / 2.0;
+                    d.Position = ( minPos + maxPos ) / 2.0;
                 else
-                    d.position = layer.NextPosition;
-                d.translate = Math.Max( layer.NextPosition - d.position, 0 );
+                    d.Position = layer.NextPosition;
+                d.Translate = Math.Max( layer.NextPosition - d.Position, 0 );
 
-                layer.LastTranslate = d.translate;
-                d.position += d.translate;
-                layer.NextPosition = d.position;
+                layer.LastTranslate = d.Translate;
+                d.Position += d.Translate;
+                layer.NextPosition = d.Position;
             }
             layer.NextPosition += size.Width / 2.0 + Parameters.VertexGap;
 
-            return d.position;
+            return d.Position;
         }
 
         protected void AssignPositions()
@@ -138,27 +133,27 @@ namespace GraphSharp.Algorithms.Layout.Simple.Tree
             double layerSize = 0;
             bool changeCoordinates = ( Parameters.Direction == LayoutDirection.LeftToRight || Parameters.Direction == LayoutDirection.RightToLeft );
 
-            foreach ( var layer in layers )
+            foreach ( var layer in _layers )
             {
                 foreach ( var v in layer.Vertices )
                 {
-                    Size size = sizes[v];
-                    var d = data[v];
-                    if ( d.parent != null )
+                    Size size = _sizes[v];
+                    var d = _data[v];
+                    if ( d.Parent != null )
                     {
-                        d.position += data[d.parent].translate;
-                        d.translate += data[d.parent].translate;
+                        d.Position += _data[d.Parent].Translate;
+                        d.Translate += _data[d.Parent].Translate;
                     }
 
                     VertexPositions[v] =
                         changeCoordinates
-                            ? new Point( direction * ( layerSize + size.Height / 2.0 ), d.position )
-                            : new Point( d.position, direction * ( layerSize + size.Height / 2.0 ) );
+                            ? new Point( _direction * ( layerSize + size.Height / 2.0 ), d.Position )
+                            : new Point( d.Position, _direction * ( layerSize + size.Height / 2.0 ) );
                 }
                 layerSize += layer.Size;
             }
 
-            if ( direction < 0 )
+            if ( _direction < 0 )
                 NormalizePositions();
         }
     }
