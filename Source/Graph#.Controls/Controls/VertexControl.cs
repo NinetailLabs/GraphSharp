@@ -5,9 +5,7 @@ using System;
 
 namespace GraphSharp.Controls
 {
-	/// <summary>
-	/// Logical representation of a vertex.
-	/// </summary>
+	/// <summary>Logical representation of a vertex.</summary>
 	public class VertexControl : Control, IPoolObject, IDisposable
 	{
 		public object Vertex
@@ -31,7 +29,7 @@ namespace GraphSharp.Controls
 
 		static VertexControl()
 		{
-			//override the StyleKey Property
+			// override the StyleKey Property
 			DefaultStyleKeyProperty.OverrideMetadata( typeof( VertexControl ), new FrameworkPropertyMetadata( typeof( VertexControl ) ) );
 		}
 

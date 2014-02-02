@@ -2,29 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Drawing;
-using System.Windows;
 using System.Linq;
+using System.Windows;
 using GraphSharp.Algorithms.EdgeRouting;
 using GraphSharp.Algorithms.Highlight;
 using GraphSharp.Algorithms.Layout;
+using GraphSharp.Algorithms.Layout.Compound;
 using GraphSharp.Algorithms.OverlapRemoval;
 using QuickGraph;
 using Point = System.Windows.Point;
 using Size = System.Windows.Size;
-using GraphSharp.Algorithms.Layout.Compound;
 
 namespace GraphSharp.Controls
 {
-    /// <summary>
-    /// For general purposes, with general types.
-    /// </summary>
     public class GraphLayout : GraphLayout<object, IEdge<object>, IBidirectionalGraph<object, IEdge<object>>>
     {
         public GraphLayout()
         {
-            if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+            if (DesignerProperties.GetIsInDesignMode(this))
             {
                 var g = new BidirectionalGraph<object, IEdge<object>>();
                 var vertices = new object[] { "S", "A", "M", "P", "L", "E" };
@@ -44,50 +40,48 @@ namespace GraphSharp.Controls
         }
     }
 
-    /// <summary>
-    /// THE layout control. Support layout, edge routing and overlap removal algorithms, with multiple layout states.
-    /// </summary>
+    /// <summary>THE layout control. Support layout, edge routing and overlap removal algorithms, with multiple layout states.</summary>
     /// <typeparam name="TVertex">Type of the vertices.</typeparam>
     /// <typeparam name="TEdge">Type of the edges.</typeparam>
     /// <typeparam name="TGraph">Type of the graph.</typeparam>
-    public partial class GraphLayout<TVertex, TEdge, TGraph> : GraphCanvas
+    public partial class GraphLayout<TVertex, TEdge, TGraph>
         where TVertex : class
         where TEdge : IEdge<TVertex>
         where TGraph : class, IBidirectionalGraph<TVertex, TEdge>
     {
-        protected readonly Dictionary<TEdge, EdgeControl> _edgeControls = new Dictionary<TEdge, EdgeControl>();
+        protected readonly Dictionary<TEdge, EdgeControl> EdgeControls = new Dictionary<TEdge, EdgeControl>();
         private readonly Queue<TEdge> _edgesAdded = new Queue<TEdge>();
         private readonly Queue<TEdge> _edgesRemoved = new Queue<TEdge>();
         private readonly List<LayoutState<TVertex, TEdge>> _layoutStates = new List<LayoutState<TVertex, TEdge>>();
-        private readonly TimeSpan _notificationLayoutDelay = new TimeSpan(0, 0, 0, 0, 5); // 5 ms
+        private readonly TimeSpan _notificationLayoutDelay = TimeSpan.FromMilliseconds(5);
         private readonly object _notificationSyncRoot = new object();
-        protected readonly Dictionary<TVertex, VertexControl> _vertexControls = new Dictionary<TVertex, VertexControl>();
+        protected readonly Dictionary<TVertex, VertexControl> VertexControls = new Dictionary<TVertex, VertexControl>();
         private readonly Queue<TVertex> _verticesAdded = new Queue<TVertex>();
         private readonly Queue<TVertex> _verticesRemoved = new Queue<TVertex>();
-        private readonly Stopwatch stopWatch = new Stopwatch();
+        private readonly Stopwatch _stopWatch = new Stopwatch();
         private DateTime _lastNotificationTimestamp = DateTime.Now;
 
-        protected IDictionary<TVertex, SizeF> _sizes;
-        protected BackgroundWorker _worker;
+        protected IDictionary<TVertex, SizeF> Sizes;
+        protected BackgroundWorker Worker;
 
         protected IDictionary<TVertex, SizeF> VertexSizes
         {
             get
             {
-                if (_sizes == null)
+                if (Sizes == null)
                 {
                     InvalidateMeasure();
                     UpdateLayout();
-                    _sizes = new Dictionary<TVertex, SizeF>();
-                    foreach (var kvp in _vertexControls)
+                    Sizes = new Dictionary<TVertex, SizeF>();
+                    foreach (var kvp in VertexControls)
                     {
                         var size = kvp.Value.DesiredSize;
-                        _sizes.Add(kvp.Key, new SizeF(
+                        Sizes.Add(kvp.Key, new SizeF(
                                                  (double.IsNaN(size.Width) ? 0 : (float)size.Width),
                                                  (double.IsNaN(size.Height) ? 0 : (float)size.Height)));
                     }
                 }
-                return _sizes;
+                return Sizes;
             }
         }
 
@@ -98,8 +92,7 @@ namespace GraphSharp.Controls
         {
             get
             {
-                if (LayoutMode == LayoutMode.Compound ||
-                     LayoutMode == LayoutMode.Automatic && Graph != null && Graph is ICompoundGraph<TVertex, TEdge>)
+                if (LayoutMode == LayoutMode.Compound || LayoutMode == LayoutMode.Automatic && Graph is ICompoundGraph<TVertex, TEdge>)
                     return Algorithms.Layout.LayoutMode.Compound;
 
                 return Algorithms.Layout.LayoutMode.Simple;
@@ -130,8 +123,8 @@ namespace GraphSharp.Controls
 
         public void CancelLayout()
         {
-            if (_worker != null && _worker.IsBusy && _worker.WorkerSupportsCancellation)
-                _worker.CancelAsync();
+            if (Worker != null && Worker.IsBusy && Worker.WorkerSupportsCancellation)
+                Worker.CancelAsync();
         }
 
         public void RecalculateEdgeRouting()
@@ -156,22 +149,20 @@ namespace GraphSharp.Controls
 
             if (ActualLayoutMode == Algorithms.Layout.LayoutMode.Simple)
                 return new LayoutContext<TVertex, TEdge, TGraph>(Graph, positions, sizes, ActualLayoutMode);
-            else
-            {
-                var borders = (from kvp in _vertexControls
-                               where kvp.Value is CompoundVertexControl
-                               select kvp).ToDictionary(
+
+            var borders = (from kvp in VertexControls
+                           where kvp.Value is CompoundVertexControl
+                           select kvp).ToDictionary(
                     kvp => kvp.Key,
                     kvp => ((CompoundVertexControl)kvp.Value).VertexBorderThickness);
 
-                var layoutTypes = (from kvp in _vertexControls
-                                   where kvp.Value is CompoundVertexControl
-                                   select kvp).ToDictionary(
-                    kvp => kvp.Key,
-                    kvp => ((CompoundVertexControl)kvp.Value).LayoutMode);
+            var layoutTypes = (from kvp in VertexControls
+                               where kvp.Value is CompoundVertexControl
+                               select kvp).ToDictionary(
+                kvp => kvp.Key,
+                kvp => ((CompoundVertexControl)kvp.Value).LayoutMode);
 
-                return new CompoundLayoutContext<TVertex, TEdge, TGraph>(Graph, positions, sizes, ActualLayoutMode, borders, layoutTypes);
-            }
+            return new CompoundLayoutContext<TVertex, TEdge, TGraph>(Graph, positions, sizes, ActualLayoutMode, borders, layoutTypes);
         }
 
         protected virtual IHighlightContext<TVertex, TEdge, TGraph> CreateHighlightContext()
@@ -207,16 +198,16 @@ namespace GraphSharp.Controls
                 return; //no graph to layout, or wrong layout algorithm
 
             UpdateLayout();
-            if (!this.IsLoaded)
+            if (!IsLoaded)
             {
                 RoutedEventHandler handler = null;
-                handler = new RoutedEventHandler((s, e) =>
+                handler = (s, e) =>
                 {
                     Layout(continueLayout);
                     var gl = (GraphLayout<TVertex, TEdge, TGraph>)e.Source;
                     gl.Loaded -= handler;
-                });
-                this.Loaded += handler;
+                };
+                Loaded += handler;
                 return;
             }
 
@@ -237,19 +228,19 @@ namespace GraphSharp.Controls
                 //if there's a running progress than cancel that
                 CancelLayout();
 
-                _worker = new BackgroundWorker
+                Worker = new BackgroundWorker
                               {
                                   WorkerSupportsCancellation = true,
                                   WorkerReportsProgress = true
                               };
 
                 //run the algorithm on a background thread
-                _worker.DoWork += ((sender, e) =>
+                Worker.DoWork += ((sender, e) =>
                                        {
                                            var worker = (BackgroundWorker)sender;
                                            var argument = (AsyncThreadArgument)e.Argument;
-                                           if (argument.showAllStates)
-                                               argument.algorithm.IterationEnded +=
+                                           if (argument.ShowAllStates)
+                                               argument.Algorithm.IterationEnded +=
                                                    ((s, args) =>
                                                         {
                                                             var iterArgs = args;
@@ -261,13 +252,13 @@ namespace GraphSharp.Controls
                                                             }
                                                         });
                                            else
-                                               argument.algorithm.ProgressChanged +=
+                                               argument.Algorithm.ProgressChanged +=
                                                    ((s, percent) => worker.ReportProgress((int)Math.Round(percent)));
-                                           argument.algorithm.Compute();
+                                           argument.Algorithm.Compute();
                                        });
 
                 //progress changed if an iteration ended
-                _worker.ProgressChanged +=
+                Worker.ProgressChanged +=
                     ((s, e) =>
                          {
                              if (e.UserState == null)
@@ -277,17 +268,17 @@ namespace GraphSharp.Controls
                          });
 
                 //background thread finished if the iteration ended
-                _worker.RunWorkerCompleted += ((s, e) =>
+                Worker.RunWorkerCompleted += ((s, e) =>
                                                     {
                                                         OnLayoutFinished();
-                                                        _worker = null;
+                                                        Worker = null;
                                                     });
 
                 OnLayoutStarted();
-                _worker.RunWorkerAsync(new AsyncThreadArgument
+                Worker.RunWorkerAsync(new AsyncThreadArgument
                                            {
-                                               algorithm = LayoutAlgorithm,
-                                               showAllStates = ShowAllStates
+                                               Algorithm = LayoutAlgorithm,
+                                               ShowAllStates = ShowAllStates
                                            });
             }
             else
@@ -304,24 +295,20 @@ namespace GraphSharp.Controls
 
         private IDictionary<TVertex, Point> GetOldVertexPositions(bool continueLayout)
         {
-            if (ActualLayoutMode == GraphSharp.Algorithms.Layout.LayoutMode.Simple)
-            {
+            if (ActualLayoutMode == Algorithms.Layout.LayoutMode.Simple)
                 return continueLayout ? GetLatestVertexPositions() : null;
-            }
-            else
-            {
-                return GetRelativePositions(continueLayout);
-            }
+
+            return GetRelativePositions(continueLayout);
         }
 
         private IDictionary<TVertex, Point> GetLatestVertexPositions()
         {
-            IDictionary<TVertex, Point> vertexPositions = new Dictionary<TVertex, Point>(_vertexControls.Count);
+            IDictionary<TVertex, Point> vertexPositions = new Dictionary<TVertex, Point>(VertexControls.Count);
 
             //go through the vertex presenters and get the actual layoutpositions
             if (ActualLayoutMode == Algorithms.Layout.LayoutMode.Simple)
             {
-                foreach (var vc in _vertexControls)
+                foreach (var vc in VertexControls)
                 {
                     var x = GetX(vc.Value);
                     var y = GetY(vc.Value);
@@ -333,8 +320,8 @@ namespace GraphSharp.Controls
             }
             else
             {
-                Point topLeft = new Point(0, 0);
-                foreach (var vc in _vertexControls)
+                var topLeft = new Point(0, 0);
+                foreach (var vc in VertexControls)
                 {
                     Point position = vc.Value.TranslatePoint(topLeft, this);
                     position.X += vc.Value.ActualWidth / 2;
@@ -360,17 +347,17 @@ namespace GraphSharp.Controls
         {
             //if layout is continued it gets the relative position of every vertex
             //otherwise it's gets it only for the vertices with fixed parents
-            var posDict = new Dictionary<TVertex, Point>(_vertexControls.Count);
+            var posDict = new Dictionary<TVertex, Point>(VertexControls.Count);
             if (continueLayout)
             {
-                foreach (var kvp in _vertexControls)
+                foreach (var kvp in VertexControls)
                 {
                     posDict[kvp.Key] = GetRelativePosition(kvp.Value);
                 }
             }
             else
             {
-                foreach (var kvp in _vertexControls)
+                foreach (var kvp in VertexControls)
                 {
                     if (!(kvp.Value is CompoundVertexControl))
                         continue;
@@ -391,10 +378,10 @@ namespace GraphSharp.Controls
                 Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
             IDictionary<TVertex, Size> vertexSizes =
-                new Dictionary<TVertex, Size>(_vertexControls.Count);
+                new Dictionary<TVertex, Size>(VertexControls.Count);
 
             //go through the vertex presenters and get the actual layoutpositions
-            foreach (var vc in _vertexControls)
+            foreach (var vc in VertexControls)
                 vertexSizes[vc.Key] = new Size(vc.Value.ActualWidth, vc.Value.ActualHeight);
 
             return vertexSizes;
@@ -402,8 +389,8 @@ namespace GraphSharp.Controls
 
         protected void OnLayoutStarted()
         {
-            stopWatch.Reset();
-            stopWatch.Start();
+            _stopWatch.Reset();
+            _stopWatch.Start();
             LayoutStatusPercent = 0.0;
         }
 
@@ -411,14 +398,6 @@ namespace GraphSharp.Controls
         {
             if (iterArgs == null || iterArgs.VertexPositions == null)
             {
-                if (LayoutAlgorithm is ICompoundLayoutAlgorithm<TVertex, TEdge, TGraph>)
-                {
-                    var la = (ICompoundLayoutAlgorithm<TVertex, TEdge, TGraph>)LayoutAlgorithm;
-                }
-                else
-                {
-
-                }
                 OnLayoutIterationFinished(LayoutAlgorithm.VertexPositions, null);
                 SetLayoutInformations();
             }
@@ -443,7 +422,7 @@ namespace GraphSharp.Controls
                 vertexPositions,
                 overlapRemovedPositions,
                 edgeRoutingInfos,
-                stopWatch.Elapsed,
+                _stopWatch.Elapsed,
                 _layoutStates.Count,
                 (message ?? string.Empty));
 
@@ -453,7 +432,7 @@ namespace GraphSharp.Controls
 
         protected virtual void OnLayoutFinished()
         {
-            stopWatch.Stop();
+            _stopWatch.Stop();
             OnLayoutIterationFinished(null);
             StateIndex = StateCount - 1;
 
@@ -469,7 +448,7 @@ namespace GraphSharp.Controls
             if (iterArgs == null)
                 return;
 
-            foreach (var kvp in _vertexControls)
+            foreach (var kvp in VertexControls)
             {
                 var vertex = kvp.Key;
                 var control = kvp.Value;
@@ -477,7 +456,7 @@ namespace GraphSharp.Controls
                 GraphElementBehaviour.SetLayoutInfo(control, iterArgs.GetVertexInfo(vertex));
             }
 
-            foreach (var kvp in _edgeControls)
+            foreach (var kvp in EdgeControls)
             {
                 var edge = kvp.Key;
                 var control = kvp.Value;
@@ -491,7 +470,7 @@ namespace GraphSharp.Controls
             if (LayoutAlgorithm == null)
                 return;
 
-            foreach (var kvp in _vertexControls)
+            foreach (var kvp in VertexControls)
             {
                 var vertex = kvp.Key;
                 var control = kvp.Value;
@@ -499,7 +478,7 @@ namespace GraphSharp.Controls
                 GraphElementBehaviour.SetLayoutInfo(control, LayoutAlgorithm.GetVertexInfo(vertex));
             }
 
-            foreach (var kvp in _edgeControls)
+            foreach (var kvp in EdgeControls)
             {
                 var edge = kvp.Key;
                 var control = kvp.Value;
@@ -618,7 +597,7 @@ namespace GraphSharp.Controls
                 foreach (var v in Graph.Vertices)
                 {
                     VertexControl vp;
-                    if (!_vertexControls.TryGetValue(v, out vp))
+                    if (!VertexControls.TryGetValue(v, out vp))
                         continue;
 
                     if (positions.TryGetValue(v, out pos))
@@ -632,7 +611,7 @@ namespace GraphSharp.Controls
                 foreach (var e in Graph.Edges)
                 {
                     EdgeControl ec;
-                    if (!_edgeControls.TryGetValue(e, out ec))
+                    if (!EdgeControls.TryGetValue(e, out ec))
                         continue;
 
                     Point[] routePoints;
@@ -649,8 +628,8 @@ namespace GraphSharp.Controls
 
         private class AsyncThreadArgument
         {
-            public ILayoutAlgorithm<TVertex, TEdge, TGraph> algorithm;
-            public bool showAllStates;
+            public ILayoutAlgorithm<TVertex, TEdge, TGraph> Algorithm;
+            public bool ShowAllStates;
         }
 
         #endregion

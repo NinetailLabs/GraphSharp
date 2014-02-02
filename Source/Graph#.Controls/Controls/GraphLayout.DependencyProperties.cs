@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Windows;
 using GraphSharp.Algorithms.EdgeRouting;
 using GraphSharp.Algorithms.Highlight;
@@ -11,7 +9,7 @@ using QuickGraph;
 
 namespace GraphSharp.Controls
 {
-    public partial class GraphLayout<TVertex, TEdge, TGraph> : GraphCanvas
+    public partial class GraphLayout<TVertex, TEdge, TGraph>
         where TVertex : class
         where TEdge : IEdge<TVertex>
         where TGraph : class, IBidirectionalGraph<TVertex, TEdge>
@@ -73,7 +71,7 @@ namespace GraphSharp.Controls
                                         typeof(GraphLayout<TVertex, TEdge, TGraph>),
                                         new PropertyMetadata(
                                             new StandardEdgeRoutingAlgorithmFactory<TVertex, TEdge, TGraph>(),
-                                            null, EdgeRoutingAlgorithmFactory_Coerce));
+                                            null, EdgeRoutingAlgorithmFactoryCoerce));
 
         public static readonly DependencyProperty EdgeRoutingAlgorithmProperty;
 
@@ -86,13 +84,13 @@ namespace GraphSharp.Controls
         public static readonly DependencyProperty EdgeRoutingAlgorithmTypeProperty =
             DependencyProperty.Register("EdgeRoutingAlgorithmType", typeof(string),
                                         typeof(GraphLayout<TVertex, TEdge, TGraph>),
-                                        new PropertyMetadata(string.Empty, EdgeRoutingAlgorithmType_PropertyChanged));
+                                        new PropertyMetadata(string.Empty, EdgeRoutingAlgorithmTypePropertyChanged));
 
         public static readonly DependencyProperty EdgeRoutingConstraintProperty =
             DependencyProperty.Register("EdgeRoutingConstraint", typeof(AlgorithmConstraints),
                                         typeof(GraphLayout<TVertex, TEdge, TGraph>),
                                         new PropertyMetadata(AlgorithmConstraints.Automatic,
-                                                             EdgeRoutingConstraint_PropertyChanged));
+                                                             EdgeRoutingConstraintPropertyChanged));
 
         public static readonly DependencyProperty EdgeRoutingParametersProperty =
             DependencyProperty.Register("EdgeRoutingParameters", typeof(IEdgeRoutingParameters),
@@ -107,7 +105,7 @@ namespace GraphSharp.Controls
                                                                                                   (null,
                                                                                                    FrameworkPropertyMetadataOptions
                                                                                                        .AffectsRender,
-                                                                                                   Graph_PropertyChanged));
+                                                                                                   GraphPropertyChanged));
 
         public static readonly DependencyProperty HighlightAlgorithmFactoryProperty =
             DependencyProperty.Register("HighlightAlgorithmFactory",
@@ -115,7 +113,7 @@ namespace GraphSharp.Controls
                                         typeof(GraphLayout<TVertex, TEdge, TGraph>),
                                         new PropertyMetadata(
                                             new StandardHighlightAlgorithmFactory<TVertex, TEdge, TGraph>(),
-                                            HighlightAlgorithmFactory_PropertyChanged, HighlightAlgorithmFactory_Coerce));
+                                            HighlightAlgorithmFactoryPropertyChanged, HighlightAlgorithmFactoryCoerce));
 
         public static readonly DependencyProperty HighlightAlgorithmProperty;
 
@@ -123,18 +121,18 @@ namespace GraphSharp.Controls
             DependencyProperty.RegisterReadOnly("HighlightAlgorithm",
                                                 typeof(IHighlightAlgorithm<TVertex, TEdge, TGraph>),
                                                 typeof(GraphLayout<TVertex, TEdge, TGraph>),
-                                                new UIPropertyMetadata(null, HighlightAlgorithm_PropertyChanged));
+                                                new UIPropertyMetadata(null, HighlightAlgorithmPropertyChanged));
 
         public static readonly DependencyProperty HighlightAlgorithmTypeProperty =
             DependencyProperty.Register("HighlightAlgorithmType", typeof(string),
                                         typeof(GraphLayout<TVertex, TEdge, TGraph>),
-                                        new PropertyMetadata(string.Empty, HighlightAlgorithmType_PropertyChanged,
-                                                             HighlightAlgorithmType_Coerce));
+                                        new PropertyMetadata(string.Empty, HighlightAlgorithmTypePropertyChanged,
+                                                             HighlightAlgorithmTypeCoerce));
 
         public static readonly DependencyProperty HighlightParametersProperty =
             DependencyProperty.Register("HighlightParameters", typeof(IHighlightParameters),
                                         typeof(GraphLayout<TVertex, TEdge, TGraph>),
-                                        new PropertyMetadata(null, null, HighlightParameters_Coerce));
+                                        new PropertyMetadata(null, null, HighlightParametersCoerce));
 
         //algorithm factories
         public static readonly DependencyProperty LayoutAlgorithmFactoryProperty =
@@ -143,7 +141,7 @@ namespace GraphSharp.Controls
                                         typeof(GraphLayout<TVertex, TEdge, TGraph>),
                                         new PropertyMetadata(
                                             new StandardLayoutAlgorithmFactory<TVertex, TEdge, TGraph>(), null,
-                                            LayoutAlgorithmFactory_Coerce));
+                                            LayoutAlgorithmFactoryCoerce));
 
         public static readonly DependencyProperty LayoutAlgorithmProperty;
 
@@ -155,7 +153,7 @@ namespace GraphSharp.Controls
         public static readonly DependencyProperty LayoutAlgorithmTypeProperty =
             DependencyProperty.Register("LayoutAlgorithmType", typeof(string),
                                         typeof(GraphLayout<TVertex, TEdge, TGraph>),
-                                        new PropertyMetadata(string.Empty, LayoutAlgorithmType_PropertyChanged));
+                                        new PropertyMetadata(string.Empty, LayoutAlgorithmTypePropertyChanged));
 
         public static readonly DependencyProperty LayoutModeProperty = DependencyProperty.Register("LayoutMode",
                                                                                                    typeof(LayoutMode),
@@ -166,8 +164,8 @@ namespace GraphSharp.Controls
                                                                                                    new PropertyMetadata(
                                                                                                        LayoutMode.
                                                                                                            Automatic,
-                                                                                                       LayoutMode_PropertyChanged,
-                                                                                                       LayoutMode_Coerce));
+                                                                                                       LayoutModePropertyChanged,
+                                                                                                       LayoutModeCoerce));
 
         //algorithm parameters
         public static readonly DependencyProperty LayoutParametersProperty =
@@ -193,7 +191,7 @@ namespace GraphSharp.Controls
                                         typeof(IOverlapRemovalAlgorithmFactory<TVertex>),
                                         typeof(GraphLayout<TVertex, TEdge, TGraph>),
                                         new PropertyMetadata(new StandardOverlapRemovalAlgorithmFactory<TVertex>(), null,
-                                                             OverlapRemovalAlgorithmFactory_Coerce));
+                                                             OverlapRemovalAlgorithmFactoryCoerce));
 
         public static readonly DependencyProperty OverlapRemovalAlgorithmProperty;
 
@@ -205,13 +203,13 @@ namespace GraphSharp.Controls
         public static readonly DependencyProperty OverlapRemovalAlgorithmTypeProperty =
             DependencyProperty.Register("OverlapRemovalAlgorithmType", typeof(string),
                                         typeof(GraphLayout<TVertex, TEdge, TGraph>),
-                                        new PropertyMetadata(string.Empty, OverlapRemovalAlgorithmType_PropertyChanged));
+                                        new PropertyMetadata(string.Empty, OverlapRemovalAlgorithmTypePropertyChanged));
 
         public static readonly DependencyProperty OverlapRemovalConstraintProperty =
             DependencyProperty.Register("OverlapRemovalConstraint", typeof(AlgorithmConstraints),
                                         typeof(GraphLayout<TVertex, TEdge, TGraph>),
                                         new PropertyMetadata(AlgorithmConstraints.Automatic,
-                                                             OverlapRemovalConstraint_PropertyChanged));
+                                                             OverlapRemovalConstraintPropertyChanged));
 
         public static readonly DependencyProperty OverlapRemovalParametersProperty =
             DependencyProperty.Register("OverlapRemovalParameters", typeof(IOverlapRemovalParameters),
@@ -231,7 +229,7 @@ namespace GraphSharp.Controls
 
         protected static readonly DependencyPropertyKey StateCountPropertyKey =
             DependencyProperty.RegisterReadOnly("StateCount", typeof(int), typeof(GraphLayout<TVertex, TEdge, TGraph>),
-                                                new UIPropertyMetadata(0, StateCount_PropertyChanged));
+                                                new UIPropertyMetadata(0, StateCountPropertyChanged));
 
         public static readonly DependencyProperty StateIndexProperty = DependencyProperty.Register("StateIndex",
                                                                                                    typeof(int),
@@ -241,8 +239,8 @@ namespace GraphSharp.Controls
                                                                                                        TGraph>),
                                                                                                    new UIPropertyMetadata
                                                                                                        (0,
-                                                                                                        StateIndex_PropertyChanged,
-                                                                                                        StateIndex_Coerce));
+                                                                                                        StateIndexPropertyChanged,
+                                                                                                        StateIndexCoerce));
 
         /// <summary>
         /// Static Constructor. At this time it's only task to initialize the readonly Dependency Properties.
@@ -311,7 +309,7 @@ namespace GraphSharp.Controls
         /// Property Change Callback of the <code>StateIndex</code> dependency property. It call the animation, 
         /// so the layout will animate from one state to the another.
         /// </summary>
-        protected static void StateIndex_PropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        protected static void StateIndexPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             var gl = obj as GraphLayout<TVertex, TEdge, TGraph>;
             if (gl == null) return;
@@ -325,7 +323,7 @@ namespace GraphSharp.Controls
         /// Coerce Callback of the <code>StateIndex</code> dependency property.
         /// </summary>
         /// <returns>It coerces the value of the <see cref="StateIndex"/> between 0 and (<see cref="StateCount"/>-1).</returns>
-        protected static object StateIndex_Coerce(DependencyObject obj, object stateIndex)
+        protected static object StateIndexCoerce(DependencyObject obj, object stateIndex)
         {
             var gl = obj as GraphLayout<TVertex, TEdge, TGraph>;
             var p = (int)stateIndex;
@@ -340,14 +338,14 @@ namespace GraphSharp.Controls
         /// Property Change Callback of the <see cref="StateCount"/> dependency property.
         /// It coerces the <see cref="StateIndex"/>.
         /// </summary>
-        protected static void StateCount_PropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        protected static void StateCountPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             var gl = obj as GraphLayout<TVertex, TEdge, TGraph>;
             if (gl != null)
                 gl.CoerceValue(StateIndexProperty);
         }
 
-        protected static void LayoutMode_PropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        protected static void LayoutModePropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
             gl.OnRelayoutInduction(false);
@@ -356,7 +354,7 @@ namespace GraphSharp.Controls
         /// <summary>
         /// Coerce callback of the <see cref="LayoutMode"/> dependency property.
         /// </summary>
-        private static object LayoutMode_Coerce(DependencyObject obj, object newValue)
+        private static object LayoutModeCoerce(DependencyObject obj, object newValue)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
             if (gl.Graph == null)
@@ -370,7 +368,7 @@ namespace GraphSharp.Controls
         /// </summary>
         /// <param name="obj">The GraphLayout instance which Graph dependency property changed.</param>
         /// <param name="e">OldValue & NewValue</param>
-        protected static void Graph_PropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        protected static void GraphPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
 
@@ -396,31 +394,31 @@ namespace GraphSharp.Controls
             Relayout();
         }
 
-        protected static object LayoutAlgorithmFactory_Coerce(DependencyObject obj, object newValue)
+        protected static object LayoutAlgorithmFactoryCoerce(DependencyObject obj, object newValue)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
             return newValue ?? gl.LayoutAlgorithmFactory;
         }
 
-        protected static object EdgeRoutingAlgorithmFactory_Coerce(DependencyObject obj, object newValue)
+        protected static object EdgeRoutingAlgorithmFactoryCoerce(DependencyObject obj, object newValue)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
             return newValue ?? gl.EdgeRoutingAlgorithmFactory;
         }
 
-        protected static object OverlapRemovalAlgorithmFactory_Coerce(DependencyObject obj, object newValue)
+        protected static object OverlapRemovalAlgorithmFactoryCoerce(DependencyObject obj, object newValue)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
             return newValue ?? gl.OverlapRemovalAlgorithmFactory;
         }
 
-        protected static object HighlightAlgorithmFactory_Coerce(DependencyObject obj, object newValue)
+        protected static object HighlightAlgorithmFactoryCoerce(DependencyObject obj, object newValue)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
             return newValue ?? gl.HighlightAlgorithmFactory;
         }
 
-        private static void HighlightAlgorithmFactory_PropertyChanged(DependencyObject obj,
+        private static void HighlightAlgorithmFactoryPropertyChanged(DependencyObject obj,
                                                                       DependencyPropertyChangedEventArgs e)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
@@ -430,7 +428,7 @@ namespace GraphSharp.Controls
             gl.HighlightAlgorithmType = highlightMethod;
         }
 
-        protected static void LayoutAlgorithmType_PropertyChanged(DependencyObject obj,
+        protected static void LayoutAlgorithmTypePropertyChanged(DependencyObject obj,
                                                                   DependencyPropertyChangedEventArgs e)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
@@ -445,7 +443,7 @@ namespace GraphSharp.Controls
             }
         }
 
-        protected static void EdgeRoutingAlgorithmType_PropertyChanged(DependencyObject obj,
+        protected static void EdgeRoutingAlgorithmTypePropertyChanged(DependencyObject obj,
                                                                        DependencyPropertyChangedEventArgs e)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
@@ -462,7 +460,7 @@ namespace GraphSharp.Controls
             }
         }
 
-        protected static void EdgeRoutingConstraint_PropertyChanged(DependencyObject obj,
+        protected static void EdgeRoutingConstraintPropertyChanged(DependencyObject obj,
                                                                     DependencyPropertyChangedEventArgs e)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
@@ -472,7 +470,7 @@ namespace GraphSharp.Controls
                 gl.RecalculateEdgeRouting();
         }
 
-        protected static void OverlapRemovalAlgorithmType_PropertyChanged(DependencyObject obj,
+        protected static void OverlapRemovalAlgorithmTypePropertyChanged(DependencyObject obj,
                                                                           DependencyPropertyChangedEventArgs e)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
@@ -489,7 +487,7 @@ namespace GraphSharp.Controls
             }
         }
 
-        protected static void OverlapRemovalConstraint_PropertyChanged(DependencyObject obj,
+        protected static void OverlapRemovalConstraintPropertyChanged(DependencyObject obj,
                                                                        DependencyPropertyChangedEventArgs e)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
@@ -499,7 +497,7 @@ namespace GraphSharp.Controls
                 gl.RecalculateOverlapRemoval();
         }
 
-        private static object HighlightAlgorithmType_Coerce(DependencyObject obj, object newValue)
+        private static object HighlightAlgorithmTypeCoerce(DependencyObject obj, object newValue)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
 
@@ -509,7 +507,7 @@ namespace GraphSharp.Controls
             return newValue;
         }
 
-        protected static void HighlightAlgorithmType_PropertyChanged(DependencyObject obj,
+        protected static void HighlightAlgorithmTypePropertyChanged(DependencyObject obj,
                                                                      DependencyPropertyChangedEventArgs e)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
@@ -523,14 +521,14 @@ namespace GraphSharp.Controls
                                                                                  parameters);
         }
 
-        private static void HighlightAlgorithm_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void HighlightAlgorithmPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var algo = e.NewValue as IHighlightAlgorithm<TVertex, TEdge, TGraph>;
             if (algo != null)
                 algo.ResetHighlight();
         }
 
-        private static object HighlightParameters_Coerce(DependencyObject obj, object newValue)
+        private static object HighlightParametersCoerce(DependencyObject obj, object newValue)
         {
             var gl = (GraphLayout<TVertex, TEdge, TGraph>)obj;
 

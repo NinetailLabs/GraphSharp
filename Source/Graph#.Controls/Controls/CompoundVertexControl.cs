@@ -1,34 +1,29 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
-using GraphSharp.Algorithms.Layout;
 using GraphSharp.Algorithms.Layout.Compound;
 
 namespace GraphSharp.Controls
 {
-    [TemplatePart(Name = CompoundVertexControl.PartInnerCanvas, Type = typeof(FrameworkElement))]
+    [TemplatePart(Name = PartInnerCanvas, Type = typeof(FrameworkElement))]
     public class CompoundVertexControl : VertexControl, ICompoundVertexControl
     {
-        //Constants for PARTs
         protected const string PartInnerCanvas = "PART_InnerCanvas";
 
-        //PARTs
-        protected FrameworkElement _innerCanvas;
+        protected FrameworkElement InnerCanvas;
 
         private bool _activePositionChangeReaction = false;
 
-        /// <summary>
-        /// Gets the control of the inner canvas.
-        /// </summary>
+        /// <summary>Gets the control of the inner canvas.</summary>
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
-            //get the control of the inner canvas
-            _innerCanvas = Template.FindName(PartInnerCanvas,this) as FrameworkElement ?? this;
+            // get the control of the inner canvas
+            InnerCanvas = Template.FindName(PartInnerCanvas,this) as FrameworkElement ?? this;
         }
 
         #region Dependency Properties
+
         public ObservableCollection<VertexControl> Vertices
         {
             get { return (ObservableCollection<VertexControl>)GetValue(VerticesProperty); }
@@ -39,8 +34,6 @@ namespace GraphSharp.Controls
         protected static readonly DependencyPropertyKey VerticesPropertyKey =
             DependencyProperty.RegisterReadOnly("Vertices", typeof(ObservableCollection<VertexControl>), typeof(CompoundVertexControl), new UIPropertyMetadata(null));
 
-
-
         public CompoundVertexInnerLayoutType LayoutMode
         {
             get { return (CompoundVertexInnerLayoutType)GetValue(LayoutModeProperty); }
@@ -50,8 +43,6 @@ namespace GraphSharp.Controls
         // Using a DependencyProperty as the backing store for LayoutMode.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LayoutModeProperty =
             DependencyProperty.Register("LayoutMode", typeof(CompoundVertexInnerLayoutType), typeof(CompoundVertexControl), new UIPropertyMetadata(CompoundVertexInnerLayoutType.Automatic));
-
-
 
         public bool IsExpanded
         {
@@ -84,7 +75,6 @@ namespace GraphSharp.Controls
         // Using a DependencyProperty as the backing store for InnerCanvasOrigo.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty InnerCanvasOrigoProperty =
             DependencyProperty.Register("InnerCanvasOrigo", typeof(Point), typeof(CompoundVertexControl), new UIPropertyMetadata(new Point()));
-
 
         static CompoundVertexControl()
         {
@@ -169,32 +159,28 @@ namespace GraphSharp.Controls
 
         #region ICompoundVertexControl Members
 
-        /// <summary>
-        /// Gets the size of the inner canvas control.
-        /// </summary>
+        /// <summary>Gets the size of the inner canvas control.</summary>
         public Size InnerCanvasSize
         {
             get
             {
-                if (_innerCanvas == null)
+                if (InnerCanvas == null)
                     return new Size();
 
-                return new Size(_innerCanvas.ActualWidth, _innerCanvas.ActualHeight);
+                return new Size(InnerCanvas.ActualWidth, InnerCanvas.ActualHeight);
             }
         }
 
-        /// <summary>
-        /// Gets the 'borderthickness' of the control around the inner canvas.
-        /// </summary>
+        /// <summary>Gets the 'borderthickness' of the control around the inner canvas.</summary>
         public Thickness VertexBorderThickness
         {
             get
             {
                 var thickness = new Thickness();
-                if (_innerCanvas == null)
+                if (InnerCanvas == null)
                     return thickness;
 
-                var innerCanvasPosition = _innerCanvas.TranslatePoint(new Point(), this);
+                var innerCanvasPosition = InnerCanvas.TranslatePoint(new Point(), this);
                 var innerCanvasSize = InnerCanvasSize;
                 var size = new Size(ActualWidth, ActualHeight);
 

@@ -12,18 +12,17 @@ namespace GraphSharp.Controls
 		where TGraph : class, IBidirectionalGraph<TVertex, TEdge>
 	{
 		#region Dependency Properties
-		/// <summary>
-		/// Gets or sets the SelectedVertex which influences the Context.
-		/// </summary>
+
+		/// <summary>Gets or sets the SelectedVertex which influences the Context.</summary>
 		public TVertex SelectedVertex
 		{
 			get { return (TVertex)GetValue( SelectedVertexProperty ); }
 			set { SetValue( SelectedVertexProperty, value ); }
 		}
 
-		public static readonly DependencyProperty SelectedVertexProperty = DependencyProperty.Register( "SelectedVertex", typeof( TVertex ), typeof( ContextualGraphLayout<TVertex, TEdge, TGraph> ), new UIPropertyMetadata( default( TVertex ), SelectedVertex_PropertyChanged ) );
+		public static readonly DependencyProperty SelectedVertexProperty = DependencyProperty.Register( "SelectedVertex", typeof( TVertex ), typeof( ContextualGraphLayout<TVertex, TEdge, TGraph> ), new UIPropertyMetadata( default( TVertex ), SelectedVertexPropertyChanged ) );
 
-		private static void SelectedVertex_PropertyChanged( DependencyObject obj, DependencyPropertyChangedEventArgs args )
+		private static void SelectedVertexPropertyChanged( DependencyObject obj, DependencyPropertyChangedEventArgs args )
 		{
 			var gl = obj as ContextualGraphLayout<TVertex, TEdge, TGraph>;
 			if ( gl == null )
@@ -36,7 +35,7 @@ namespace GraphSharp.Controls
 
 		static ContextualGraphLayout() 
 		{
-			LayoutAlgorithmFactoryProperty.OverrideMetadata( typeof( ContextualGraphLayout<TVertex, TEdge, TGraph> ), new PropertyMetadata( new ContextualLayoutAlgorithmFactory<TVertex, TEdge, TGraph>(), null, LayoutAlgorithmFactory_Coerce ) );
+			LayoutAlgorithmFactoryProperty.OverrideMetadata( typeof( ContextualGraphLayout<TVertex, TEdge, TGraph> ), new PropertyMetadata( new ContextualLayoutAlgorithmFactory<TVertex, TEdge, TGraph>(), null, LayoutAlgorithmFactoryCoerce ) );
 		}
 
 		protected override ILayoutContext<TVertex, TEdge, TGraph> CreateLayoutContext( IDictionary<TVertex, Point> positions, IDictionary<TVertex, Size> sizes )
@@ -44,12 +43,9 @@ namespace GraphSharp.Controls
 			return new ContextualLayoutContext<TVertex, TEdge, TGraph>( Graph, SelectedVertex, positions, sizes );
 		}
 
-		protected override bool CanLayout
-		{
-            get
-		    {
-		        return SelectedVertex != null && base.CanLayout;
-		    }
-		}
+	    protected override bool CanLayout
+	    {
+	        get { return SelectedVertex != null && base.CanLayout; }
+	    }
 	}
 }

@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using GraphSharp.Controls.Animations;
-using System.Windows.Media;
+using GraphSharp.Controls.Transitions;
 
 namespace GraphSharp.Controls
 {
@@ -18,9 +18,9 @@ namespace GraphSharp.Controls
                                                                                 FrameworkPropertyMetadataOptions.AffectsParentMeasure |
                                                                                 FrameworkPropertyMetadataOptions.AffectsParentArrange |
                                                                                 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                                                                                X_PropertyChanged));
+                                                                                XPropertyChanged));
 
-        private static void X_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void XPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var xChange = (double)e.NewValue - (double)e.OldValue;
             PositionChanged(d, xChange, 0);
@@ -36,9 +36,9 @@ namespace GraphSharp.Controls
                                                                                 FrameworkPropertyMetadataOptions.AffectsParentMeasure |
                                                                                 FrameworkPropertyMetadataOptions.AffectsParentArrange |
                                                                                 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                                                                                Y_PropertyChanged));
+                                                                                YPropertyChanged));
 
-        private static void Y_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void YPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var yChange = (double)e.NewValue - (double)e.OldValue;
             PositionChanged(d, 0, yChange);
@@ -46,7 +46,7 @@ namespace GraphSharp.Controls
 
         private static void PositionChanged(DependencyObject d, double xChange, double yChange)
         {
-            UIElement e = d as UIElement;
+            var e = d as UIElement;
             if (e != null)
                 e.RaiseEvent(new PositionChangedEventArgs(PositionChangedEvent, e, xChange, yChange));
         }
@@ -83,14 +83,14 @@ namespace GraphSharp.Controls
             EventManager.RegisterRoutedEvent("PositionChanged", RoutingStrategy.Bubble, typeof(PositionChangedEventHandler), typeof(GraphCanvas));
         public static void AddPositionChangedHandler(DependencyObject d, RoutedEventHandler handler)
         {
-            UIElement e = d as UIElement;
+            var e = d as UIElement;
             if (e != null)
                 e.AddHandler(PositionChangedEvent, handler);
         }
 
         public static void RemovePositionChangedHandler(DependencyObject d, RoutedEventHandler handler)
         {
-            UIElement e = d as UIElement;
+            var e = d as UIElement;
             if (e != null)
                 e.RemoveHandler(PositionChangedEvent, handler);
         }
@@ -98,27 +98,19 @@ namespace GraphSharp.Controls
 
         #region Measure & Arrange
 
-        /// <summary>
-        /// The position of the topLeft corner of the most top-left 
-        /// vertex.
-        /// </summary>
-        private Point topLeft;
+        /// <summary>The position of the topLeft corner of the most top-left vertex.</summary>
+        private Point _topLeft;
 
-        /// <summary>
-        /// The position of the bottom right corner of the most 
-        /// bottom-right vertex.
-        /// </summary>
-        private Point bottomRight;
+        /// <summary>The position of the bottom right corner of the most bottom-right vertex.</summary>
+        private Point _bottomRight;
 
-        /// <summary>
-        /// Arranges the size of the control.
-        /// </summary>
+        /// <summary>Arranges the size of the control.</summary>
         /// <param name="arrangeSize">The arranged size of the control.</param>
         /// <returns>The size of the control.</returns>
         protected override Size ArrangeOverride(Size arrangeSize)
         {
-            var translate = new Vector(-topLeft.X, -topLeft.Y);
-            Vector graphSize = (bottomRight - topLeft);
+            var translate = new Vector(-_topLeft.X, -_topLeft.Y);
+            Vector graphSize = (_bottomRight - _topLeft);
 
             if (double.IsNaN(graphSize.X) || double.IsNaN(graphSize.Y) ||
                  double.IsInfinity(graphSize.X) || double.IsInfinity(graphSize.Y))
@@ -160,16 +152,13 @@ namespace GraphSharp.Controls
             return new Size(graphSize.X, graphSize.Y);
         }
 
-        /// <summary>
-        /// Overridden measure. It calculates a size where all of 
-        /// of the vertices are visible.
-        /// </summary>
+        /// <summary>Overridden measure. It calculates a size where all of of the vertices are visible.</summary>
         /// <param name="constraint">The size constraint.</param>
         /// <returns>The calculated size.</returns>
         protected override Size MeasureOverride(Size constraint)
         {
-            topLeft = new Point(double.PositiveInfinity, double.PositiveInfinity);
-            bottomRight = new Point(double.NegativeInfinity, double.NegativeInfinity);
+            _topLeft = new Point(double.PositiveInfinity, double.PositiveInfinity);
+            _bottomRight = new Point(double.NegativeInfinity, double.NegativeInfinity);
 
             foreach (UIElement child in InternalChildren)
             {
@@ -190,15 +179,15 @@ namespace GraphSharp.Controls
                 }
 
                 //get the top left corner point
-                topLeft.X = Math.Min(topLeft.X, left - halfWidth - Origo.X);
-                topLeft.Y = Math.Min(topLeft.Y, top - halfHeight - Origo.Y);
+                _topLeft.X = Math.Min(_topLeft.X, left - halfWidth - Origo.X);
+                _topLeft.Y = Math.Min(_topLeft.Y, top - halfHeight - Origo.Y);
 
                 //calculate the bottom right corner point
-                bottomRight.X = Math.Max(bottomRight.X, left + halfWidth - Origo.X);
-                bottomRight.Y = Math.Max(bottomRight.Y, top + halfHeight - Origo.Y);
+                _bottomRight.X = Math.Max(_bottomRight.X, left + halfWidth - Origo.X);
+                _bottomRight.Y = Math.Max(_bottomRight.Y, top + halfHeight - Origo.Y);
             }
 
-            var graphSize = (Size)(bottomRight - topLeft);
+            var graphSize = (Size)(_bottomRight - _topLeft);
             graphSize.Width = Math.Max(0, graphSize.Width);
             graphSize.Height = Math.Max(0, graphSize.Height);
 
@@ -320,8 +309,6 @@ namespace GraphSharp.Controls
 
         #endregion
 
-
-
         public Vector Translation
         {
             get { return (Vector)GetValue(TranslationProperty); }
@@ -337,46 +324,32 @@ namespace GraphSharp.Controls
             TranslationProperty = TranslationPropertyKey.DependencyProperty;
         }
 
-        public GraphCanvas()
-        {
-        }
-
-        /// <summary>
-        /// The layout process will be initialized with the current 
-        /// vertex positions.
+        /// <summary>The layout process will be initialized with the current vertex positions.
         /// </summary>
         public virtual void ContinueLayout()
         {
         }
 
-        /// <summary>
-        /// The layout process will be started without initial
-        /// vertex positions.
-        /// </summary>
+        /// <summary>The layout process will be started without initial vertex positions.</summary>
         public virtual void Relayout()
         {
         }
 
+        private IAnimationContext _animationContext;
 
-        private IAnimationContext animationContext;
-
-        /// <summary>
-        /// Gets the context of the animation.
-        /// </summary>
+        /// <summary>Gets the context of the animation.</summary>
         public virtual IAnimationContext AnimationContext
         {
             get
             {
-                if (animationContext == null)
-                    animationContext = new AnimationContext(this);
+                if (_animationContext == null)
+                    _animationContext = new AnimationContext(this);
 
-                return animationContext;
+                return _animationContext;
             }
         }
 
-        /// <summary>
-        /// Gets whether the animation could be run, or not.
-        /// </summary>
+        /// <summary>Gets whether the animation could be run, or not.</summary>
         public virtual bool CanAnimate
         {
             get
@@ -385,10 +358,7 @@ namespace GraphSharp.Controls
             }
         }
 
-        /// <summary>
-        /// Does a transition for the control which has been already added
-        /// to this container.
-        /// </summary>
+        /// <summary>Does a transition for the control which has been already added to this container.</summary>
         /// <param name="control">The control which has been added.</param>
         protected virtual void RunCreationTransition(Control control)
         {
@@ -398,10 +368,7 @@ namespace GraphSharp.Controls
             CreationTransition.Run(AnimationContext, control, AnimationLength);
         }
 
-        /// <summary>
-        /// Animates the position of the given control to
-        /// the given positions.
-        /// </summary>
+        /// <summary>Animates the position of the given control to the given positions.</summary>
         /// <param name="control">The control which should be moved.</param>
         /// <param name="x">The new horizontal position of the control.</param>
         /// <param name="y">The new vertical position of the control.</param>
@@ -418,10 +385,7 @@ namespace GraphSharp.Controls
             }
         }
 
-        /// <summary>
-        /// Transites a control which gonna' be removed from this 
-        /// container.
-        /// </summary>
+        /// <summary>Transites a control which gonna' be removed from this container.</summary>
         /// <param name="control">The control which will be removed.</param>
         /// <param name="dontRemoveAfter">If it's true, the control won't be removed
         /// automatically from this container's Children.</param>

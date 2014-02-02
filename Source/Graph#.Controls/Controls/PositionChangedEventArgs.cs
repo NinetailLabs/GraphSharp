@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-using System.Windows;
+﻿using System.Windows;
 
 namespace GraphSharp.Controls
 {

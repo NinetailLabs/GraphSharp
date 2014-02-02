@@ -234,78 +234,13 @@ namespace GraphSharp.Controls.Zoom
         private static object TranslateXCoerce(DependencyObject d, object basevalue)
         {
             var zc = (ZoomControl)d;
-            return zc.GetCoercedTranslateX((double)basevalue, zc.Zoom);
-        }
-
-        private double GetCoercedTranslateX(double baseValue, double zoom)
-        {
-            if (_presenter == null)
-                return 0.0;
-
-            return GetCoercedTranslate(baseValue, zoom,
-                                       _presenter.ContentSize.Width,
-                                       _presenter.DesiredSize.Width,
-                                       ActualWidth);
+            return zc._presenter == null ? 0.0 : (double)basevalue;
         }
 
         private static object TranslateYCoerce(DependencyObject d, object basevalue)
         {
             var zc = (ZoomControl)d;
-            return zc.GetCoercedTranslateY((double)basevalue, zc.Zoom);
-        }
-
-        private double GetCoercedTranslateY(double baseValue, double zoom)
-        {
-            if (_presenter == null)
-                return 0.0;
-
-            return GetCoercedTranslate(baseValue, zoom,
-                                       _presenter.ContentSize.Height,
-                                       _presenter.DesiredSize.Height,
-                                       ActualHeight);
-        }
-
-        /// <summary>Coerces the translation.</summary>
-        /// <param name="translate">The desired translate.</param>
-        /// <param name="zoom">The factor of the zoom.</param>
-        /// <param name="contentSize">The size of the content inside the zoomed ContentPresenter.</param>
-        /// <param name="desiredSize">The desired size of the zoomed ContentPresenter.</param>
-        /// <param name="actualSize">The size of the ZoomControl.</param>
-        /// <returns>The coerced translation.</returns>
-        private static double GetCoercedTranslate(double translate, double zoom, double contentSize, double desiredSize, double actualSize)
-        {
-            /*if (_presenter == null)
-                return 0.0;
-
-            //the scaled size of the zoomed content
-            var scaledSize = desiredSize * zoom;
-
-            //the plus size above the desired size of the contentpresenter
-            var plusSize = contentSize > desiredSize ? (contentSize - desiredSize) * zoom : 0.0;
-
-            //is the zoomed content bigger than actual size of the zoom control?
-            /*var bigger = 
-                _presenter.ContentSize.Width * zoom > ActualWidth && 
-                _presenter.ContentSize.Height * zoom > ActualHeight;*/
-            /*var bigger = contentSize * zoom > actualSize;
-            var m = bigger ? -1 : 1;
-
-            if (bigger)
-            {
-                var topRange = m*(actualSize - scaledSize)/2.0;
-                var bottomRange = m*((actualSize - scaledSize)/2.0 - plusSize);
-
-                var minusRange = bigger ? bottomRange : topRange;
-                var plusRange = bigger ? topRange : bottomRange;
-
-                translate = Math.Max(-minusRange, translate);
-                translate = Math.Min(plusRange, translate);
-                return translate;
-            } else
-            {
-                return -plusSize/2.0;
-            }*/
-            return translate;
+            return zc._presenter == null ? 0.0 : (double)basevalue;
         }
 
         private void ZoomControlMouseUp(object sender, MouseButtonEventArgs e)
@@ -462,8 +397,8 @@ namespace GraphSharp.Controls.Zoom
             var zoomedTargetPointPos = targetPoint * currentZoom + startTranslate;
             var endTranslate = vTarget - zoomedTargetPointPos;
 
-            double transformX = GetCoercedTranslateX(TranslateX + endTranslate.X, currentZoom);
-            double transformY = GetCoercedTranslateY(TranslateY + endTranslate.Y, currentZoom);
+            double transformX = _presenter == null ? 0.0 : TranslateX + endTranslate.X;
+            double transformY = _presenter == null ? 0.0 : TranslateY + endTranslate.Y;
 
             DoZoomAnimation(currentZoom, transformX, transformY);
             Mode = ZoomControlModes.Custom;

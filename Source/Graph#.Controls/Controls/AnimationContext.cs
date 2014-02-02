@@ -1,15 +1,12 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-
-namespace GraphSharp.Controls
+﻿namespace GraphSharp.Controls
 {
     public class AnimationContext : IAnimationContext
     {
-        public GraphCanvas GraphCanvas { get; private set; }
-
-        public AnimationContext( GraphCanvas canvas )
+        public AnimationContext(GraphCanvas canvas)
         {
             GraphCanvas = canvas;
         }
+
+        public GraphCanvas GraphCanvas { get; private set; }
     }
 }

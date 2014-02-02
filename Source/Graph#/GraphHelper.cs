@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using QuickGraph;
 using QuickGraph.Algorithms.ShortestPath;
-using System.Diagnostics;
 
 namespace GraphSharp
 {
@@ -230,8 +228,6 @@ namespace GraphSharp
             return graph;
         }
 
-
-
         public static BidirectionalGraph<TVertex, TEdge> CreateGraph<TVertex, TEdge, TOtherEdge>(
             IEnumerable<TVertex> vertices,
             IEnumerable<TOtherEdge> edges,
@@ -241,14 +237,10 @@ namespace GraphSharp
             return CreateGraph( vertices, edges, factoryMethod, true );
         }
 
-
-
         public static TVertex OtherVertex<TVertex>( this IEdge<TVertex> edge, TVertex thisVertex )
         {
             return edge.Source.Equals( thisVertex ) ? edge.Target : edge.Source;
         }
-
-
 
         public static void AddEdgeRange<TVertex, TEdge>( this IMutableEdgeListGraph<TVertex, TEdge> graph, IEnumerable<TEdge> edges )
             where TEdge : IEdge<TVertex>
@@ -256,8 +248,6 @@ namespace GraphSharp
             foreach ( var edge in edges )
                 graph.AddEdge( edge );
         }
-
-
 
         public static BidirectionalGraph<TNewVertex, TNewEdge> Convert<TOldVertex, TOldEdge, TNewVertex, TNewEdge>(
             this IVertexAndEdgeListGraph<TOldVertex, TOldEdge> oldGraph,
@@ -272,8 +262,6 @@ namespace GraphSharp
                 edgeMapperFunc );
         }
 
-
-
         public static BidirectionalGraph<TOldVertex, TNewEdge> Convert<TOldVertex, TOldEdge, TNewEdge>(
             this IVertexAndEdgeListGraph<TOldVertex, TOldEdge> oldGraph,
             Func<TOldEdge, TNewEdge> edgeMapperFunc )
@@ -282,8 +270,6 @@ namespace GraphSharp
         {
             return oldGraph.Convert<TOldVertex, TOldEdge, TOldVertex, TNewEdge>( null, edgeMapperFunc );
         }
-
-
 
         public static TNewGraph Convert<TOldVertex, TOldEdge, TNewVertex, TNewEdge, TNewGraph>(
             this IVertexAndEdgeListGraph<TOldVertex, TOldEdge> oldGraph,
@@ -309,8 +295,6 @@ namespace GraphSharp
             return newGraph;
         }
 
-
-
         public static TNewGraph Convert<TOldVertex, TOldEdge, TNewEdge, TNewGraph>(
             this IVertexAndEdgeListGraph<TOldVertex, TOldEdge> oldGraph,
             TNewGraph newGraph,
@@ -322,8 +306,6 @@ namespace GraphSharp
             return oldGraph.Convert<TOldVertex, TOldEdge, TOldVertex, TNewEdge, TNewGraph>( newGraph, null, edgeMapperFunc );
         }
 
-
-
         public static TNewGraph Convert<TOldVertex, TOldEdge, TNewGraph>(
             this IVertexAndEdgeListGraph<TOldVertex, TOldEdge> oldGraph,
             TNewGraph newGraph )
@@ -332,7 +314,6 @@ namespace GraphSharp
         {
             return oldGraph.Convert<TOldVertex, TOldEdge, TOldVertex, TOldEdge, TNewGraph>( newGraph, null, null );
         }
-
 
         public static BidirectionalGraph<TVertex, TEdge> CopyToBidirectionalGraph<TVertex, TEdge>(
             this IVertexAndEdgeListGraph<TVertex, TEdge> graph)

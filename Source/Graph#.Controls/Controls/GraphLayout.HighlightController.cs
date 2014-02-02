@@ -11,76 +11,76 @@ namespace GraphSharp.Controls
 		where TGraph : class, IBidirectionalGraph<TVertex, TEdge>
 	{
 		#region IHighlightController<TVertex,TEdge,TGraph> Members
-		private readonly IDictionary<TVertex, object> highlightedVertices = new Dictionary<TVertex, object>();
-		private readonly IDictionary<TVertex, object> semiHighlightedVertices = new Dictionary<TVertex, object>();
-		private readonly IDictionary<TEdge, object> highlightedEdges = new Dictionary<TEdge, object>();
-		private readonly IDictionary<TEdge, object> semiHighlightedEdges = new Dictionary<TEdge, object>();
+		private readonly IDictionary<TVertex, object> _highlightedVertices = new Dictionary<TVertex, object>();
+		private readonly IDictionary<TVertex, object> _semiHighlightedVertices = new Dictionary<TVertex, object>();
+		private readonly IDictionary<TEdge, object> _highlightedEdges = new Dictionary<TEdge, object>();
+		private readonly IDictionary<TEdge, object> _semiHighlightedEdges = new Dictionary<TEdge, object>();
 
 		public IEnumerable<TVertex> HighlightedVertices
 		{
-			get { return highlightedVertices.Keys.ToArray(); }
+			get { return _highlightedVertices.Keys.ToArray(); }
 		}
 
 		public IEnumerable<TVertex> SemiHighlightedVertices
 		{
-			get { return semiHighlightedVertices.Keys.ToArray(); }
+			get { return _semiHighlightedVertices.Keys.ToArray(); }
 		}
 
 		public IEnumerable<TEdge> HighlightedEdges
 		{
-			get { return highlightedEdges.Keys.ToArray(); }
+			get { return _highlightedEdges.Keys.ToArray(); }
 		}
 
 		public IEnumerable<TEdge> SemiHighlightedEdges
 		{
-			get { return semiHighlightedEdges.Keys.ToArray(); }
+			get { return _semiHighlightedEdges.Keys.ToArray(); }
 		}
 
 		public bool IsHighlightedVertex( TVertex vertex )
 		{
-			return highlightedVertices.ContainsKey( vertex );
+			return _highlightedVertices.ContainsKey( vertex );
 		}
 
 		public bool IsHighlightedVertex( TVertex vertex, out object highlightInfo )
 		{
-			return highlightedVertices.TryGetValue( vertex, out highlightInfo );
+			return _highlightedVertices.TryGetValue( vertex, out highlightInfo );
 		}
 
 		public bool IsSemiHighlightedVertex( TVertex vertex )
 		{
-			return semiHighlightedVertices.ContainsKey( vertex );
+			return _semiHighlightedVertices.ContainsKey( vertex );
 		}
 
 		public bool IsSemiHighlightedVertex( TVertex vertex, out object semiHighlightInfo )
 		{
-			return semiHighlightedVertices.TryGetValue( vertex, out semiHighlightInfo );
+			return _semiHighlightedVertices.TryGetValue( vertex, out semiHighlightInfo );
 		}
 
 		public bool IsHighlightedEdge( TEdge edge )
 		{
-			return highlightedEdges.ContainsKey( edge );
+			return _highlightedEdges.ContainsKey( edge );
 		}
 
 		public bool IsHighlightedEdge( TEdge edge, out object highlightInfo )
 		{
-			return highlightedEdges.TryGetValue( edge, out highlightInfo );
+			return _highlightedEdges.TryGetValue( edge, out highlightInfo );
 		}
 
 		public bool IsSemiHighlightedEdge( TEdge edge )
 		{
-			return semiHighlightedEdges.ContainsKey( edge );
+			return _semiHighlightedEdges.ContainsKey( edge );
 		}
 
 		public bool IsSemiHighlightedEdge( TEdge edge, out object semiHighlightInfo )
 		{
-			return semiHighlightedEdges.TryGetValue( edge, out semiHighlightInfo );
+			return _semiHighlightedEdges.TryGetValue( edge, out semiHighlightInfo );
 		}
 
 		public void HighlightVertex( TVertex vertex, object highlightInfo )
 		{
-			highlightedVertices[vertex] = highlightInfo;
+			_highlightedVertices[vertex] = highlightInfo;
 			VertexControl vc;
-			if ( _vertexControls.TryGetValue( vertex, out vc ) )
+			if ( VertexControls.TryGetValue( vertex, out vc ) )
 			{
 				GraphElementBehaviour.SetIsHighlighted( vc, true );
 				GraphElementBehaviour.SetHighlightInfo( vc, highlightInfo );
@@ -89,9 +89,9 @@ namespace GraphSharp.Controls
 
 		public void SemiHighlightVertex( TVertex vertex, object semiHighlightInfo )
 		{
-			semiHighlightedVertices[vertex] = semiHighlightInfo;
+			_semiHighlightedVertices[vertex] = semiHighlightInfo;
 			VertexControl vc;
-			if ( _vertexControls.TryGetValue( vertex, out vc ) )
+			if ( VertexControls.TryGetValue( vertex, out vc ) )
 			{
 				GraphElementBehaviour.SetIsSemiHighlighted( vc, true );
 				GraphElementBehaviour.SetSemiHighlightInfo( vc, semiHighlightInfo );
@@ -100,9 +100,9 @@ namespace GraphSharp.Controls
 
 		public void HighlightEdge( TEdge edge, object highlightInfo )
 		{
-			highlightedEdges[edge] = highlightInfo;
+			_highlightedEdges[edge] = highlightInfo;
 			EdgeControl ec;
-			if ( _edgeControls.TryGetValue( edge, out ec ) )
+			if ( EdgeControls.TryGetValue( edge, out ec ) )
 			{
 				GraphElementBehaviour.SetIsHighlighted( ec, true );
 				GraphElementBehaviour.SetHighlightInfo( ec, highlightInfo );
@@ -111,9 +111,9 @@ namespace GraphSharp.Controls
 
 		public void SemiHighlightEdge( TEdge edge, object semiHighlightInfo )
 		{
-			semiHighlightedEdges[edge] = semiHighlightInfo;
+			_semiHighlightedEdges[edge] = semiHighlightInfo;
 			EdgeControl ec;
-			if ( _edgeControls.TryGetValue( edge, out ec ) )
+			if ( EdgeControls.TryGetValue( edge, out ec ) )
 			{
 				GraphElementBehaviour.SetIsSemiHighlighted( ec, true );
 				GraphElementBehaviour.SetSemiHighlightInfo( ec, semiHighlightInfo );
@@ -122,9 +122,9 @@ namespace GraphSharp.Controls
 
 		public void RemoveHighlightFromVertex( TVertex vertex )
 		{
-			highlightedVertices.Remove( vertex );
+			_highlightedVertices.Remove( vertex );
 			VertexControl vc;
-			if ( _vertexControls.TryGetValue( vertex, out vc ) )
+			if ( VertexControls.TryGetValue( vertex, out vc ) )
 			{
 				GraphElementBehaviour.SetIsHighlighted( vc, false );
 				GraphElementBehaviour.SetHighlightInfo( vc, null );
@@ -133,9 +133,9 @@ namespace GraphSharp.Controls
 
 		public void RemoveSemiHighlightFromVertex( TVertex vertex )
 		{
-			semiHighlightedVertices.Remove( vertex );
+			_semiHighlightedVertices.Remove( vertex );
 			VertexControl vc;
-			if ( _vertexControls.TryGetValue( vertex, out vc ) )
+			if ( VertexControls.TryGetValue( vertex, out vc ) )
 			{
 				GraphElementBehaviour.SetIsSemiHighlighted( vc, false );
 				GraphElementBehaviour.SetSemiHighlightInfo( vc, null );
@@ -144,9 +144,9 @@ namespace GraphSharp.Controls
 
 		public void RemoveHighlightFromEdge( TEdge edge )
 		{
-			highlightedEdges.Remove( edge );
+			_highlightedEdges.Remove( edge );
 			EdgeControl ec;
-			if ( _edgeControls.TryGetValue( edge, out ec ) )
+			if ( EdgeControls.TryGetValue( edge, out ec ) )
 			{
 				GraphElementBehaviour.SetIsHighlighted( ec, false );
 				GraphElementBehaviour.SetHighlightInfo( ec, null );
@@ -155,9 +155,9 @@ namespace GraphSharp.Controls
 
 		public void RemoveSemiHighlightFromEdge( TEdge edge )
 		{
-			semiHighlightedEdges.Remove( edge );
+			_semiHighlightedEdges.Remove( edge );
 			EdgeControl ec;
-			if ( _edgeControls.TryGetValue( edge, out ec ) )
+			if ( EdgeControls.TryGetValue( edge, out ec ) )
 			{
 				GraphElementBehaviour.SetIsSemiHighlighted( ec, false );
 				GraphElementBehaviour.SetSemiHighlightInfo( ec, null );

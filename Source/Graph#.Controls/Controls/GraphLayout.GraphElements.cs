@@ -16,12 +16,12 @@ namespace GraphSharp.Controls
 
         protected void RemoveAllGraphElement()
         {
-            foreach (var vertex in _vertexControls.Keys.ToArray())
+            foreach (var vertex in VertexControls.Keys.ToArray())
                 RemoveVertexControl(vertex);
-            foreach (var edge in _edgeControls.Keys.ToArray())
+            foreach (var edge in EdgeControls.Keys.ToArray())
                 RemoveEdgeControl(edge);
-            _vertexControls.Clear();
-            _edgeControls.Clear();
+            VertexControls.Clear();
+            EdgeControls.Clear();
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace GraphSharp.Controls
                 if (tryKeepControls && !IsCompoundMode)
                 {
                     //remove the old graph elements
-                    foreach (var kvp in _edgeControls.ToList())
+                    foreach (var kvp in EdgeControls.ToList())
                     {
                         bool remove = false;
                         try
@@ -54,7 +54,7 @@ namespace GraphSharp.Controls
                             RemoveEdgeControl(kvp.Key);
                         }
                     }
-                    foreach (var kvp in _vertexControls.ToList())
+                    foreach (var kvp in VertexControls.ToList())
                     {
                         if (!Graph.ContainsVertex(kvp.Key))
                         {
@@ -71,14 +71,14 @@ namespace GraphSharp.Controls
                 // Presenters for vertices
                 //
                 foreach (var vertex in Graph.Vertices)
-                    if (!_vertexControls.ContainsKey(vertex))
+                    if (!VertexControls.ContainsKey(vertex))
                         CreateVertexControl(vertex);
 
                 //
                 // Presenters for edges
                 //
                 foreach (var edge in Graph.Edges)
-                    if (!_edgeControls.ContainsKey(edge))
+                    if (!EdgeControls.ContainsKey(edge))
                         CreateEdgeControl(edge);
 
                 //
@@ -89,15 +89,15 @@ namespace GraphSharp.Controls
                     var mutableGraph = Graph as IMutableBidirectionalGraph<TVertex, TEdge>;
                     if (mutableGraph != null)
                     {
-                        mutableGraph.VertexAdded += OnMutableGraph_VertexAdded;
-                        mutableGraph.VertexRemoved += OnMutableGraph_VertexRemoved;
-                        mutableGraph.EdgeAdded += OnMutableGraph_EdgeAdded;
-                        mutableGraph.EdgeRemoved += OnMutableGraph_EdgeRemoved;
+                        mutableGraph.VertexAdded += OnMutableGraphVertexAdded;
+                        mutableGraph.VertexRemoved += OnMutableGraphVertexRemoved;
+                        mutableGraph.EdgeAdded += OnMutableGraphEdgeAdded;
+                        mutableGraph.EdgeRemoved += OnMutableGraphEdgeRemoved;
                     }
                 }
             }
 
-            _sizes = null;
+            Sizes = null;
         }
 
         private void DoNotificationLayout()
@@ -106,11 +106,11 @@ namespace GraphSharp.Controls
             {
                 _lastNotificationTimestamp = DateTime.Now;
             }
-            if (_worker != null)
+            if (Worker != null)
                 return;
 
-            _worker = new BackgroundWorker();
-            _worker.DoWork += (s, e) =>
+            Worker = new BackgroundWorker();
+            Worker.DoWork += (s, e) =>
             {
                 var w = (BackgroundWorker)s;
                 lock (_notificationSyncRoot)
@@ -123,15 +123,15 @@ namespace GraphSharp.Controls
                     }
                 }
             };
-            _worker.RunWorkerCompleted += (s, e) =>
+            Worker.RunWorkerCompleted += (s, e) =>
             {
-                _worker = null;
+                Worker = null;
                 OnMutation();
                 ContinueLayout();
                 if (HighlightAlgorithm != null)
                     HighlightAlgorithm.ResetHighlight();
             };
-            _worker.RunWorkerAsync();
+            Worker.RunWorkerAsync();
         }
 
         private void OnMutation()
@@ -163,31 +163,31 @@ namespace GraphSharp.Controls
             }
         }
 
-        private void OnMutableGraph_EdgeRemoved(TEdge edge)
+        private void OnMutableGraphEdgeRemoved(TEdge edge)
         {
-            if (_edgeControls.ContainsKey(edge))
+            if (EdgeControls.ContainsKey(edge))
             {
                 _edgesRemoved.Enqueue(edge);
                 DoNotificationLayout();
             }
         }
 
-        private void OnMutableGraph_EdgeAdded(TEdge edge)
+        private void OnMutableGraphEdgeAdded(TEdge edge)
         {
             _edgesAdded.Enqueue(edge);
             DoNotificationLayout();
         }
 
-        private void OnMutableGraph_VertexRemoved(TVertex vertex)
+        private void OnMutableGraphVertexRemoved(TVertex vertex)
         {
-            if (_vertexControls.ContainsKey(vertex))
+            if (VertexControls.ContainsKey(vertex))
             {
                 _verticesRemoved.Enqueue(vertex);
                 DoNotificationLayout();
             }
         }
 
-        private void OnMutableGraph_VertexAdded(TVertex vertex)
+        private void OnMutableGraphVertexAdded(TVertex vertex)
         {
             _verticesAdded.Enqueue(vertex);
             DoNotificationLayout();
@@ -195,17 +195,17 @@ namespace GraphSharp.Controls
 
         public VertexControl GetVertexControl(TVertex vertex)
         {
-            VertexControl vc = null;
-            _vertexControls.TryGetValue(vertex, out vc);
+            VertexControl vc;
+            VertexControls.TryGetValue(vertex, out vc);
             return vc;
         }
 
         protected VertexControl GetOrCreateVertexControl(TVertex vertex)
         {
-            if (!_vertexControls.ContainsKey(vertex))
+            if (!VertexControls.ContainsKey(vertex))
                 CreateVertexControl(vertex);
 
-            return _vertexControls[vertex];
+            return VertexControls[vertex];
         }
 
         protected virtual void CreateVertexControl(TVertex vertex)
@@ -236,7 +236,7 @@ namespace GraphSharp.Controls
 
             //var presenter = _vertexPool.GetObject();
             //presenter.Vertex = vertex;
-            _vertexControls[vertex] = presenter;
+            VertexControls[vertex] = presenter;
             presenter.RootCanvas = this;
 
             if (IsCompoundMode && compoundGraph != null && compoundGraph.IsChildVertex(vertex))
@@ -262,7 +262,7 @@ namespace GraphSharp.Controls
 
         protected virtual void InitializePosition(TVertex vertex)
         {
-            VertexControl presenter = _vertexControls[vertex];
+            VertexControl presenter = VertexControls[vertex];
             //initialize position
             if (Graph.ContainsVertex(vertex) && Graph.Degree(vertex) > 0)
             {
@@ -271,7 +271,7 @@ namespace GraphSharp.Controls
                 foreach (var neighbour in Graph.GetNeighbours(vertex))
                 {
                     VertexControl neighbourControl;
-                    if (_vertexControls.TryGetValue(neighbour, out neighbourControl))
+                    if (VertexControls.TryGetValue(neighbour, out neighbourControl))
                     {
                         double x = GetX(neighbourControl);
                         double y = GetY(neighbourControl);
@@ -297,17 +297,17 @@ namespace GraphSharp.Controls
 
         public EdgeControl GetEdgeControl(TEdge edge)
         {
-            EdgeControl ec = null;
-            _edgeControls.TryGetValue(edge, out ec);
+            EdgeControl ec;
+            EdgeControls.TryGetValue(edge, out ec);
             return ec;
         }
 
         protected EdgeControl GetOrCreateEdgeControl(TEdge edge)
         {
-            if (!_edgeControls.ContainsKey(edge))
+            if (!EdgeControls.ContainsKey(edge))
                 CreateEdgeControl(edge);
 
-            return _edgeControls[edge];
+            return EdgeControls[edge];
         }
 
         protected virtual void CreateEdgeControl(TEdge edge)
@@ -319,13 +319,13 @@ namespace GraphSharp.Controls
             };
             //var edgeControl = _edgePool.GetObject();
             //edgeControl.Edge = edge;
-            _edgeControls[edge] = edgeControl;
+            EdgeControls[edge] = edgeControl;
 
             //set the Source and the Target
-            edgeControl.Source = _vertexControls[edge.Source];
-            edgeControl.Target = _vertexControls[edge.Target];
+            edgeControl.Source = VertexControls[edge.Source];
+            edgeControl.Target = VertexControls[edge.Target];
 
-            if (ActualLayoutMode == GraphSharp.Algorithms.Layout.LayoutMode.Simple)
+            if (ActualLayoutMode == Algorithms.Layout.LayoutMode.Simple)
                 Children.Insert(0, edgeControl);
             else
                 Children.Add(edgeControl);
@@ -335,14 +335,14 @@ namespace GraphSharp.Controls
 
         protected virtual void RemoveVertexControl(TVertex vertex)
         {
-            RunDestructionTransition(_vertexControls[vertex], false);
-            _vertexControls.Remove(vertex);
+            RunDestructionTransition(VertexControls[vertex], false);
+            VertexControls.Remove(vertex);
         }
 
         protected virtual void RemoveEdgeControl(TEdge edge)
         {
-            RunDestructionTransition(_edgeControls[edge], false);
-            _edgeControls.Remove(edge);
+            RunDestructionTransition(EdgeControls[edge], false);
+            EdgeControls.Remove(edge);
         }
 	}
 }

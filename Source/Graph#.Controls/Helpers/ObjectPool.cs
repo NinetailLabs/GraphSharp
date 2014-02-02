@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 
 namespace GraphSharp.Helpers
 {
@@ -15,118 +14,101 @@ namespace GraphSharp.Helpers
 	public class ObjectPool<T>
 		where T : class, IPoolObject, new()
 	{
-		private const int POOL_SIZE = 1024;
+		private const int PoolSize = 1024;
 
-		private readonly Queue<T> pool = new Queue<T>();
+		private readonly Queue<T> _pool = new Queue<T>();
 
-		private readonly bool allowPoolGrowth = true;
-		private readonly int initialPoolSize;
-		private int activePoolObjectCount = 0;
+		private readonly bool _allowPoolGrowth = true;
+		private readonly int _initialPoolSize;
+		private int _activePoolObjectCount;
 
-		/// <summary>
-		/// Pool constructor, pool will allow growth.
-		/// </summary>
+		/// <summary>Pool constructor, pool will allow growth.</summary>
 		public ObjectPool()
-			: this( POOL_SIZE, true )
+			: this( PoolSize, true )
 		{
-
 		}
 
-		/// <summary>
-		/// Pool constructor.
-		/// </summary>
+		/// <summary>Pool constructor.</summary>
 		/// <param name="initialPoolSize">Initial pool size.</param>
 		/// <param name="allowPoolGrowth">Allow pool growth or not.</param>
-		public ObjectPool( int initialPoolSize, bool allowPoolGrowth )
+		public ObjectPool(int initialPoolSize, bool allowPoolGrowth)
 		{
-			this.initialPoolSize = initialPoolSize;
-			this.allowPoolGrowth = allowPoolGrowth;
+			_initialPoolSize = initialPoolSize;
+			_allowPoolGrowth = allowPoolGrowth;
 
 			InitializePool();
 		}
 
-		/// <summary>
-		/// Fills the pool with objects.
-		/// </summary>
+		/// <summary>Fills the pool with objects.</summary>
 		private void InitializePool()
 		{
 			//adds some objects to the pool
-			for ( int i = 0; i < initialPoolSize; i++ )
+			for ( int i = 0; i < _initialPoolSize; i++ )
 				CreateObject();
 		}
 
-		/// <summary>
-		/// This method will create a new pool object if the pool is not full
-		/// or allow growth and adds it to the poll.
-		/// </summary>
-		/// <returns>
-		/// Returns with the newly created object or default(T) if the pool is full.
-		/// </returns>
+		/// <summary>This method will create a new pool object if the pool is not full or allow growth and adds it to the pool.</summary>
+		/// <returns>Returns with the newly created object or default(T) if the pool is full.</returns>
 		private T CreateObject()
 		{
-			if ( activePoolObjectCount >= initialPoolSize && !allowPoolGrowth )
+			if ( _activePoolObjectCount >= _initialPoolSize && !_allowPoolGrowth )
 				return null;
 
 			var newObject = new T();
-			newObject.Disposing += Object_Disposing;
+			newObject.Disposing += ObjectDisposing;
 
 			Add( newObject );
 
 			return newObject;
 		}
 
-		/// <summary>
-		/// This method adds the object to the pool and increases the actual pool size.
-		/// </summary>
+		/// <summary>This method adds the object to the pool and increases the actual pool size.</summary>
 		/// <param name="poolObject">The object which should be added to the pool.</param>
 		private void Add( T poolObject )
 		{
-			pool.Enqueue( poolObject );
-			activePoolObjectCount += 1;
+			_pool.Enqueue( poolObject );
+			_activePoolObjectCount += 1;
 		}
 
-        /// <summary>
-        /// It puts back the disposed poolObject into the pull.
-        /// </summary>
+        /// <summary>It puts back the disposed poolObject into the pull.</summary>
         /// <param name="sender">The disposed pool object.</param>
-		private void Object_Disposing( object sender )
+		private void ObjectDisposing( object sender )
 		{
 			lock ( this )
 			{
-				T poolObject = sender as T;
-				activePoolObjectCount -= 1;
-				if ( pool.Count < initialPoolSize )
+				var poolObject = sender as T;
+			    if (poolObject == null)
+			        return;
+
+				_activePoolObjectCount -= 1;
+			    if (_pool.Count < _initialPoolSize)
 				{
 					poolObject.Reset();
 					Add( poolObject );
 				}
 				else
-				{
 					poolObject.Terminate();
-				}
 			}
 		}
 
-		/// <summary>
-		/// Gets an object from the pool.
-		/// </summary>
+		/// <summary>Gets an object from the pool.</summary>
 		/// <returns>Returns with the object or null if there isn't any 
 		/// free objects and the pool does not allow growth.</returns>
 		public T GetObject()
 		{
 			lock ( this )
 			{
-				if ( pool.Count == 0 )
+				if ( _pool.Count == 0 )
 				{
-					if ( !allowPoolGrowth )
+					if ( !_allowPoolGrowth )
 						return null;
 
 					T newObject = CreateObject();
-					pool.Clear();
+					_pool.Clear();
 					return newObject;
 				}
 				
-				return pool.Dequeue();
+				return _pool.Dequeue();
 			}
 		}
 	}
