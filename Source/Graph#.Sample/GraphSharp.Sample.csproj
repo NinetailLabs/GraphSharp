@@ -99,11 +99,6 @@
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="UIAutomationProvider">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="UIAutomationTypes" />
-    <Reference Include="ReachFramework" />
     <Reference Include="System.Printing" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Runtime.Serialization" />
@@ -375,7 +370,6 @@
       <SubType>Code</SubType>
     </Compile>
     <None Include="app.config" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="icons\Desktop.ini" />
     <None Include="PoC_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
