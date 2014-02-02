@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using QuickGraph;
+using System.Linq;
 using System.Windows;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
+using QuickGraph;
 
 namespace GraphSharp.Algorithms.Layout
 {
@@ -60,17 +59,17 @@ namespace GraphSharp.Algorithms.Layout
 		where TEdge : IEdge<TVertex>
 		where TGraph : IVertexAndEdgeListGraph<TVertex, TEdge>
 	{
-		private readonly Dictionary<TVertex, Point> vertexPositions;
-		private readonly TGraph visitedGraph;
+		private readonly Dictionary<TVertex, Point> _vertexPositions;
+		private readonly TGraph _visitedGraph;
 
 		public IDictionary<TVertex, Point> VertexPositions
 		{
-			get { return vertexPositions; }
+			get { return _vertexPositions; }
 		}
 
 		public TGraph VisitedGraph
 		{
-			get { return visitedGraph; }
+			get { return _visitedGraph; }
 		}
 
 		public event LayoutIterationEndedEventHandler<TVertex, TEdge> IterationEnded;
@@ -94,21 +93,20 @@ namespace GraphSharp.Algorithms.Layout
 
 		protected LayoutAlgorithmBase( TGraph visitedGraph, IDictionary<TVertex, Point> vertexPositions )
 		{
-            this.visitedGraph = visitedGraph;
-			if ( vertexPositions != null )
-				this.vertexPositions = new Dictionary<TVertex, Point>( vertexPositions );
-			else
-				this.vertexPositions = new Dictionary<TVertex, Point>( visitedGraph.VertexCount );
+		    _visitedGraph = visitedGraph;
+		    _vertexPositions = vertexPositions != null
+		            ? new Dictionary<TVertex, Point>(vertexPositions)
+		            : visitedGraph.Vertices.ToDictionary(v => v, v => new Point());
 		}
 
-		protected virtual void OnIterationEnded( ILayoutIterationEventArgs<TVertex> args )
+	    protected virtual void OnIterationEnded(ILayoutIterationEventArgs<TVertex> args)
 		{
-			if ( IterationEnded != null )
+	        if (IterationEnded != null)
 			{
-				IterationEnded( this, args );
+			    IterationEnded(this, args);
 
 				//if the layout should be aborted
-				if ( args.Abort )
+			    if (args.Abort)
 					Abort();
 			}
 		}
