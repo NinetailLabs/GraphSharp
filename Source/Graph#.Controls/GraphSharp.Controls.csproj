@@ -93,12 +93,9 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.IdentityModel" />
-    <Reference Include="WPFExtensions, Version=1.0.3437.34043, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\WPFExtensions.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AttachedBehaviours\DragBehaviour.cs" />
     <Compile Include="Controls\AnimationContext.cs" />
     <Compile Include="Controls\CompoundVertexControl.cs" />
     <Compile Include="Controls\ContextualGraphLayout.cs" />
@@ -125,12 +122,18 @@
     <Compile Include="Controls\VertexControl.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\Zoom\ZoomContentPresenter.cs" />
+    <Compile Include="Controls\Zoom\ZoomControl.cs" />
+    <Compile Include="Controls\Zoom\ZoomControlModes.cs" />
+    <Compile Include="Controls\Zoom\ZoomViewModifierMode.cs" />
     <Compile Include="Converters\CoordinatesToPointConverter.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\DoubleToLog10Converter.cs" />
     <Compile Include="Converters\EdgeRouteToPathConverter.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\EqualityToBooleanConverter.cs" />
     <Compile Include="Converters\GraphConverterHelper.cs">
       <SubType>Code</SubType>
     </Compile>

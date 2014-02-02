@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Sample="clr-namespace:GraphSharp.Sample"
         xmlns:isom="clr-namespace:GraphSharp.Algorithms.Layout.Simple.FDP;assembly=GraphSharp"
-        xmlns:zoom="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
+        xmlns:zoom1="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
         Title="TestWindow"
         Height="600"
         Width="600">
@@ -37,7 +37,7 @@
                      Height="30"
                      DockPanel.Dock="Bottom"/>
 
-        <zoom:ZoomControl>
+        <zoom1:ZoomControl>
             <Sample:MyGraphLayout x:Name="layout"
                                   LayoutAlgorithmType="ISOM"
                                   OverlapRemovalAlgorithmType="FSA"
@@ -50,6 +50,6 @@
                                                Height="1200" />
                 </Sample:MyGraphLayout.LayoutParameters>
             </Sample:MyGraphLayout>
-        </zoom:ZoomControl>
+        </zoom1:ZoomControl>
     </DockPanel>
 </Window>

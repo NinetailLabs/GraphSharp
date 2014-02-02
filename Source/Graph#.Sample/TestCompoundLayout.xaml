@@ -4,8 +4,8 @@
         xmlns:sample="clr-namespace:GraphSharp.Sample"
 		xmlns:GraphSharp_Controls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
         xmlns:graph="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
-        xmlns:Controls="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
-		xmlns:WPFExtensions_AttachedBehaviours="clr-namespace:WPFExtensions.AttachedBehaviours;assembly=WPFExtensions"
+        xmlns:attachedBehaviours="clr-namespace:GraphSharp.AttachedBehaviours;assembly=GraphSharp.Controls"
+        xmlns:zoom="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
         Title="TestCompoundLayout"
         Height="300"
         Width="300">
@@ -47,11 +47,11 @@
         
         <Setter Property="GraphSharp_Controls:GraphElementBehaviour.HighlightTrigger"
                 Value="{Binding RelativeSource={RelativeSource Self},Path=IsMouseOver}" />
-        <Setter Property="WPFExtensions_AttachedBehaviours:DragBehaviour.IsDragEnabled"
+        <Setter Property="attachedBehaviours:DragBehaviour.IsDragEnabled"
                 Value="True" />
-        <Setter Property="WPFExtensions_AttachedBehaviours:DragBehaviour.X"
+        <Setter Property="attachedBehaviours:DragBehaviour.X"
                 Value="{Binding RelativeSource={RelativeSource Self},Path=(GraphSharp_Controls:GraphCanvas.X),Mode=TwoWay}" />
-        <Setter Property="WPFExtensions_AttachedBehaviours:DragBehaviour.Y"
+        <Setter Property="attachedBehaviours:DragBehaviour.Y"
                 Value="{Binding RelativeSource={RelativeSource Self},Path=(GraphSharp_Controls:GraphCanvas.Y),Mode=TwoWay}" />
         <Setter Property="BorderThickness"
                 Value="2" />
@@ -70,7 +70,7 @@
         </Setter>
 		<Setter Property="LayoutMode"
                     	    Value="{Binding RelativeSource={RelativeSource Self},Path=Vertex,Converter={StaticResource layoutModeConverter}}" />
-					<Setter Property="WPFExtensions_AttachedBehaviours:DragBehaviour.IsDragEnabled"
+					<Setter Property="attachedBehaviours:DragBehaviour.IsDragEnabled"
                 			Value="False" />
         <Style.Triggers>
             <Trigger Property="LayoutMode"
@@ -163,7 +163,7 @@
             	</Style>
 				
 				<Style TargetType="{x:Type graph:VertexControl}">
-					<Setter Property="WPFExtensions_AttachedBehaviours:DragBehaviour.IsDragEnabled"
+					<Setter Property="attachedBehaviours:DragBehaviour.IsDragEnabled"
                 			Value="False" />
             	</Style>				
 			</ResourceDictionary>
@@ -174,8 +174,8 @@
                 Content="Relayout"
                 DockPanel.Dock="Top" />
         
-        <Controls:ZoomControl>
+        <zoom:ZoomControl>
             <graph:GraphLayout x:Name="layout" />
-        </Controls:ZoomControl>
+        </zoom:ZoomControl>
     </DockPanel>
 </Window>

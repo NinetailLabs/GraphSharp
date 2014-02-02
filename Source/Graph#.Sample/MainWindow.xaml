@@ -1,24 +1,21 @@
 ﻿<rb:RibbonWindow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                 xmlns:extconvertes="clr-namespace:WPFExtensions.Converters;assembly=WPFExtensions"
-                 xmlns:cmdbinding="clr-namespace:WPFExtensions.ViewModel.Commanding;assembly=WPFExtensions"
                  xmlns:rb="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
-                 xmlns:ext="clr-namespace:WPFExtensions.ViewModel.Commanding;assembly=WPFExtensions"
                  xmlns:ViewModel="clr-namespace:GraphSharp.Sample.ViewModel"
                  xmlns:Sample="clr-namespace:GraphSharp.Sample"
                  xmlns:Controls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
                  xmlns:Converters="clr-namespace:GraphSharp.Sample.Converters"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:zoom="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
+                 mc:Ignorable="d"
                  x:Class="GraphSharp.Sample.MainWindow"
                  Title="Graph layout PoC"
                  Background="White"
                  WindowStartupLocation="CenterScreen"
                  WindowState="Maximized"
-                 x:Name="root"
-                 ext:CommandSinkBinding.CommandSink="{Binding}"
-                 xmlns:WPFExtensions_Controls="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions">
+                 x:Name="root">
     <rb:RibbonWindow.Resources>
 
         <ResourceDictionary>
@@ -31,7 +28,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <!-- converts the visibility of the vertex to Checbox.Checked -->
-            <extconvertes:BoolToVisibilityConverter x:Key="visibilityToBoolConverter" />
+            <Converters:BoolToVisibilityConverter x:Key="visibilityToBoolConverter" />
 
             <!-- Mivel alapból nincs a WPF-ben, a Slider meg elég buta. -->
             <Converters:IntegerToDoubleConverter x:Key="doubleIntConverter" />
@@ -87,8 +84,11 @@
         </ResourceDictionary>
 
     </rb:RibbonWindow.Resources>
+    
+    <!-- #warning add commands again --> 
+    
     <rb:RibbonWindow.CommandBindings>
-        <ext:CommandSinkBinding Command="{x:Static ViewModel:LayoutAnalyzerViewModel.RemoveLayoutCommand}" />
+        <!--<ext:CommandSinkBinding Command="{x:Static ViewModel:LayoutAnalyzerViewModel.RemoveLayoutCommand}" />
         <ext:CommandSinkBinding Command="{x:Static ViewModel:LayoutAnalyzerViewModel.AddLayoutCommand}" />
         <ext:CommandSinkBinding Command="{x:Static ViewModel:LayoutAnalyzerViewModel.ContinueLayoutCommand}" />
         <ext:CommandSinkBinding Command="{x:Static ViewModel:LayoutAnalyzerViewModel.RelayoutCommand}" />
@@ -107,7 +107,7 @@
         <ext:MapperCommandBinding Command="{StaticResource OpenGraphFileRCmd}"
                                   MappedToCommand="{x:Static ViewModel:LayoutAnalyzerViewModel.OpenGraphsCommand}" />
         <ext:MapperCommandBinding Command="{StaticResource SaveGraphFileRCmd}"
-                                  MappedToCommand="{x:Static ViewModel:LayoutAnalyzerViewModel.SaveGraphsCommand}" />
+                                  MappedToCommand="{x:Static ViewModel:LayoutAnalyzerViewModel.SaveGraphsCommand}" />-->
     </rb:RibbonWindow.CommandBindings>
 
     <DockPanel LastChildFill="True">
@@ -357,14 +357,14 @@
 
                 </Grid>
 
-                <WPFExtensions_Controls:ZoomControl>
+                <zoom:ZoomControl>
                     <ViewModel:PocGraphLayout x:Name="graphLayout"
 											Graph="{Binding Path=Graph}"
 											LayoutAlgorithmType="{Binding Path=LayoutAlgorithmType}"
 											Sample:LayoutManager.ManagedLayout="True"
 											OverlapRemovalAlgorithmType="FSA"
 											HighlightAlgorithmType="Simple" />
-                </WPFExtensions_Controls:ZoomControl>
+                </zoom:ZoomControl>
             </DockPanel>
         </DockPanel>
     </DockPanel>

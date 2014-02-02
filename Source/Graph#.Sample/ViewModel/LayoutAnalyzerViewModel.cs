@@ -1,6 +1,5 @@
 ﻿using GraphSharp.Sample.Model;
 using GraphSharp.Sample.Properties;
-using WPFExtensions.ViewModel.Commanding;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.ComponentModel;
@@ -9,7 +8,7 @@ using System.IO;
 
 namespace GraphSharp.Sample.ViewModel
 {
-    public partial class LayoutAnalyzerViewModel : CommandSink, INotifyPropertyChanged
+    public partial class LayoutAnalyzerViewModel : INotifyPropertyChanged
     {
         #region Commands
         public static readonly RoutedCommand AddLayoutCommand = new RoutedCommand("AddLayout", typeof(LayoutAnalyzerViewModel));
@@ -57,21 +56,22 @@ namespace GraphSharp.Sample.ViewModel
             };
             GraphModels = new ObservableCollection<GraphModel>();
 
-            RegisterCommand(ContinueLayoutCommand,
-                             param => AnalyzedLayouts != null,
-                             param => ContinueLayout());
+#warning TODO: reactivate commands
+            //RegisterCommand(ContinueLayoutCommand,
+            //                 param => AnalyzedLayouts != null,
+            //                 param => ContinueLayout());
 
-            RegisterCommand(RelayoutCommand,
-                             param => AnalyzedLayouts != null,
-                             param => Relayout());
+            //RegisterCommand(RelayoutCommand,
+            //                 param => AnalyzedLayouts != null,
+            //                 param => Relayout());
 
-            RegisterCommand(OpenGraphsCommand,
-                             param => true,
-                             param => OpenGraphs());
+            //RegisterCommand(OpenGraphsCommand,
+            //                 param => true,
+            //                 param => OpenGraphs());
 
-            RegisterCommand(SaveGraphsCommand,
-                             param => GraphModels.Count > 0,
-                             param => SaveGraphs());
+            //RegisterCommand(SaveGraphsCommand,
+            //                 param => GraphModels.Count > 0,
+            //                 param => SaveGraphs());
 
             CreateSampleGraphs();
         }

@@ -1,8 +1,6 @@
-using System;
 using System.Windows.Input;
 using GraphSharp.Sample.ViewModel;
 using System.Windows;
-using WPFExtensions.Controls;
 
 namespace GraphSharp.Sample
 {

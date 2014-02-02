@@ -1,7 +1,7 @@
 ﻿<Window x:Class="GraphSharp.Sample.PlainCompoundLayoutTest"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:Controls="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
+        xmlns:zoom="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
         Title="PlainCompoundLayoutTest"
         WindowState="Maximized">
     <DockPanel>
@@ -46,8 +46,8 @@
             <TextBlock>Separation Multiplier</TextBlock>
             <TextBox Text="{Binding SeparationMultiplier,Mode=TwoWay}" />
         </UniformGrid>
-            <Controls:ZoomControl>
-            <Canvas x:Name="lc"/>
-        </Controls:ZoomControl>
+        <zoom:ZoomControl>
+            <Canvas x:Name="lc" />
+        </zoom:ZoomControl>
     </DockPanel>
 </Window>
