@@ -4,7 +4,8 @@
 	xmlns:Sample="clr-namespace:GraphSharp.Sample" 
 	xmlns:GraphSharp_Controls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls" 
 	xmlns:Converters="clr-namespace:GraphSharp.Converters;assembly=GraphSharp.Controls"
-	xmlns:attachedBehaviours="clr-namespace:GraphSharp.AttachedBehaviours;assembly=GraphSharp.Controls">
+	xmlns:attachedBehaviours="clr-namespace:GraphSharp.AttachedBehaviours;assembly=GraphSharp.Controls"
+	xmlns:model="clr-namespace:GraphSharp.Sample.Model">
 	
 	<Converters:EdgeRouteToPathConverter x:Key="routeToPathConverter" />
 	
@@ -19,7 +20,7 @@
 	<SolidColorBrush x:Key="SemiHighlightedInEdgeBrush" Color="#FF1DBA00" />
 	<SolidColorBrush x:Key="SemiHighlightedOutEdgeBrush" Color="#FFD6A51C" />
 	
-	<DataTemplate DataType="{x:Type Sample:PocVertex}">
+	<DataTemplate DataType="{x:Type model:PocVertex}">
 		<TextBlock Text="{Binding Path=ID, Mode=OneWay, FallbackValue=VertexId}" />
     </DataTemplate>
 	

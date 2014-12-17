@@ -1,12 +1,10 @@
-﻿using System.Windows;
+﻿using System.Globalization;
+using System.Windows;
 using QuickGraph;
 using GraphSharp.Controls;
 
 namespace GraphSharp.Sample
 {
-    /// <summary>
-    /// Interaction logic for TestCompoundLayout.xaml
-    /// </summary>
     public partial class TestCompoundLayout
     {
         public TestCompoundLayout()
@@ -18,7 +16,7 @@ namespace GraphSharp.Sample
             var vertices = new string[30];
             for (int i = 0; i < 30; i++)
             {
-                vertices[i] = i.ToString();
+                vertices[i] = i.ToString(CultureInfo.InvariantCulture);
                 g.AddVertex(vertices[i]);
             }
 
@@ -45,7 +43,6 @@ namespace GraphSharp.Sample
             g.AddEdge(new Edge<object>(vertices[2], vertices[4]));
             g.AddEdge(new Edge<object>(vertices[0], vertices[7]));
             g.AddEdge(new Edge<object>(vertices[8], vertices[7]));
-            //g.AddEdge(new Edge<object>(vertices[13], vertices[12]));
             g.AddEdge(new Edge<object>(vertices[3], vertices[20]));
             g.AddEdge(new Edge<object>(vertices[20], vertices[21]));
             g.AddEdge(new Edge<object>(vertices[20], vertices[22]));
@@ -59,7 +56,6 @@ namespace GraphSharp.Sample
             g.AddEdge(new Edge<object>(vertices[14], vertices[26]));
             g.AddEdge(new Edge<object>(vertices[14], vertices[25]));
             g.AddEdge(new Edge<object>(vertices[26], vertices[27]));
-            
 
             layout.LayoutMode = LayoutMode.Automatic;
             layout.LayoutAlgorithmType = "CompoundFDP";
@@ -69,7 +65,7 @@ namespace GraphSharp.Sample
             layout.Graph = g;
         }
 
-        private void Relayout_Click(object sender, RoutedEventArgs e)
+        private void OnRelayoutClick(object sender, RoutedEventArgs e)
         {
             layout.Relayout();
         }

@@ -358,10 +358,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="TestContextualLayout.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="TestWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -400,14 +396,11 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="PlainCompoundLayoutTest.xaml.cs">
-      <DependentUpon>PlainCompoundLayoutTest.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PocEdge.cs" />
-    <Compile Include="PocGraph.cs" />
-    <Compile Include="PocSerializeHelper.cs" />
-    <Compile Include="PocVertex.cs" />
-    <Compile Include="PocVertexToLayoutModeConverter.cs" />
+    <Compile Include="Model\PocEdge.cs" />
+    <Compile Include="Model\PocGraph.cs" />
+    <Compile Include="Model\PocSerializeHelper.cs" />
+    <Compile Include="Model\PocVertex.cs" />
+    <Compile Include="Model\PocVertexToLayoutModeConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -416,9 +409,6 @@
     </Compile>
     <Compile Include="TestCompoundLayout.xaml.cs">
       <DependentUpon>TestCompoundLayout.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="TestContextualLayout.xaml.cs">
-      <DependentUpon>TestContextualLayout.xaml</DependentUpon>
     </Compile>
     <Compile Include="TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
@@ -483,12 +473,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="PlainCompoundLayoutTest.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="TestCompoundLayout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

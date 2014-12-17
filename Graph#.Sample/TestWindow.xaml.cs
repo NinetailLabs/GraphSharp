@@ -6,120 +6,116 @@ using QuickGraph;
 
 namespace GraphSharp.Sample
 {
-    /// <summary>
-    /// Interaction logic for TestWindow.xaml
-    /// </summary>
     public partial class TestWindow
     {
-        private BidirectionalGraph<string, IEdge<string>> graph;
+        private BidirectionalGraph<string, IEdge<string>> _graph;
 
         public TestWindow()
         {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void OnNewClick(object sender, RoutedEventArgs e)
         {
-            graph = new BidirectionalGraph<string, IEdge<string>>();
+            _graph = new BidirectionalGraph<string, IEdge<string>>();
 
             var random = new Random(DateTime.Now.Millisecond);
             int rnd = random.Next(13) + 2;
             for (int i = 0; i < rnd; i++)
             {
-                graph.AddVertex(i.ToString());
+                _graph.AddVertex(i.ToString());
             }
 
-            rnd = random.Next(graph.VertexCount * 2) + 2;
+            rnd = random.Next(_graph.VertexCount * 2) + 2;
             for (int i = 0; i < rnd; i++)
             {
-                int v1 = random.Next(graph.VertexCount);
-                int v2 = random.Next(graph.VertexCount);
+                int v1 = random.Next(_graph.VertexCount);
+                int v2 = random.Next(_graph.VertexCount);
 
-                string vo1 = graph.Vertices.ElementAt(v1);
-                string vo2 = graph.Vertices.ElementAt(v2);
+                string vo1 = _graph.Vertices.ElementAt(v1);
+                string vo2 = _graph.Vertices.ElementAt(v2);
 
-                graph.AddEdge(new Edge<string>(vo1, vo2));
+                _graph.AddEdge(new Edge<string>(vo1, vo2));
             }
 
-            DataContext = graph;
+            DataContext = _graph;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void OnRelayoutClick(object sender, RoutedEventArgs e)
         {
-            layout.Relayout();
+            Layout.Relayout();
         }
 
-        private void AddVertex_Click(object sender, RoutedEventArgs e)
+        private void OnAddVertexClick(object sender, RoutedEventArgs e)
         {
-            if (graph == null || graph.VertexCount >= 100)
+            if (_graph == null || _graph.VertexCount >= 100)
                 return;
 
             var rnd = new Random(DateTime.Now.Millisecond);
-            int verticesToAdd = Math.Max(graph.VertexCount / 4, 1);
+            int verticesToAdd = Math.Max(_graph.VertexCount / 4, 1);
             var parents = new string[verticesToAdd];
             for (int j = 0; j < verticesToAdd; j++)
             {
-                parents[j] = graph.Vertices.ElementAt(rnd.Next(graph.VertexCount));
+                parents[j] = _graph.Vertices.ElementAt(rnd.Next(_graph.VertexCount));
             }
             for (int i = 0; i < verticesToAdd; i++)
             {
-                string newVertex = string.Empty;
+                string newVertex;
                 do
                 {
-                    newVertex = rnd.Next(0, graph.VertexCount + 20) + "_new";
-                } while (graph.ContainsVertex(newVertex));
-                graph.AddVertex(newVertex);
+                    newVertex = rnd.Next(0, _graph.VertexCount + 20) + "_new";
+                } while (_graph.ContainsVertex(newVertex));
+                _graph.AddVertex(newVertex);
 
-                if (graph.VertexCount < 2)
+                if (_graph.VertexCount < 2)
                     return;
 
-                //string vo1 = graph.Vertices.ElementAt(rnd.Next(Math.Max(9 * graph.VertexCount / 10, graph.VertexCount - 1)));
-                graph.AddEdge(new Edge<string>(parents[i], newVertex));
+                _graph.AddEdge(new Edge<string>(parents[i], newVertex));
             }
         }
 
-        private void RemoveVertex_Click(object sender, RoutedEventArgs e)
+        private void OnRemoveVertexClick(object sender, RoutedEventArgs e)
         {
-            if (graph == null)
+            if (_graph == null)
                 return;
 
-            if (graph.VertexCount < 1)
+            if (_graph.VertexCount < 1)
                 return;
             var rnd = new Random(DateTime.Now.Millisecond);
-            for (int i = 0; i < 10 && graph.VertexCount > 1; i++)
-                graph.RemoveVertex(graph.Vertices.ElementAt(rnd.Next(graph.VertexCount)));
+            for (int i = 0; i < 10 && _graph.VertexCount > 1; i++)
+                _graph.RemoveVertex(_graph.Vertices.ElementAt(rnd.Next(_graph.VertexCount)));
         }
 
-        private void RemoveEdge_Click(object sender, RoutedEventArgs e)
+        private void OnRemoveEdgeClick(object sender, RoutedEventArgs e)
         {
-            if (graph == null)
+            if (_graph == null)
                 return;
 
-            if (graph.EdgeCount < 1)
+            if (_graph.EdgeCount < 1)
                 return;
             var rnd = new Random(DateTime.Now.Millisecond);
-            for (int i = 0; i < 10 && graph.EdgeCount > 0; i++)
-                graph.RemoveEdge(graph.Edges.ElementAt(rnd.Next(graph.EdgeCount)));
+            for (int i = 0; i < 10 && _graph.EdgeCount > 0; i++)
+                _graph.RemoveEdge(_graph.Edges.ElementAt(rnd.Next(_graph.EdgeCount)));
         }
 
-        private void AddEdge_Click(object sender, RoutedEventArgs e)
+        private void OnAddEdgeClick(object sender, RoutedEventArgs e)
         {
-            if (graph == null)
+            if (_graph == null)
                 return;
 
-            if (graph.VertexCount < 2)
+            if (_graph.VertexCount < 2)
                 return;
 
             var rnd = new Random(DateTime.Now.Millisecond);
             for (int i = 0; i < 10; i++)
             {
-                int v1 = rnd.Next(graph.VertexCount);
-                int v2 = rnd.Next(graph.VertexCount);
+                int v1 = rnd.Next(_graph.VertexCount);
+                int v2 = rnd.Next(_graph.VertexCount);
 
-                string vo1 = graph.Vertices.ElementAt(v1);
-                string vo2 = graph.Vertices.ElementAt(v2);
+                string vo1 = _graph.Vertices.ElementAt(v1);
+                string vo2 = _graph.Vertices.ElementAt(v2);
 
-                graph.AddEdge(new Edge<string>(vo1, vo2));
+                _graph.AddEdge(new Edge<string>(vo1, vo2));
             }
         }
     }

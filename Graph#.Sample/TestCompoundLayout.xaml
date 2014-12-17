@@ -6,6 +6,7 @@
         xmlns:graph="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
         xmlns:attachedBehaviours="clr-namespace:GraphSharp.AttachedBehaviours;assembly=GraphSharp.Controls"
         xmlns:zoom="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
+        xmlns:model="clr-namespace:GraphSharp.Sample.Model"
         Title="TestCompoundLayout"
         Height="300"
         Width="300">
@@ -17,7 +18,7 @@
 					<ResourceDictionary Source="Resources\PocGraphDataTemplates.xaml"/>
 				</ResourceDictionary.MergedDictionaries>
 				
-				<sample:PocVertexToLayoutModeConverter x:Key="layoutModeConverter" />
+				<model:PocVertexToLayoutModeConverter x:Key="layoutModeConverter" />
 
             	<Style TargetType="{x:Type graph:CompoundVertexControl}">
 					<Setter Property="Template">
@@ -170,7 +171,7 @@
         </DockPanel.Resources>
         
         
-        <Button Click="Relayout_Click"
+        <Button Click="OnRelayoutClick"
                 Content="Relayout"
                 DockPanel.Dock="Top" />
         

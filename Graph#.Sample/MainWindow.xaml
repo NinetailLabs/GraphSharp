@@ -44,7 +44,7 @@
     </rb:RibbonWindow.Resources>
     
     <rb:RibbonWindow.CommandBindings>
-        <CommandBinding Command="{StaticResource ExitRCmd}" Executed="Exit_Executed" />
+        <CommandBinding Command="{StaticResource ExitRCmd}" Executed="OnExecuteExit" />
     </rb:RibbonWindow.CommandBindings>
 
     <DockPanel LastChildFill="True">
@@ -100,13 +100,13 @@
 
                     <rb:RibbonButton>
                         <rb:RibbonButton.Command>
-                            <rb:RibbonCommand LabelTitle="NotificationTest" Executed="NotificationTest_Executed" />
+                            <rb:RibbonCommand LabelTitle="NotificationTest" Executed="OnExecuteNotificationTest" />
                         </rb:RibbonButton.Command>
                     </rb:RibbonButton>
 
                     <rb:RibbonButton>
                         <rb:RibbonButton.Command>
-                            <rb:RibbonCommand LabelTitle="CompoundLayoutTest" Executed="CompoundLayoutTest_Executed" />
+                            <rb:RibbonCommand LabelTitle="CompoundLayoutTest" Executed="OnExecuteCompoundLayoutTest" />
                         </rb:RibbonButton.Command>
                     </rb:RibbonButton>
                 </rb:RibbonGroup>
