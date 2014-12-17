@@ -165,13 +165,12 @@ namespace GraphSharp.Controls
             return new CompoundLayoutContext<TVertex, TEdge, TGraph>(Graph, positions, sizes, ActualLayoutMode, borders, layoutTypes);
         }
 
-        protected virtual IHighlightContext<TVertex, TEdge, TGraph> CreateHighlightContext()
+        protected IHighlightContext<TVertex, TEdge, TGraph> CreateHighlightContext()
         {
             return new HighlightContext<TVertex, TEdge, TGraph>(Graph);
         }
 
-        protected virtual IOverlapRemovalContext<TVertex> CreateOverlapRemovalContext(
-            IDictionary<TVertex, Point> positions, IDictionary<TVertex, Size> sizes)
+        protected IOverlapRemovalContext<TVertex> CreateOverlapRemovalContext(IDictionary<TVertex, Point> positions, IDictionary<TVertex, Size> sizes)
         {
             var rectangles = new Dictionary<TVertex, Rect>();
             foreach (var vertex in Graph.Vertices)
@@ -192,7 +191,7 @@ namespace GraphSharp.Controls
             return new OverlapRemovalContext<TVertex>(rectangles);
         }
 
-        protected virtual void Layout(bool continueLayout)
+        protected void Layout(bool continueLayout)
         {
             if (Graph == null || Graph.VertexCount == 0 || !LayoutAlgorithmFactory.IsValidAlgorithm(LayoutAlgorithmType) || !CanLayout)
                 return; //no graph to layout, or wrong layout algorithm
@@ -333,7 +332,7 @@ namespace GraphSharp.Controls
             return vertexPositions;
         }
 
-        private Point GetRelativePosition(VertexControl vc, UIElement relativeTo)
+        private static Point GetRelativePosition(VertexControl vc, UIElement relativeTo)
         {
             return vc.TranslatePoint(new Point(vc.ActualWidth / 2.0, vc.ActualHeight / 2.0), relativeTo);
         }
@@ -394,7 +393,7 @@ namespace GraphSharp.Controls
             LayoutStatusPercent = 0.0;
         }
 
-        protected virtual void OnLayoutIterationFinished(ILayoutIterationEventArgs<TVertex> iterArgs)
+        protected void OnLayoutIterationFinished(ILayoutIterationEventArgs<TVertex> iterArgs)
         {
             if (iterArgs == null || iterArgs.VertexPositions == null)
             {
@@ -410,7 +409,7 @@ namespace GraphSharp.Controls
             }
         }
 
-        protected virtual void OnLayoutIterationFinished(
+        protected void OnLayoutIterationFinished(
             IDictionary<TVertex, Point> vertexPositions,
             string message)
         {
@@ -430,7 +429,7 @@ namespace GraphSharp.Controls
             StateCount = _layoutStates.Count;
         }
 
-        protected virtual void OnLayoutFinished()
+        protected void OnLayoutFinished()
         {
             _stopWatch.Stop();
             OnLayoutIterationFinished(null);
@@ -593,13 +592,13 @@ namespace GraphSharp.Controls
             //Animate the vertices
             if (positions != null)
             {
-                Point pos;
                 foreach (var v in Graph.Vertices)
                 {
                     VertexControl vp;
                     if (!VertexControls.TryGetValue(v, out vp))
                         continue;
 
+                    Point pos;
                     if (positions.TryGetValue(v, out pos))
                         RunMoveAnimation(vp, pos.X, pos.Y);
                 }

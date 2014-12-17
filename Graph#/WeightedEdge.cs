@@ -2,17 +2,14 @@ using QuickGraph;
 
 namespace GraphSharp
 {
-	public class WeightedEdge<Vertex> : Edge<Vertex>
+	public class WeightedEdge<TVertex> : Edge<TVertex>
 	{
 		public double Weight { get; private set; }
 
-		public WeightedEdge(Vertex source, Vertex target)
-			: this(source, target, 1) {}
-
-		public WeightedEdge(Vertex source, Vertex target, double weight)
+	    public WeightedEdge(TVertex source, TVertex target, double weight = 1)
 			: base(source, target)
 		{
-			this.Weight = weight;
+			Weight = weight;
 		}
 	}
 }

@@ -9,19 +9,16 @@ namespace GraphSharp
     {
         public CompoundGraph()
         {
-
         }
 
         public CompoundGraph(bool allowParallelEdges)
             : base(allowParallelEdges)
         {
-
         }
 
         public CompoundGraph(bool allowParallelEdges, int vertexCapacity)
             : base(allowParallelEdges, vertexCapacity)
         {
-
         }
 
         public CompoundGraph(IBidirectionalGraph<TVertex, TEdge> graph)
@@ -54,18 +51,12 @@ namespace GraphSharp
             AddEdgeRange(graph.Edges);
         }
 
-        private readonly IDictionary<TVertex, TVertex> _parentRegistry =
-            new Dictionary<TVertex, TVertex>();
-
-        private readonly IDictionary<TVertex, IList<TVertex>> _childrenRegistry =
-            new Dictionary<TVertex, IList<TVertex>>();
+        private readonly IDictionary<TVertex, TVertex> _parentRegistry = new Dictionary<TVertex, TVertex>();
+        private readonly IDictionary<TVertex, IList<TVertex>> _childrenRegistry = new Dictionary<TVertex, IList<TVertex>>();
 
         public IEnumerable<TVertex> CompoundVertices
         {
-            get
-            {
-                return _childrenRegistry.Keys;
-            }
+            get { return _childrenRegistry.Keys; }
         }
 
         public IEnumerable<TVertex> SimpleVertices

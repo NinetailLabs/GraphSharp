@@ -11,7 +11,7 @@ namespace GraphSharp.Controls
 
         protected FrameworkElement InnerCanvas;
 
-        private bool _activePositionChangeReaction = false;
+        private bool _activePositionChangeReaction;
 
         /// <summary>Gets the control of the inner canvas.</summary>
         public override void OnApplyTemplate()
@@ -51,9 +51,9 @@ namespace GraphSharp.Controls
         }
 
         public static readonly DependencyProperty IsExpandedProperty =
-            DependencyProperty.Register("IsExpanded", typeof(bool), typeof(CompoundVertexControl), new UIPropertyMetadata(true, IsExpanded_PropertyChanged));
+            DependencyProperty.Register("IsExpanded", typeof(bool), typeof(CompoundVertexControl), new UIPropertyMetadata(true, OnIsExpandedPropertyChanged));
 
-        private static void IsExpanded_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnIsExpandedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var compoundVertexControl = (CompoundVertexControl)d;
             if ((bool)e.NewValue)

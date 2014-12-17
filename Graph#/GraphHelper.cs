@@ -22,14 +22,11 @@ namespace GraphSharp
                 ( from e in g.OutEdges( vertex ) select e.Target ) ) ).Distinct();
         }
 
-
         public static IEnumerable<TVertex> GetOutNeighbours<TVertex, TEdge>( this IVertexAndEdgeListGraph<TVertex, TEdge> g, TVertex vertex )
             where TEdge : IEdge<TVertex>
         {
-            return ( from e in g.OutEdges( vertex )
-                     select e.Target ).Distinct();
+            return g.OutEdges(vertex).Select(e => e.Target).Distinct();
         }
-
 
         /// <summary>
         /// If the graph g is directed, then returns every edges which source is one of the vertices in the <code>set1</code>
@@ -41,24 +38,11 @@ namespace GraphSharp
         /// <param name="set1"></param>
         /// <param name="set2"></param>
         /// <returns>Return the list of the selected edges.</returns>
-        public static IEnumerable<TEdge> GetEdgesBetween<TVertex, TEdge>( this IVertexAndEdgeListGraph<TVertex, TEdge> g, List<TVertex> set1, List<TVertex> set2 )
+        public static IEnumerable<TEdge> GetEdgesBetween<TVertex, TEdge>( this IVertexAndEdgeListGraph<TVertex, TEdge> g, IEnumerable<TVertex> set1, List<TVertex> set2 )
             where TEdge : IEdge<TVertex>
         {
-            var edgesBetween = new List<TEdge>();
-
-            //vegig kell menni az osszes vertex minden elen, es megnezni, hogy a target hol van
-            foreach ( TVertex v in set1 )
-            {
-                foreach ( TEdge edge in g.OutEdges( v ) )
-                {
-                    if ( set2.Contains( edge.Target ) )
-                        edgesBetween.Add( edge );
-                }
-            }
-
-            return edgesBetween;
+            return set1.SelectMany(g.OutEdges, (v, edge) => new {v, edge}).Where(@t => set2.Contains(@t.edge.Target)).Select(@t => @t.edge).ToList();
         }
-
 
         /// <summary>
         /// Returns with the sources in the graph.

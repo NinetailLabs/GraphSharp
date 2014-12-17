@@ -8,13 +8,13 @@ namespace GraphSharp
 	internal class GraphHideHelper<TVertex, TEdge> : ISoftMutableGraph<TVertex, TEdge>
 		where TEdge : IEdge<TVertex>
 	{
-		private readonly IMutableBidirectionalGraph<TVertex, TEdge> graph;
+		private readonly IMutableBidirectionalGraph<TVertex, TEdge> _graph;
 
 		#region Helper Types
 		protected class HiddenCollection
 		{
-			public List<TVertex> hiddenVertices = new List<TVertex>();
-			public List<TEdge> hiddenEdges = new List<TEdge>();
+			public readonly List<TVertex> hiddenVertices = new List<TVertex>();
+			public readonly List<TEdge> hiddenEdges = new List<TEdge>();
 		}
 		#endregion
 
@@ -33,7 +33,7 @@ namespace GraphSharp
 
 		public GraphHideHelper( IMutableBidirectionalGraph<TVertex, TEdge> managedGraph )
 		{
-			graph = managedGraph;
+			_graph = managedGraph;
 		}
 
 		#region Event handlers, helper methods
@@ -45,7 +45,7 @@ namespace GraphSharp
 		/// <returns>Edges, adjacent to the vertex <code>v</code>.</returns>
 		protected IEnumerable<TEdge> EdgesFor( TVertex v )
 		{
-			return graph.InEdges( v ).Concat( graph.OutEdges( v ) );
+			return _graph.InEdges( v ).Concat( _graph.OutEdges( v ) );
 		}
 
 		protected HiddenCollection GetHiddenCollection( string tag )
@@ -102,12 +102,12 @@ namespace GraphSharp
 		/// <param name="v">The vertex to hide.</param>
 		public bool HideVertex( TVertex v )
 		{
-			if ( graph.ContainsVertex( v ) && !hiddenVertices.Contains( v ) )
+			if ( _graph.ContainsVertex( v ) && !hiddenVertices.Contains( v ) )
 			{
 				HideEdges( EdgesFor( v ) );
 
 				//hide the vertex
-				graph.RemoveVertex( v );
+				_graph.RemoveVertex( v );
 				hiddenVertices.Add( v );
 				OnVertexHidden( v );
 				return true;
@@ -153,7 +153,7 @@ namespace GraphSharp
 		public void HideVerticesIf( Func<TVertex, bool> predicate, string tag )
 		{
 			var verticesToHide = new List<TVertex>();
-			foreach ( var v in graph.Vertices )
+			foreach ( var v in _graph.Vertices )
 			{
 				if ( predicate( v ) )
 					verticesToHide.Add( v );
@@ -163,7 +163,7 @@ namespace GraphSharp
 
 		public bool IsHiddenVertex( TVertex v )
 		{
-			return ( !graph.ContainsVertex( v ) && hiddenVertices.Contains( v ) );
+			return ( !_graph.ContainsVertex( v ) && hiddenVertices.Contains( v ) );
 		}
 
 		public bool UnhideVertex( TVertex v )
@@ -173,7 +173,7 @@ namespace GraphSharp
 				return false;
 
 			//unhide the vertex
-			graph.AddVertex( v );
+			_graph.AddVertex( v );
 			hiddenVertices.Remove( v );
 			OnVertexUnhidden( v );
 			return true;
@@ -190,9 +190,9 @@ namespace GraphSharp
 
 		public bool HideEdge( TEdge e )
 		{
-			if ( graph.ContainsEdge( e ) && !hiddenEdges.Contains( e ) )
+			if ( _graph.ContainsEdge( e ) && !hiddenEdges.Contains( e ) )
 			{
-				graph.RemoveEdge( e );
+				_graph.RemoveEdge( e );
 				hiddenEdges.Add( e );
 
 				GetHiddenEdgeListOf( e.Source ).Add( e );
@@ -258,7 +258,7 @@ namespace GraphSharp
 		public void HideEdgesIf( Func<TEdge, bool> predicate, string tag )
 		{
 			var edgesToHide = new List<TEdge>();
-			foreach ( var e in graph.Edges )
+			foreach ( var e in _graph.Edges )
 			{
 				if ( predicate( e ) )
 					edgesToHide.Add( e );
@@ -268,7 +268,7 @@ namespace GraphSharp
 
 		public bool IsHiddenEdge( TEdge e )
 		{
-			return ( !graph.ContainsEdge( e ) && hiddenEdges.Contains( e ) );
+			return ( !_graph.ContainsEdge( e ) && hiddenEdges.Contains( e ) );
 		}
 
 		public bool UnhideEdge( TEdge e )
@@ -277,7 +277,7 @@ namespace GraphSharp
 				return false;
 
 			//unhide the edge
-			graph.AddEdge( e );
+			_graph.AddEdge( e );
 			hiddenEdges.Remove( e );
 
 			GetHiddenEdgeListOf( e.Source ).Remove( e );
