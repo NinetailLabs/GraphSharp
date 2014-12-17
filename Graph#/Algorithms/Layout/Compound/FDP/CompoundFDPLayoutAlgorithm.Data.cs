@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
-using System.Windows;
-using System.Linq;
-using QuickGraph;
 using System.Collections.Generic;
-using System.Collections;
+using System.Linq;
+using System.Windows;
+using QuickGraph;
 
 namespace GraphSharp.Algorithms.Layout.Compound.FDP
 {
