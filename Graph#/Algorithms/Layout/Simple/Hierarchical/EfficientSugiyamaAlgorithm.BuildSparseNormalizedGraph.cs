@@ -259,6 +259,10 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             var lts = new LayeredTopologicalSortAlgorithm<SugiVertex, SugiEdge>(_graph);
             lts.Compute();
 
+            // we need at least one layer to prevent IndexOutOfBoundsExceptions
+            if (lts.LayerCount == 0)
+                _layers.Add(new List<SugiVertex>());
+
             for (int i = 0; i < lts.LayerCount; i++)
             {
                 //set the layer

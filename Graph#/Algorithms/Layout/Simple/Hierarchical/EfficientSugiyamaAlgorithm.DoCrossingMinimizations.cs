@@ -48,7 +48,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
 
                 bool c;
                 crossings = Sweeping(0, _layers.Count - 1, 1, true, out c, ref phase);
-                changed = changed || c;
+                changed |= c;
                 if (crossings == 0)
                     break;
 
