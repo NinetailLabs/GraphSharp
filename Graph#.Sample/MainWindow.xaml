@@ -6,31 +6,16 @@
                  xmlns:Sample="clr-namespace:GraphSharp.Sample"
                  xmlns:Controls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
                  xmlns:Converters="clr-namespace:GraphSharp.Sample.Converters"
-                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:zoom="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
-                 mc:Ignorable="d"
-                 x:Class="GraphSharp.Sample.MainWindow"
-                 Title="Graph layout PoC"
-                 Background="White"
-                 WindowStartupLocation="CenterScreen"
-                 WindowState="Maximized"
-                 x:Name="root">
+                 x:Class="GraphSharp.Sample.MainWindow" Title="Graph layout PoC" Background="White"
+                 WindowStartupLocation="CenterScreen" WindowState="Maximized" x:Name="root">
     <rb:RibbonWindow.Resources>
-
         <ResourceDictionary>
-
-            <!-- //Ribbon Commands// -->
-
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/LayoutParameterTemplates.xaml" />
                 <ResourceDictionary Source="Resources/PocGraphDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- converts the visibility of the vertex to Checbox.Checked -->
-            <Converters:BoolToVisibilityConverter x:Key="visibilityToBoolConverter" />
-
-            <!-- Mivel alapból nincs a WPF-ben, a Slider meg elég buta. -->
             <Converters:IntegerToDoubleConverter x:Key="doubleIntConverter" />
 
             <ObjectDataProvider
@@ -43,31 +28,6 @@
             </ObjectDataProvider>
 
             <!--Ribbon Commands-->
-            <rb:RibbonCommand x:Key="NewLayoutRCmd"
-				LabelTitle="New Layout Tab"
-				SmallImageSource="{StaticResource Horizon_Image_Add}"
-				LargeImageSource="{StaticResource Horizon_Image_Add}" />
-
-            <rb:RibbonCommand x:Key="ContinueLayoutRCmd"
-				LabelTitle="Continue Layout"
-				SmallImageSource="{StaticResource Horizon_Image_Forward}"
-				LargeImageSource="{StaticResource Horizon_Image_Forward}" />
-
-            <rb:RibbonCommand x:Key="RelayoutRCmd"
-				LabelTitle="Relayout"
-				SmallImageSource="{StaticResource Horizon_Image_Refresh}"
-				LargeImageSource="{StaticResource Horizon_Image_Refresh}" />
-
-            <rb:RibbonCommand x:Key="OpenGraphFileRCmd"
-				LabelTitle="Open graphs"
-				SmallImageSource="{StaticResource Horizon_Image_Open}"
-				LargeImageSource="{StaticResource Horizon_Image_Open}" />
-
-            <rb:RibbonCommand x:Key="SaveGraphFileRCmd"
-				LabelTitle="Save graphs"
-				SmallImageSource="{StaticResource Horizon_Image_Save}"
-				LargeImageSource="{StaticResource Horizon_Image_Save}" />
-
             <rb:RibbonCommand x:Key="ExitRCmd"
 				LabelTitle="Exit"
 				SmallImageSource="{StaticResource Horizon_Image_Delete}"
@@ -80,44 +40,20 @@
                     </Label.Background>
                 </Label>
             </DataTemplate>
-            <ObjectDataProvider x:Key="graphmodel" d:IsDataSource="True" ObjectType="{x:Type ViewModel:GraphLayoutViewModel}"/>
         </ResourceDictionary>
-
     </rb:RibbonWindow.Resources>
     
-    <!-- #warning add commands again --> 
-    
     <rb:RibbonWindow.CommandBindings>
-        <!--<ext:CommandSinkBinding Command="{x:Static ViewModel:LayoutAnalyzerViewModel.RemoveLayoutCommand}" />
-        <ext:CommandSinkBinding Command="{x:Static ViewModel:LayoutAnalyzerViewModel.AddLayoutCommand}" />
-        <ext:CommandSinkBinding Command="{x:Static ViewModel:LayoutAnalyzerViewModel.ContinueLayoutCommand}" />
-        <ext:CommandSinkBinding Command="{x:Static ViewModel:LayoutAnalyzerViewModel.RelayoutCommand}" />
-        <ext:CommandSinkBinding Command="{x:Static ViewModel:LayoutAnalyzerViewModel.OpenGraphsCommand}" />
-        <ext:CommandSinkBinding Command="{x:Static ViewModel:LayoutAnalyzerViewModel.SaveGraphsCommand}" />
-
-        <CommandBinding Command="{StaticResource ExitRCmd}"
-                        Executed="Exit_Executed" />
-
-        <ext:MapperCommandBinding Command="{StaticResource NewLayoutRCmd}"
-                                  MappedToCommand="{x:Static ViewModel:LayoutAnalyzerViewModel.AddLayoutCommand}" />
-        <ext:MapperCommandBinding Command="{StaticResource ContinueLayoutRCmd}"
-                                  MappedToCommand="{x:Static ViewModel:LayoutAnalyzerViewModel.ContinueLayoutCommand}" />
-        <ext:MapperCommandBinding Command="{StaticResource RelayoutRCmd}"
-                                  MappedToCommand="{x:Static ViewModel:LayoutAnalyzerViewModel.RelayoutCommand}" />
-        <ext:MapperCommandBinding Command="{StaticResource OpenGraphFileRCmd}"
-                                  MappedToCommand="{x:Static ViewModel:LayoutAnalyzerViewModel.OpenGraphsCommand}" />
-        <ext:MapperCommandBinding Command="{StaticResource SaveGraphFileRCmd}"
-                                  MappedToCommand="{x:Static ViewModel:LayoutAnalyzerViewModel.SaveGraphsCommand}" />-->
+        <CommandBinding Command="{StaticResource ExitRCmd}" Executed="Exit_Executed" />
     </rb:RibbonWindow.CommandBindings>
 
     <DockPanel LastChildFill="True">
 
-        <!--the Ribbon-->
         <rb:Ribbon DockPanel.Dock="Top">
             <rb:Ribbon.ApplicationMenu>
                 <rb:RibbonApplicationMenu>
-                    <rb:RibbonApplicationMenuItem Command="{StaticResource OpenGraphFileRCmd}" />
-                    <rb:RibbonApplicationMenuItem Command="{StaticResource SaveGraphFileRCmd}" />
+                    <rb:RibbonApplicationMenuItem Command="{Binding OpenGraphsCommand}" />
+                    <rb:RibbonApplicationMenuItem Command="{Binding SaveGraphsCommand}" />
                     <rb:RibbonSeparator />
                     <rb:RibbonApplicationMenuItem Command="{StaticResource ExitRCmd}" />
                 </rb:RibbonApplicationMenu>
@@ -129,8 +65,8 @@
                         <rb:RibbonCommand LabelTitle="Project" />
                     </rb:RibbonGroup.Command>
 
-                    <rb:RibbonButton Command="{StaticResource OpenGraphFileRCmd}" />
-                    <rb:RibbonButton Command="{StaticResource SaveGraphFileRCmd}" />
+                    <rb:RibbonButton Command="{Binding OpenGraphsCommand}" />
+                    <rb:RibbonButton Command="{Binding SaveGraphsCommand}" />
                 </rb:RibbonGroup>
 
                 <rb:RibbonGroup>
@@ -138,55 +74,22 @@
                         <rb:RibbonCommand LabelTitle="Layout" />
                     </rb:RibbonGroup.Command>
 
-                    <rb:RibbonGroup.GroupSizeDefinitions>
-                        <rb:RibbonGroupSizeDefinitionCollection>
-                            <rb:RibbonGroupSizeDefinition>
-                                <rb:RibbonControlSizeDefinition ImageSize="Large"
-									IsLabelVisible="True" />
-                                <rb:RibbonControlSizeDefinition ImageSize="Large"
-									IsLabelVisible="True" />
-                            </rb:RibbonGroupSizeDefinition>
-                            <rb:RibbonGroupSizeDefinition IsCollapsed="True" />
-                        </rb:RibbonGroupSizeDefinitionCollection>
-                    </rb:RibbonGroup.GroupSizeDefinitions>
-
-                    <rb:RibbonButton Command="{StaticResource RelayoutRCmd}" />
-                    <rb:RibbonButton Command="{StaticResource ContinueLayoutRCmd}" />
+                    <rb:RibbonButton Command="{Binding RelayoutCommand}" />
+                    <rb:RibbonButton Command="{Binding ContinueLayoutCommand}" />
                 </rb:RibbonGroup>
                 <rb:RibbonGroup>
                     <rb:RibbonGroup.Command>
                         <rb:RibbonCommand LabelTitle="View" />
                     </rb:RibbonGroup.Command>
-                    <rb:RibbonGroup.GroupSizeDefinitions>
-                        <rb:RibbonGroupSizeDefinitionCollection>
-                            <rb:RibbonGroupSizeDefinition>
-                                <rb:RibbonControlSizeDefinition ImageSize="Small"
-									IsLabelVisible="True" />
-                                <rb:RibbonControlSizeDefinition ImageSize="Small"
-									IsLabelVisible="True" />
-                            </rb:RibbonGroupSizeDefinition>
-                        </rb:RibbonGroupSizeDefinitionCollection>
-                    </rb:RibbonGroup.GroupSizeDefinitions>
+                    
                     <rb:RibbonLabel>
                         <StackPanel Width="Auto"
 							Orientation="Horizontal">
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="{DynamicResource Horizon_Image_Search}"
-									Width="{DynamicResource IconWidth}"
-									Stretch="Uniform"
-									Margin="{DynamicResource IconMargin}" />
-                                <TextBlock Text="General zoom"
-									TextWrapping="Wrap"
-									Margin="5,0,5,0"
-									VerticalAlignment="Center"
-									HorizontalAlignment="Center" />
+                                <Image Source="{DynamicResource Horizon_Image_Search}" Width="{DynamicResource IconWidth}" Stretch="Uniform" Margin="{DynamicResource IconMargin}" />
+                                <TextBlock Text="General zoom" TextWrapping="Wrap" Margin="5,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             </StackPanel>
-                            <Slider Value="1"
-								Minimum="0.25"
-								Maximum="2"
-								x:Name="zoomSlider"
-								Width="Auto"
-								MinWidth="50" />
+                            <Slider Value="1" Minimum="0.25" Maximum="2" x:Name="zoomSlider" Width="Auto" MinWidth="50" />
                         </StackPanel>
                     </rb:RibbonLabel>
                 </rb:RibbonGroup>
@@ -197,15 +100,13 @@
 
                     <rb:RibbonButton>
                         <rb:RibbonButton.Command>
-                            <rb:RibbonCommand LabelTitle="NotificationTest"
-								Executed="NotificationTest_Executed" />
+                            <rb:RibbonCommand LabelTitle="NotificationTest" Executed="NotificationTest_Executed" />
                         </rb:RibbonButton.Command>
                     </rb:RibbonButton>
 
                     <rb:RibbonButton>
                         <rb:RibbonButton.Command>
-                            <rb:RibbonCommand LabelTitle="CompoundLayoutTest"
-								Executed="CompoundLayoutTest_Executed" />
+                            <rb:RibbonCommand LabelTitle="CompoundLayoutTest" Executed="CompoundLayoutTest_Executed" />
                         </rb:RibbonButton.Command>
                     </rb:RibbonButton>
                 </rb:RibbonGroup>
@@ -213,7 +114,6 @@
         </rb:Ribbon>
 
         <DockPanel>
-
             <!--Graph Selector-->
             <ListBox ItemsSource="{Binding Path=GraphModels}"
 				SelectedValue="{Binding Path=SelectedGraphModel, Mode=TwoWay}"
@@ -255,7 +155,7 @@
 							CenterX="0.5"
 							CenterY="0.5" />
                 </DockPanel.LayoutTransform>
-                
+
                 <Grid DockPanel.Dock="Top">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -358,12 +258,12 @@
                 </Grid>
 
                 <zoom:ZoomControl>
-                    <ViewModel:PocGraphLayout x:Name="graphLayout"
+                    <ViewModel:PocGraphLayout x:Name="graphLayout"  Width="1000" Height="500"
 											Graph="{Binding Path=Graph}"
 											LayoutAlgorithmType="{Binding Path=LayoutAlgorithmType}"
 											Sample:LayoutManager.ManagedLayout="True"
 											OverlapRemovalAlgorithmType="FSA"
-											HighlightAlgorithmType="Simple" />
+											HighlightAlgorithmType="Simple"/>
                 </zoom:ZoomControl>
             </DockPanel>
         </DockPanel>

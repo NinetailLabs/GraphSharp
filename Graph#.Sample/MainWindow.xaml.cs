@@ -9,13 +9,13 @@ namespace GraphSharp.Sample
     /// </summary>
     public partial class MainWindow
     {
-        readonly LayoutAnalyzerViewModel analyzerViewModel = new LayoutAnalyzerViewModel();
+        private readonly LayoutAnalyzerViewModel _analyzerViewModel = new LayoutAnalyzerViewModel();
 
         public MainWindow()
         {
             InitializeComponent();
 
-            DataContext = analyzerViewModel;
+            DataContext = _analyzerViewModel;
         }
 
         private void NotificationTest_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -31,7 +31,7 @@ namespace GraphSharp.Sample
 
         private void ContextualLayoutTest_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var window = new TestContextualLayout(analyzerViewModel.SelectedGraphModel.Graph);
+            var window = new TestContextualLayout(_analyzerViewModel.SelectedGraphModel.Graph);
             window.Show();
         }
 

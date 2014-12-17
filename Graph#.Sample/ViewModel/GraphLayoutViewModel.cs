@@ -7,17 +7,17 @@ namespace GraphSharp.Sample.ViewModel
 
 	public class GraphLayoutViewModel : INotifyPropertyChanged
 	{
-		private string layoutAlgorithmType;
-		private PocGraph graph;
+		private string _layoutAlgorithmType;
+		private PocGraph _graph;
 
 		public string LayoutAlgorithmType
 		{
-			get { return layoutAlgorithmType; }
+			get { return _layoutAlgorithmType; }
 			set
 			{
-				if (value != layoutAlgorithmType)
+				if (value != _layoutAlgorithmType)
 				{
-					layoutAlgorithmType = value;
+					_layoutAlgorithmType = value;
 					NotifyChanged("LayoutAlgorithmType");
 				}
 			}
@@ -25,12 +25,12 @@ namespace GraphSharp.Sample.ViewModel
 
 		public PocGraph Graph
 		{
-			get { return graph; }
+			get { return _graph; }
 			set
 			{
-				if (value != graph)
+				if (value != _graph)
 				{
-					graph = value;
+					_graph = value;
 					NotifyChanged("Graph");
 				}
 			}

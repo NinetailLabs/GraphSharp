@@ -112,6 +112,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ViewModel\RelayCommand.cs" />
     <Page Include="icons\Add.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

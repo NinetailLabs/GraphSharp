@@ -1,35 +1,35 @@
-﻿using GraphSharp.Sample.Model;
-using GraphSharp.Sample.Properties;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
+using System.Windows.Input;
+using GraphSharp.Sample.Model;
+using GraphSharp.Sample.Properties;
 
 namespace GraphSharp.Sample.ViewModel
 {
     public partial class LayoutAnalyzerViewModel : INotifyPropertyChanged
     {
-        #region Commands
-        public static readonly RoutedCommand AddLayoutCommand = new RoutedCommand("AddLayout", typeof(LayoutAnalyzerViewModel));
-        public static readonly RoutedCommand RemoveLayoutCommand = new RoutedCommand("RemoveLayout", typeof(LayoutAnalyzerViewModel));
-        public static readonly RoutedCommand RelayoutCommand = new RoutedCommand("Relayout", typeof(LayoutAnalyzerViewModel));
-        public static readonly RoutedCommand ContinueLayoutCommand = new RoutedCommand("ContinueLayout", typeof(LayoutAnalyzerViewModel));
-        public static readonly RoutedCommand OpenGraphsCommand = new RoutedCommand("OpenGraphs", typeof(LayoutAnalyzerViewModel));
-        public static readonly RoutedCommand SaveGraphsCommand = new RoutedCommand("SaveGraphs", typeof(LayoutAnalyzerViewModel));
-        #endregion
+        public ICommand RelayoutCommand { get; private set; }
 
-        private GraphModel selectedGraphModel;
+        public ICommand ContinueLayoutCommand { get; private set; }
+
+        public ICommand OpenGraphsCommand { get; private set; }
+
+        public ICommand SaveGraphsCommand { get; private set; }
+
+        private GraphModel _selectedGraphModel;
 
         public ObservableCollection<GraphModel> GraphModels { get; private set; }
+
         public GraphModel SelectedGraphModel
         {
-            get { return selectedGraphModel; }
+            get { return _selectedGraphModel; }
             set
             {
-                if (selectedGraphModel != value)
+                if (_selectedGraphModel != value)
                 {
-                    selectedGraphModel = value;
+                    _selectedGraphModel = value;
                     SelectedGraphChanged();
                     NotifyChanged("SelectedGraphModel");
                 }
@@ -40,7 +40,7 @@ namespace GraphSharp.Sample.ViewModel
         {
             if (AnalyzedLayouts != null)
             {
-                AnalyzedLayouts.Graph = selectedGraphModel.Graph;
+                AnalyzedLayouts.Graph = _selectedGraphModel.Graph;
             }
         }
 
@@ -56,39 +56,27 @@ namespace GraphSharp.Sample.ViewModel
             };
             GraphModels = new ObservableCollection<GraphModel>();
 
-#warning TODO: reactivate commands
-            //RegisterCommand(ContinueLayoutCommand,
-            //                 param => AnalyzedLayouts != null,
-            //                 param => ContinueLayout());
-
-            //RegisterCommand(RelayoutCommand,
-            //                 param => AnalyzedLayouts != null,
-            //                 param => Relayout());
-
-            //RegisterCommand(OpenGraphsCommand,
-            //                 param => true,
-            //                 param => OpenGraphs());
-
-            //RegisterCommand(SaveGraphsCommand,
-            //                 param => GraphModels.Count > 0,
-            //                 param => SaveGraphs());
+            ContinueLayoutCommand = new RelayCommand(p => ContinueLayout(), p => AnalyzedLayouts != null, "Continue Layout");
+            RelayoutCommand = new RelayCommand(p => Relayout(), p => AnalyzedLayouts != null, "Relayout");
+            OpenGraphsCommand = new RelayCommand(p => OpenGraphs(), title: "Open Graphs");
+            SaveGraphsCommand = new RelayCommand(p => SaveGraphs(), p => GraphModels.Count > 0, "Save Graphs");
 
             CreateSampleGraphs();
         }
 
         partial void CreateSampleGraphs();
 
-        public void ContinueLayout()
+        private static void ContinueLayout()
         {
             LayoutManager.Instance.ContinueLayout();
         }
 
-        public void Relayout()
+        private static void Relayout()
         {
             LayoutManager.Instance.Relayout();
         }
 
-        public void OpenGraphs()
+        private void OpenGraphs()
         {
             var ofd = new OpenFileDialog
                         {
@@ -103,7 +91,7 @@ namespace GraphSharp.Sample.ViewModel
             }
         }
 
-        public void SaveGraphs()
+        private void SaveGraphs()
         {
             var fd = new FolderBrowserDialog
                         {

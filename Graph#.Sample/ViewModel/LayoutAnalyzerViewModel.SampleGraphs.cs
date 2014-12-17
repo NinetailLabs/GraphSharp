@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using GraphSharp.Sample.Model;
 
 namespace GraphSharp.Sample.ViewModel
@@ -13,7 +14,7 @@ namespace GraphSharp.Sample.ViewModel
 
 			for (int i = 0; i < 8; i++)
 			{
-				var v = new PocVertex(i.ToString());
+				var v = new PocVertex(i.ToString(CultureInfo.InvariantCulture));
 				graph.AddVertex(v);
 			}
 
@@ -26,8 +27,9 @@ namespace GraphSharp.Sample.ViewModel
 			graph.AddEdge(new PocEdge("4to6", graph.Vertices.ElementAt(4), graph.Vertices.ElementAt(6)));
 
 			GraphModels.Add(new GraphModel("Fa", graph));
+		    SelectedGraphModel = GraphModels.First();
 
-			#endregion
+		    #endregion
 		}
 	}
 }
