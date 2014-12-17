@@ -258,7 +258,7 @@
                 </Grid>
 
                 <zoom:ZoomControl>
-                    <ViewModel:PocGraphLayout x:Name="graphLayout"  Width="1000" Height="500"
+                    <ViewModel:PocGraphLayout x:Name="graphLayout"
 											Graph="{Binding Path=Graph}"
 											LayoutAlgorithmType="{Binding Path=LayoutAlgorithmType}"
 											Sample:LayoutManager.ManagedLayout="True"
