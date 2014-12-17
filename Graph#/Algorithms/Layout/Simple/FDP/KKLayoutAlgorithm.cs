@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using QuickGraph;
 using System.Windows;
-using System.Diagnostics;
 
 namespace GraphSharp.Algorithms.Layout.Simple.FDP
 {

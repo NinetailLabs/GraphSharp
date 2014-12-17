@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 
 namespace GraphSharp.Algorithms.OverlapRemoval
 {

@@ -52,7 +52,7 @@ namespace GraphSharp.Sample.ViewModel
         {
             AnalyzedLayouts = new GraphLayoutViewModel
             {
-                LayoutAlgorithmType = "FR"
+                LayoutAlgorithmType = "EfficientSugiyama"
             };
             GraphModels = new ObservableCollection<GraphModel>();
 

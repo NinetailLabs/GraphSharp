@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Windows;
 
 namespace GraphSharp.Algorithms.OverlapRemoval

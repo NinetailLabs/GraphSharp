@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows;
 using QuickGraph;
 using System;
-using System.Diagnostics.Contracts;
 
 namespace GraphSharp.Algorithms.Layout.Compound.FDP
 {

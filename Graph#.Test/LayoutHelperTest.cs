@@ -1,5 +1,4 @@
 ﻿using System;
-using GraphSharp.Algorithms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Windows;
 using GraphSharp.Algorithms.Layout;

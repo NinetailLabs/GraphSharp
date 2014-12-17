@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using QuickGraph;
-using System.Diagnostics;
 
 namespace GraphSharp.Algorithms.Highlight
 {

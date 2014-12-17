@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Windows;
 using System;
-using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace GraphSharp.Algorithms.Layout

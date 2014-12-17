@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using QuickGraph;
-using System.Windows;
+﻿using QuickGraph;
 
 namespace Palesz.QuickGraph.Test.Metrics
 {

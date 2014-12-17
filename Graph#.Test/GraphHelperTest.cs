@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using QuickGraph;
-using GraphSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GraphSharp.Test

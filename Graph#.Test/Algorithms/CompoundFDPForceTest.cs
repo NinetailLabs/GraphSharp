@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using GraphSharp.Algorithms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GraphSharp.Algorithms.Layout;
 using GraphSharp.Algorithms.Layout.Compound.FDP;

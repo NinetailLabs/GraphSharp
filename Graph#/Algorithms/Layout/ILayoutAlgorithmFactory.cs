@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using QuickGraph;
-using System.Diagnostics.Contracts;
 
 namespace GraphSharp.Algorithms.Layout
 {

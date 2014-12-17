@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
+﻿namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
 {
     public enum SugiyamaEdgeRoutings
     {

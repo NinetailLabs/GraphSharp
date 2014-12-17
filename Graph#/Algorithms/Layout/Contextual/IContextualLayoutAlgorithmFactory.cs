@@ -1,5 +1,4 @@
 ﻿using QuickGraph;
-using System.Diagnostics.Contracts;
 
 namespace GraphSharp.Algorithms.Layout.Contextual
 {

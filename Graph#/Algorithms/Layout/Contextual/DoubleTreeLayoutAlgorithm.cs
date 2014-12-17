@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using QuickGraph;
-using System.Diagnostics.Contracts;
 using GraphSharp.Algorithms.Layout.Simple.Tree;
 
 namespace GraphSharp.Algorithms.Layout.Contextual
