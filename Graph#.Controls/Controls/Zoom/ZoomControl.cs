@@ -459,10 +459,9 @@ namespace GraphSharp.Controls.Zoom
         {
             if (_presenter == null)
                 return new Vector(0.0, 0.0);
-            var w = _presenter.ContentSize.Width - _presenter.DesiredSize.Width;
-            var h = _presenter.ContentSize.Height - _presenter.DesiredSize.Height;
-            var tX = -w / 2.0;
-            var tY = -h / 2.0;
+
+            var tX = -(_presenter.ContentSize.Width - _presenter.DesiredSize.Width) / 2.0;
+            var tY = -(_presenter.ContentSize.Height - _presenter.DesiredSize.Height) / 2.0;
 
             return new Vector(tX, tY);
         }

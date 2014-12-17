@@ -36,13 +36,10 @@ namespace GraphSharp.Controls.Zoom
 
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
-            UIElement child = VisualChildrenCount > 0
-                                  ? VisualTreeHelper.GetChild(this, 0) as UIElement
-                                  : null;
+            var child = Content as UIElement;
             if (child == null)
                 return arrangeBounds;
 
-            //set the ContentSize
             ContentSize = child.DesiredSize;
             child.Arrange(new Rect(child.DesiredSize));
 
