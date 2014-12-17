@@ -390,7 +390,6 @@
       <SubType>Code</SubType>
     </Compile>
     <None Include="app.config" />
-    <None Include="icons\Desktop.ini" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

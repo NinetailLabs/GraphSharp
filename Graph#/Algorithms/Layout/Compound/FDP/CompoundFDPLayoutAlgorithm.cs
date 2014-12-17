@@ -16,17 +16,9 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
         where TEdge : IEdge<TVertex>
         where TGraph : IBidirectionalGraph<TVertex, TEdge>
     {
-        /*[ContractInvariantMethod]
-        private void InvariantContracts()
-        {
-            Contract.Invariant(1 <= _phase && _phase <= 3);
-            Contract.Invariant(_treeGrowingStep > 0);
-        }*/
-
-        private double _temperature = 0;
-        private double _temperatureDelta; //need to be initialized
-        private readonly double _temperatureLambda = 0.99;
-        private readonly Random rnd = new Random(DateTime.Now.Millisecond);
+        private double _temperature;
+        private const double TemperatureLambda = 0.99;
+        private readonly Random _random = new Random(DateTime.Now.Millisecond);
 
         /// <summary>
         /// <para>Phase of the layout process.</para>
@@ -42,18 +34,13 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
         /// <summary>
         /// The maximal iteration count in the phases.
         /// </summary>
-        private /*readonly*/ int[] _maxIterationCounts = new int[3] { 30, 70, 50 };
-
-        /// <summary>
-        /// The error thresholds for the phases (calculated inside the Init method).
-        /// </summary>
-        private readonly double[] _errorThresholds = new double[3];
+        private int[] _maxIterationCounts = new int[3] { 30, 70, 50 };
 
         /// <summary>
         /// Indicates whether the removed tree-node 
         /// has been grown back or not.
         /// </summary>
-        private bool _allTreesGrown
+        private bool AllTreesGrown
         {
             get { return _removedRootTreeNodeLevels.Count == 0; }
         }
@@ -61,7 +48,7 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
         /// <summary>
         /// Grows back a tree-node level in every 'treeGrowingStep'th step.
         /// </summary>
-        private int _treeGrowingStep = 5;
+        private const int TreeGrowingStep = 5;
 
         /// <summary>
         /// The magnitude of the gravity force calculated in the init phased.
@@ -94,7 +81,7 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
             _maxIterationCounts[1] = Parameters.Phase2Iterations;
             _maxIterationCounts[2] = Parameters.Phase3Iterations;
 
-            var _temperatureMultipliers = new double[3]
+            var temperatureMultipliers = new double[3]
                                               {
                                                   1.0, 
                                                   Parameters.Phase2TemperatureInitialMultiplier,
@@ -109,16 +96,12 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
 
             for (_phase = 1; _phase <= 3; _phase++)
             {
-                _temperature = initialTemperature * _temperatureMultipliers[_phase - 1];
+                _temperature = initialTemperature * temperatureMultipliers[_phase - 1];
                 _phaseDependentRepulsionMultiplier = _phase < 2 ? 0.5 : 1.0;
-                //TODO put back the error and its threshold
-                /*double error = _errorThresholds[_phase] + 1;*/
                 for (_step = _maxIterationCounts[_phase - 1];
-                     (_step > 0 && true/*error > _errorThresholds[_phase - 1] */) || (_phase == 2 && !_allTreesGrown);
+                     _step > 0 || _phase == 2 && !AllTreesGrown;
                      _step--)
                 {
-                    /*error = 0;*/
-
                     ApplySpringForces();
                     ApplyRepulsionForces();
 
@@ -133,10 +116,10 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
 
                     CalcNodePositionsAndSizes();
 
-                    if (_phase == 2 && !_allTreesGrown && _step % _treeGrowingStep == 0)
+                    if (_phase == 2 && !AllTreesGrown && _step % TreeGrowingStep == 0)
                         GrowTreesOneLevel();
 
-                    _temperature *= _temperatureLambda;
+                    _temperature *= TemperatureLambda;
                     _temperature = Math.Max(_temperature, minimalTemperature);
                 }
                 if (!_gravityCenterCalculated)
@@ -144,7 +127,6 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
                     _rootCompoundVertex.RecalculateBounds();
                     _gravityCenterCalculated = true;
                 }
-                //if (_phase == 1)
                 _temperature *= Parameters.TemperatureDecreasing;
             }
             SavePositions();
@@ -157,12 +139,6 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
                 var v = _vertexDatas[vertex];
                 VertexPositions[vertex] = v.Position;
             }
-
-            /*var iterationEndedArgs = 
-                new CompoundLayoutIterationEventArgs<TVertex, TEdge>(
-                    0, 0, string.Empty, 
-                    VertexPositions,
-                    InnerCanvasSizes);*/
 
             //build the test vertex infos
             var vertexInfos = _vertexDatas.ToDictionary(
@@ -209,7 +185,7 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
             var positionVector = (uPos - vPos);
             if (positionVector.Length == 0)
             {
-                var compensationVector = new Vector(rnd.NextDouble(), rnd.NextDouble());
+                var compensationVector = new Vector(_random.NextDouble(), _random.NextDouble());
                 positionVector = compensationVector * 2;
                 uPos += compensationVector;
                 vPos -= compensationVector;
@@ -243,7 +219,7 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
             var positionVector = (uPos - vPos);
             if (positionVector.Length == 0)
             {
-                var compensationVector = new Vector(rnd.NextDouble(), rnd.NextDouble());
+                var compensationVector = new Vector(_random.NextDouble(), _random.NextDouble());
                 positionVector = compensationVector * 2;
                 uPos += compensationVector;
                 vPos -= compensationVector;
@@ -260,21 +236,17 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
             if (isSameDirection && F.Length > repulsionRange)
                 return new Vector();
             double length = Math.Max(1, F.Length);
-            //double length = F.LengthSquared;
             length = Math.Pow(isSameDirection ? length / (Parameters.IdealEdgeLength * 2.0) : 1 / length, 2);
             Fr = Parameters.RepulsionConstant / length * positionVector * _phaseDependentRepulsionMultiplier;
             return Fr;
         }
 
-        /// <summary>
-        /// Applies the attraction forces (between the end nodes
-        /// of the edges).
-        /// </summary>
+        /// <summary>Applies the attraction forces (between the end nodes of the edges).</summary>
         private void ApplySpringForces()
         {
             foreach (var edge in VisitedGraph.Edges)
             {
-                if (!_allTreesGrown && (_removedRootTreeNodes.Contains(edge.Source) || _removedRootTreeNodes.Contains(edge.Target)))
+                if (!AllTreesGrown && (_removedRootTreeNodes.Contains(edge.Source) || _removedRootTreeNodes.Contains(edge.Target)))
                     continue;
                 //get the ideal edge length
                 double idealLength = Parameters.IdealEdgeLength;
@@ -288,22 +260,22 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
                     //multiplier = 1;
                 }
 
-                var Fs = GetSpringForce(idealLength, u.Position, v.Position, u.Size, v.Size) * multiplier;
+                var fs = GetSpringForce(idealLength, u.Position, v.Position, u.Size, v.Size) * multiplier;
 
                 //aggregate the forces
                 if ((u.IsFixedToParent && u.MovableParent == null) ^ (v.IsFixedToParent && v.MovableParent == null))
-                    Fs *= 2;
+                    fs *= 2;
                 if (!u.IsFixedToParent)
-                    u.SpringForce += Fs /* * u.Mass / (u.Mass + v.Mass)*/;
+                    u.SpringForce += fs;
                 else if (u.MovableParent != null)
                 {
-                    u.MovableParent.SpringForce += Fs;
+                    u.MovableParent.SpringForce += fs;
                 }
                 if (!v.IsFixedToParent)
-                    v.SpringForce -= Fs /* * v.Mass / (u.Mass + v.Mass)*/;
+                    v.SpringForce -= fs;
                 else if (v.MovableParent != null)
                 {
-                    v.MovableParent.SpringForce -= Fs;
+                    v.MovableParent.SpringForce -= fs;
                 }
             }
         }
@@ -330,14 +302,14 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
                         if (u.Parent != v.Parent)
                             continue; //the two vertex not in the same graph
 
-                        var Fr = GetRepulsionForce(u.Position, v.Position, u.Size, v.Size, repulsionRange) * Math.Pow(u.Level + 1,2);
+                        var fr = GetRepulsionForce(u.Position, v.Position, u.Size, v.Size, repulsionRange) * Math.Pow(u.Level + 1,2);
 
                         if (u.IsFixedToParent ^ v.IsFixedToParent)
-                            Fr *= 2;
+                            fr *= 2;
                         if (!u.IsFixedToParent)
-                            u.RepulsionForce += Fr /** u.Mass / (u.Mass + v.Mass)*/;
+                            u.RepulsionForce += fr;
                         if (!v.IsFixedToParent)
-                            v.RepulsionForce -= Fr /** v.Mass / (u.Mass + v.Mass)*/;
+                            v.RepulsionForce -= fr;
                     }
                 }
             }
@@ -381,7 +353,7 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
                 foreach (var uVertex in _levels[i])
                 {
                     var u = _vertexDatas[uVertex];
-                    var force = u.ApplyForce(_temperature * Math.Max(1, _step) / 100.0 * Parameters.DisplacementLimitMultiplier);
+                    u.ApplyForce(_temperature * Math.Max(1, _step) / 100.0 * Parameters.DisplacementLimitMultiplier);
                 }
             }
         }

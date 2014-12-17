@@ -35,11 +35,6 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
         private readonly IList<HashSet<TVertex>> _levels =
             new List<HashSet<TVertex>>();
 
-        public IList<HashSet<TVertex>> Levels
-        {
-            get { return _levels; }
-        }
-
         private class RemovedTreeNodeData<TVertex, TEdge>
         {
             public readonly TVertex Vertex;
@@ -59,17 +54,9 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
         private readonly Stack<IList<RemovedTreeNodeData<TVertex,TEdge>>> _removedRootTreeNodeLevels =
             new Stack<IList<RemovedTreeNodeData<TVertex,TEdge>>>();
 
-        private readonly HashSet<TVertex> _removedRootTreeNodes =
-            new HashSet<TVertex>();
+        private readonly HashSet<TVertex> _removedRootTreeNodes = new HashSet<TVertex>();
 
-        private readonly HashSet<TEdge> _removedRootTreeEdges =
-            new HashSet<TEdge>();
-
-        /// <summary>
-        /// Temporary dictionary for the inner canvas sizes (do not depend on this!!! inside 
-        /// the algorithm, use the vertexData objects instead).
-        /// </summary>
-        private IDictionary<TVertex, Size> _innerCanvasSizes;
+        private readonly HashSet<TEdge> _removedRootTreeEdges = new HashSet<TEdge>();
 
         /// <summary>
         /// The dictionary of the initial vertex sizes.
@@ -100,16 +87,6 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
                 new Size(), new Thickness(),
                 CompoundVertexInnerLayoutType.Automatic);
 
-        #region Constructors
-        public CompoundFDPLayoutAlgorithm(
-            TGraph visitedGraph,
-            IDictionary<TVertex, Size> vertexSizes,
-            IDictionary<TVertex, Thickness> vertexBorders,
-            IDictionary<TVertex, CompoundVertexInnerLayoutType> layoutTypes)
-            : this(visitedGraph, vertexSizes, vertexBorders, layoutTypes, null, null)
-        {
-        }
-
         public CompoundFDPLayoutAlgorithm(
             TGraph visitedGraph,
             IDictionary<TVertex, Size> vertexSizes,
@@ -127,12 +104,6 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
                 _compoundGraph = new CompoundGraph<TVertex, TEdge>(VisitedGraph as ICompoundGraph<TVertex, TEdge>);
             else
                 _compoundGraph = new CompoundGraph<TVertex, TEdge>(VisitedGraph);
-        }
-        #endregion
-
-        public int LevelOfVertex(TVertex vertex)
-        {
-            return _vertexDatas[vertex].Level;
         }
 
         #region ICompoundLayoutAlgorithm<TVertex,TEdge,TGraph> Members
@@ -334,7 +305,6 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
             private Vector _applicationForce;
             private Vector _previousForce;
             private Vector _childrenForce;
-            protected VertexData _movableParent;
 
             protected VertexData(TVertex vertex, VertexData movableParent, bool isFixedToParent, Point position)
             {
@@ -351,14 +321,7 @@ namespace GraphSharp.Algorithms.Layout.Compound.FDP
             /// 
             /// This property can only be set once.
             /// </summary>
-            public VertexData MovableParent
-            {
-                get { return _movableParent; }
-                set
-                {
-                    _movableParent = value;
-                }
-            }
+            public VertexData MovableParent { get; set; }
 
             /// <summary>
             /// Gets or sets that the position of the vertex is fixed to

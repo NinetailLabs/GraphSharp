@@ -17,14 +17,11 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
 
         readonly Func<TEdge, EdgeTypes> _edgePredicate;
         readonly VertexLayerCollection _layers = new VertexLayerCollection();
-        private int _iteration;
         double _statusInPercent;
 
         private const int PercentOfPreparation = 5;
         private const int PercentOfSugiyama = 60;
         private const int PercentOfIncrementalExtension = 30;
-
-        private const string ParallelEdgesTag = "ParallelEdges";
 
         private const string IsolatedVerticesTag = "IsolatedVertices";
         private const string LoopsTag = "Loops";
@@ -49,20 +46,11 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             ConvertGraph( vertexSizes );
         }
 
-        public SugiyamaLayoutAlgorithm(
-            TGraph visitedGraph,
-            IDictionary<TVertex, Size> vertexSizes,
-            SugiyamaLayoutParameters parameters,
-            Func<TEdge, EdgeTypes> edgePredicate )
-            : this( visitedGraph, vertexSizes, null, parameters, edgePredicate )
-        {
-        }
-
         /// <summary>
         /// Converts the VisitedGraph to the inner type (which is a mutable graph representation).
         /// Wraps the vertices, converts the edges.
         /// </summary>
-        protected void ConvertGraph( IDictionary<TVertex, Size> vertexSizes )
+        private void ConvertGraph( IDictionary<TVertex, Size> vertexSizes )
         {
             //creating the graph with the new type
             _graph = new SoftMutableHierarchicalGraph<SugiVertex, SugiEdge>( true );
@@ -113,34 +101,13 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             }
         }
 
-        protected static void FilterParallelEdges<TVertexType, TEdgeType>( ISoftMutableGraph<TVertexType, TEdgeType> graph )
-            where TEdgeType : class, IEdge<TVertexType>
-        {
-            foreach ( TVertexType v in graph.Vertices )
-            {
-                var neighbours = new HashSet<TVertexType>();
-                foreach ( var e in graph.OutEdges( v ).ToList() )
-                {
-                    if ( !neighbours.Add( e.Target ) )
-                        //target already a neighbour, it is a parallel edge
-                        graph.HideEdge( e, ParallelEdgesTag );
-                }
-                foreach ( var e in graph.InEdges( v ).ToList() )
-                {
-                    if ( !neighbours.Add( e.Source ) )
-                        //source already a neighbour, it is a parallel edge
-                        graph.HideEdge( e, ParallelEdgesTag );
-                }
-            }
-        }
-
-        protected static void FilterIsolatedVertices<TVertexType, TEdgeType>( ISoftMutableGraph<TVertexType, TEdgeType> graph )
+        private static void FilterIsolatedVertices<TVertexType, TEdgeType>( ISoftMutableGraph<TVertexType, TEdgeType> graph )
             where TEdgeType : class, IEdge<TVertexType>
         {
             graph.HideVerticesIf( v => graph.Degree( v ) == 0, IsolatedVerticesTag );
         }
 
-        protected static void FilterLoops<TVertexType, TEdgeType>( ISoftMutableGraph<TVertexType, TEdgeType> graph )
+        private static void FilterLoops<TVertexType, TEdgeType>( ISoftMutableGraph<TVertexType, TEdgeType> graph )
             where TEdgeType : class, IEdge<TVertexType>
             where TVertexType : class
         {
@@ -151,16 +118,13 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
         /// First step of the algorithm.
         /// Filters the unappropriate vertices and edges.
         /// </summary>
-        protected void FiltersAndRemovals()
+        private void FiltersAndRemovals()
         {
             //hide every edge but hierarchical ones
             _graph.HideEdges( _graph.GeneralEdges, GeneralEdgesTag );
 
             //Remove the cycles from the graph
             FilterCycles();
-
-            //remove parallel edges
-            //FilterParallelEdges( _graph );
 
             //remove every isolated vertex
             FilterIsolatedVertices( _graph );
@@ -173,7 +137,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
         /// <summary>
         /// Creates the layering of the graph. (Assigns every vertex to a layer.)
         /// </summary>
-        protected void AssignLayers()
+        private void AssignLayers()
         {
             var lts = new LayeredTopologicalSortAlgorithm<SugiVertex, SugiEdge>( _graph );
             lts.Compute();
@@ -191,7 +155,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
         /// putting down the vertices to the layer above  
         /// its descendants.
         /// </summary>
-        protected void MinimizeHierarchicalEdgeLong()
+        private void MinimizeHierarchicalEdgeLong()
         {
             if ( !Parameters.MinimizeHierarchicalEdgeLong )
                 return;
@@ -221,7 +185,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
         /// span(e) edges (1 edge between every 2 neighbor layer)
         /// and span(e)-1 dummy vertices will be added to graph.
         /// </summary>
-        protected void ReplaceLongEdges()
+        private void ReplaceLongEdges()
         {
             //if an edge goes through multiple layers, we split the edge at every layer and insert a dummy node
             //  (only for the hierarchical edges)
@@ -265,12 +229,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             }
         }
 
-        protected void ConstrainWidth()
-        {
-            //TODO implement
-        }
-
-        protected void PrepareForSugiyama()
+        private void PrepareForSugiyama()
         {
             MinimizeHierarchicalEdgeLong();
 
@@ -325,8 +284,6 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
 
             //replace long edges with more segments and dummy vertices
             ReplaceLongEdges();
-
-            ConstrainWidth();
 
             CopyPositions();
             OnIterationEnded( "Preparation of the positions done." );
@@ -419,7 +376,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             return -1;
         }
 
-        protected void SugiyamaDirtyPhase( bool byRealPosition )
+        private void SugiyamaDirtyPhase( bool byRealPosition )
         {
             if ( _layers.Count < 2 )
                 return;
@@ -462,7 +419,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             baryCentering = BaryCenter.Down;
         }
 
-        protected void SugiyamaLayout()
+        private void SugiyamaLayout()
         {
             bool baryCenteringByRealPositions = Parameters.PositionCalculationMethod == PositionCalculationMethodTypes.PositionBased;
             if ( Parameters.DirtyRound )
@@ -537,18 +494,14 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
         #endregion
 
         #region Last phase - Horizontal Assignment, edge routing, copying of the positions
-        protected void AssignPriorities()
+
+        private void AssignPriorities()
         {
             foreach ( var v in _graph.Vertices )
                 v.Priority = ( v.IsDummyVertex ? int.MaxValue : _graph.HierarchicalEdgeCountFor( v ) );
         }
 
-        private double CalculateOverlap( SugiVertex a, SugiVertex b )
-        {
-            return CalculateOverlap( a, b, 0 );
-        }
-
-        private double CalculateOverlap( SugiVertex a, SugiVertex b, double plusGap )
+        private double CalculateOverlap( SugiVertex a, SugiVertex b, double plusGap = 0)
         {
             return Math.Max( 0, ( ( b.Size.Width + a.Size.Width ) * 0.5 + plusGap + Parameters.HorizontalGap ) - ( b.RealPosition.X - a.RealPosition.X ) );
         }
@@ -719,7 +672,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
                 HorizontalPositionAssignmentOnLayer( i, baryCenter );
         }
 
-        protected void HorizontalPositionAssignment()
+        private void HorizontalPositionAssignment()
         {
             //sweeping up & down, assigning the positions for the vertices in the order of the priorities
             //positions computed with the barycenter method, based on the realpositions
@@ -732,7 +685,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             }
         }
 
-        protected void AssignPositions()
+        private void AssignPositions()
         {
             //initialize positions
             double verticalPos = 0;
@@ -757,72 +710,67 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
             HorizontalPositionAssignment();
         }
 
-        protected void CopyPositionsSilent()
-        {
-            CopyPositionsSilent( true );
-        }
-
-        protected void CopyPositionsSilent( bool shouldTranslate )
+        private void CopyPositionsSilent(bool shouldTranslate = true)
         {
             //calculate the topLeft position
-            var translation = new Vector( float.PositiveInfinity, float.PositiveInfinity );
-            if ( shouldTranslate )
+            var translation = new Vector(float.PositiveInfinity, float.PositiveInfinity);
+            if (shouldTranslate)
             {
-                foreach ( var v in _graph.Vertices )
+                foreach (SugiVertex v in _graph.Vertices)
                 {
-                    if ( double.IsNaN( v.RealPosition.X ) || double.IsNaN( v.RealPosition.Y ) )
+                    if (double.IsNaN(v.RealPosition.X) || double.IsNaN(v.RealPosition.Y))
                         continue;
 
-                    translation.X = Math.Min( v.RealPosition.X, translation.X );
-                    translation.Y = Math.Min( v.RealPosition.Y, translation.Y );
+                    translation.X = Math.Min(v.RealPosition.X, translation.X);
+                    translation.Y = Math.Min(v.RealPosition.Y, translation.Y);
                 }
                 translation *= -1;
-                translation.X += Parameters.VerticalGap / 2;
-                translation.Y += Parameters.HorizontalGap / 2;
+                translation.X += Parameters.VerticalGap/2;
+                translation.Y += Parameters.HorizontalGap/2;
 
                 //translate with the topLeft position
-                foreach ( var v in _graph.Vertices )
+                foreach (SugiVertex v in _graph.Vertices)
                     v.RealPosition += translation;
             }
             else
             {
-                translation = new Vector( 0, 0 );
+                translation = new Vector(0, 0);
             }
 
             //copy the positions of the vertices
             VertexPositions.Clear();
-            foreach ( var v in _graph.Vertices )
+            foreach (SugiVertex v in _graph.Vertices)
             {
-                if ( v.IsDummyVertex )
+                if (v.IsDummyVertex)
                     continue;
 
                 Point pos = v.RealPosition;
-                if ( !shouldTranslate )
+                if (!shouldTranslate)
                 {
-                    pos.X += v.Size.Width * 0.5 + translation.X;
-                    pos.Y += v.Size.Height * 0.5 + translation.Y;
+                    pos.X += v.Size.Width*0.5 + translation.X;
+                    pos.Y += v.Size.Height*0.5 + translation.Y;
                 }
                 VertexPositions[v.Original] = pos;
             }
 
             //copy the edge routes
             EdgeRoutes.Clear();
-            foreach ( var e in _graph.HiddenEdges )
+            foreach (SugiEdge e in _graph.HiddenEdges)
             {
-                if ( !e.IsLongEdge )
+                if (!e.IsLongEdge)
                     continue;
 
                 EdgeRoutes[e.Original] =
-                    e.IsReverted
-                        ? e.DummyVertices.Reverse().Select( dv => dv.RealPosition ).ToArray()
-                        : e.DummyVertices.Select( dv => dv.RealPosition ).ToArray();
+                        e.IsReverted
+                                ? e.DummyVertices.Reverse().Select(dv => dv.RealPosition).ToArray()
+                                : e.DummyVertices.Select(dv => dv.RealPosition).ToArray();
             }
         }
 
         /// <summary>
         /// Copies the coordinates of the vertices to the VertexPositions dictionary.
         /// </summary>
-        protected void CopyPositions()
+        private void CopyPositions()
         {
             AssignPositions();
 
@@ -832,38 +780,30 @@ namespace GraphSharp.Algorithms.Layout.Simple.Hierarchical
 
         protected override void InternalCompute()
         {
-            //
-            //Phase 1 - Filters & Removals
-            //
+            // Phase 1 - Filters & Removals
             FiltersAndRemovals();
             _statusInPercent = PercentOfPreparation;
 
-            //
-            //Phase 2 - Layer assignment
-            //
+            // Phase 2 - Layer assignment
             AssignLayers();
 
-            //
-            //Phase 3 - Crossing reduction
-            //
+            // Phase 3 - Crossing reduction
             PrepareForSugiyama();
             SugiyamaLayout();
             _statusInPercent = PercentOfPreparation + PercentOfSugiyama;
 
-            //
-            //Phase 4 - Horizontal position assignment
-            //
+            // Phase 4 - Horizontal position assignment
             CopyPositions();
             OnIterationEnded( "Position adjusting finished" );
 
-            //Phase 5 - Incremental extension, add vertices connected with only general edges
+            // Phase 5 - Incremental extension, add vertices connected with only general edges
             _statusInPercent = PercentOfPreparation + PercentOfSugiyama + PercentOfIncrementalExtension;
             _statusInPercent = 100;
         }
 
-        protected void OnIterationEnded( string message )
+        private void OnIterationEnded( string message )
         {
-            OnIterationEnded( _iteration, _statusInPercent, message, true );
+            OnIterationEnded(0, _statusInPercent, message, true);
         }
     }
 }
