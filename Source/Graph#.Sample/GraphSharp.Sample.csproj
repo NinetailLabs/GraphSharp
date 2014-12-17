@@ -24,7 +24,7 @@
     <ManifestCertificateThumbprint>E05DC3D96117B890223540BF9592A02F80157836</ManifestCertificateThumbprint>
     <ManifestKeyFile>PoC_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <PublishUrl>ftp://ftp.palesz.net/wwwroot/uml/install/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
