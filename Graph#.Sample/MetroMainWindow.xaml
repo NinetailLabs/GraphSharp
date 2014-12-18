@@ -4,6 +4,8 @@
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:zoom="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
                       xmlns:viewModel="clr-namespace:GraphSharp.Sample.ViewModel"
+                      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                      xmlns:graphSharpControls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
                       Title="Graph# Example Application">
 
     <controls:MetroWindow.Resources>
@@ -13,6 +15,12 @@
                 <ResourceDictionary Source="Resources/PocGraphDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <ObjectDataProvider x:Key="AlgorithmConstraintEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="graphSharpControls:AlgorithmConstraints" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>            
+            
             <DataTemplate x:Key="GraphItemTemplate">
                 <StackPanel Orientation="Horizontal" Margin="0,5,5,5" DockPanel.Dock="Top">
                     <TextBlock Width="Auto" Height="Auto" Text="Vertices:" TextWrapping="Wrap"
@@ -54,7 +62,69 @@
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
             <controls:Flyout x:Name="Flyout" Header="Flyout" Position="Right" Width="200" Theme="Light">
-                <Button>Relayout</Button>
+                <StackPanel>
+                    <Button>Relayout</Button>
+
+                    <StackPanel DataContext="{Binding AnalyzedLayouts}">
+                        <Grid>
+                            <Grid.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Margin" Value="3" />
+                                </Style>
+                                <Style TargetType="ComboBox">
+                                    <Setter Property="Margin" Value="3" />
+                                </Style>
+                            </Grid.Resources>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" MinWidth="150" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="Layout algorithm" />
+                            <ComboBox Grid.Row="0" Grid.Column="1"
+                                      ItemsSource="{Binding Path=LayoutAlgorithmFactory.AlgorithmTypes, ElementName=GraphLayout}"
+                                      SelectedValue="{Binding Path=LayoutAlgorithmType}" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Overlap Removal" />
+                            <ComboBox Grid.Column="1" Grid.Row="1"
+                                      ItemsSource="{Binding Source={StaticResource AlgorithmConstraintEnum}}"
+                                      SelectedValue="{Binding Path=OverlapRemovalConstraint, ElementName=GraphLayout}" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Overlap Removal Algorithm" />
+                            <ComboBox Grid.Column="1" Grid.Row="2"
+                                      ItemsSource="{Binding Path=OverlapRemovalAlgorithmFactory.AlgorithmTypes, ElementName=GraphLayout}"
+                                      SelectedValue="{Binding Path=OverlapRemovalAlgorithmType, ElementName=GraphLayout}" />
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Edge Routing" />
+                            <ComboBox Grid.Column="1" Grid.Row="3"
+                                      ItemsSource="{Binding Source={StaticResource AlgorithmConstraintEnum}}"
+                                      SelectedValue="{Binding Path=EdgeRoutingConstraint, ElementName=GraphLayout}" />
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel DataContext="{Binding AnalyzedLayouts}" Margin="10,0">
+                        <StackPanel.Resources>
+                            <Style TargetType="GroupBox">
+                                <Setter Property="Margin" Value="5" />
+                            </Style>
+                        </StackPanel.Resources>
+
+                        <GroupBox Header="Layout algorithm parameters"
+                                  Content="{Binding Path=LayoutParameters, ElementName=GraphLayout}" />
+                        <GroupBox Header="Overlap removal parameters"
+                                  Content="{Binding Path=OverlapRemovalParameters, ElementName=GraphLayout}" />
+                    </StackPanel>
+
+                </StackPanel>
             </controls:Flyout>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>
