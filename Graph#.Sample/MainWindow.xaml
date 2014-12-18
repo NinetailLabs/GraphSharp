@@ -87,6 +87,12 @@
                             <rb:RibbonCommand LabelTitle="CompoundLayoutTest" Executed="OnExecuteCompoundLayoutTest" />
                         </rb:RibbonButton.Command>
                     </rb:RibbonButton>
+
+                    <rb:RibbonButton>
+                        <rb:RibbonButton.Command>
+                            <rb:RibbonCommand LabelTitle="New Layout" Executed="OnNewLayout" />
+                        </rb:RibbonButton.Command>
+                    </rb:RibbonButton>
                 </rb:RibbonGroup>
             </rb:RibbonTab>
         </rb:Ribbon>

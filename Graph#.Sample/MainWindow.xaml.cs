@@ -31,5 +31,11 @@ namespace GraphSharp.Sample
             var window = new TestCompoundLayout();
             window.Show();
         }
+
+        private void OnNewLayout(object sender, ExecutedRoutedEventArgs e)
+        {
+            var window = new MetroMainWindow();
+            window.Show();
+        }
     }
 }
