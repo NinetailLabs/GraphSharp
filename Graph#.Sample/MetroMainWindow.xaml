@@ -2,8 +2,41 @@
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:zoom="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
+                      xmlns:viewModel="clr-namespace:GraphSharp.Sample.ViewModel"
                       Title="Graph# Example Application">
 
+    <controls:MetroWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/LayoutParameterTemplates.xaml" />
+                <ResourceDictionary Source="Resources/PocGraphDataTemplates.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="GraphItemTemplate">
+                <StackPanel Orientation="Horizontal" Margin="0,5,5,5" DockPanel.Dock="Top">
+                    <TextBlock Width="Auto" Height="Auto" Text="Vertices:" TextWrapping="Wrap"
+                               VerticalAlignment="Center"
+                               Margin="20,0,10,0" />
+                    <TextBlock Width="Auto" Height="Auto" Text="{Binding Graph.VertexCount}"
+                               TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,20,0" />
+
+                    <TextBlock Width="Auto" Height="Auto" Text="Edges:" TextWrapping="Wrap" VerticalAlignment="Center"
+                               Margin="0,0,10,0" />
+                    <TextBlock Width="Auto" Height="Auto" Text="{Binding Graph.EdgeCount}"
+                               TextWrapping="Wrap" VerticalAlignment="Center" />
+
+                    <Label FontSize="18" FontWeight="Bold" Margin="5,5,5,5"
+                           Content="{Binding Path=Name, Mode=OneWay, FallbackValue=NoName}">
+                        <Label.Background>
+                            <SolidColorBrush Color="{DynamicResource MainColor}" />
+                        </Label.Background>
+                    </Label>
+                </StackPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </controls:MetroWindow.Resources>
+    
     <controls:MetroWindow.LeftWindowCommands>
         <controls:WindowCommands>
             <Button Content="Open" Command="{Binding OpenGraphsCommand}" />
@@ -20,13 +53,29 @@
 
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
-            <controls:Flyout x:Name="Flyout" Header="Flyout" Position="Right" Width="200" Theme="Accent">
+            <controls:Flyout x:Name="Flyout" Header="Flyout" Position="Right" Width="200" Theme="Light">
                 <Button>Relayout</Button>
             </controls:Flyout>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>
 
     <Grid>
-        <Button Click="OnShowFlyoutClicked">Show Flyout</Button>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="150" />
+        </Grid.ColumnDefinitions>
+
+        <ListBox Grid.Column="0" Margin="5" ItemsSource="{Binding Path=GraphModels}"
+                 SelectedValue="{Binding Path=SelectedGraphModel, Mode=TwoWay}"
+                 ItemTemplate="{DynamicResource GraphItemTemplate}" />
+
+        <zoom:ZoomControl Grid.Column="1" Grid.ColumnSpan="2">
+            <viewModel:PocGraphLayout x:Name="GraphLayout" Graph="{Binding AnalyzedLayouts.Graph}"
+                                      LayoutAlgorithmType="{Binding AnalyzedLayouts.LayoutAlgorithmType}"
+                                      OverlapRemovalAlgorithmType="FSA" HighlightAlgorithmType="Simple" />
+        </zoom:ZoomControl>
+
+        <Button Grid.Column="2" Click="OnShowFlyoutClicked">Show Flyout</Button>
     </Grid>
 </controls:MetroWindow>

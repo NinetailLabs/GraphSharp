@@ -6,13 +6,11 @@ namespace GraphSharp.Sample
 {
     public partial class MainWindow
     {
-        private readonly LayoutAnalyzerViewModel _analyzerViewModel = new LayoutAnalyzerViewModel();
-
         public MainWindow()
         {
             InitializeComponent();
 
-            DataContext = _analyzerViewModel;
+            DataContext = new LayoutAnalyzerViewModel();
         }
 
         private void OnExecuteNotificationTest(object sender, ExecutedRoutedEventArgs e)
@@ -34,7 +32,7 @@ namespace GraphSharp.Sample
 
         private void OnNewLayout(object sender, ExecutedRoutedEventArgs e)
         {
-            var window = new MetroMainWindow {DataContext = DataContext};
+            var window = new MetroMainWindow();
             window.Show();
         }
     }

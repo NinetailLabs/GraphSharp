@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using GraphSharp.Sample.ViewModel;
 
 namespace GraphSharp.Sample
 {
@@ -7,6 +8,8 @@ namespace GraphSharp.Sample
         public MetroMainWindow()
         {
             InitializeComponent();
+
+            DataContext = new LayoutAnalyzerViewModel();
         }
 
         private void OnExecuteNotificationTest(object sender, RoutedEventArgs e)
