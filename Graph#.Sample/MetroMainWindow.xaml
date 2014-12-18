@@ -9,7 +9,7 @@
                       xmlns:sample="clr-namespace:GraphSharp.Sample"
                       xmlns:actions="clr-namespace:MahApps.Metro.Actions;assembly=MahApps.Metro"
                       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-                      Title="Graph# Example Application">
+                      Title="Graph# Example Application" WindowStartupLocation="CenterScreen" Width="1850" Height="850">
 
     <controls:MetroWindow.Resources>
         <ResourceDictionary>
@@ -25,24 +25,19 @@
             </ObjectDataProvider>            
             
             <DataTemplate x:Key="GraphItemTemplate">
-                <StackPanel Orientation="Horizontal" Margin="0,5,5,5" DockPanel.Dock="Top">
-                    <TextBlock Width="Auto" Height="Auto" Text="Vertices:" TextWrapping="Wrap"
-                               VerticalAlignment="Center"
-                               Margin="20,0,10,0" />
-                    <TextBlock Width="Auto" Height="Auto" Text="{Binding Graph.VertexCount}"
-                               TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,20,0" />
-
-                    <TextBlock Width="Auto" Height="Auto" Text="Edges:" TextWrapping="Wrap" VerticalAlignment="Center"
-                               Margin="0,0,10,0" />
-                    <TextBlock Width="Auto" Height="Auto" Text="{Binding Graph.EdgeCount}"
-                               TextWrapping="Wrap" VerticalAlignment="Center" />
-
-                    <Label FontSize="18" FontWeight="Bold" Margin="5,5,5,5"
-                           Content="{Binding Path=Name, Mode=OneWay, FallbackValue=NoName}">
-                        <Label.Background>
-                            <SolidColorBrush Color="{DynamicResource MainColor}" />
-                        </Label.Background>
-                    </Label>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding Path=Name, Mode=OneWay}" FontSize="18" FontWeight="Bold" Margin="5" />
+                    
+                    <StackPanel Orientation="Horizontal" Margin="15,0,15,10">
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="Vertices: {0}, Edges: {1}">
+                                    <Binding Path="Graph.VertexCount" />
+                                    <Binding Path="Graph.EdgeCount" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </StackPanel>
                 </StackPanel>
             </DataTemplate>
         </ResourceDictionary>
@@ -133,7 +128,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="200" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="75" />
         </Grid.ColumnDefinitions>
