@@ -5,7 +5,6 @@
                  xmlns:viewModel="clr-namespace:GraphSharp.Sample.ViewModel"
                  xmlns:sample="clr-namespace:GraphSharp.Sample"
                  xmlns:controls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
-                 xmlns:converters="clr-namespace:GraphSharp.Sample.Converters"
                  xmlns:zoom="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
                  x:Class="GraphSharp.Sample.MainWindow" Title="Graph layout PoC" Background="White"
                  WindowStartupLocation="CenterScreen" WindowState="Maximized" x:Name="Root">
@@ -15,8 +14,6 @@
                 <ResourceDictionary Source="Resources/LayoutParameterTemplates.xaml" />
                 <ResourceDictionary Source="Resources/PocGraphDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <converters:IntegerToDoubleConverter x:Key="DoubleIntConverter" />
 
             <ObjectDataProvider x:Key="AlgorithmConstraintEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
                 <ObjectDataProvider.MethodParameters>
@@ -73,24 +70,7 @@
                     <rb:RibbonButton Command="{Binding RelayoutCommand}" />
                     <rb:RibbonButton Command="{Binding ContinueLayoutCommand}" />
                 </rb:RibbonGroup>
-                <rb:RibbonGroup>
-                    <rb:RibbonGroup.Command>
-                        <rb:RibbonCommand LabelTitle="View" />
-                    </rb:RibbonGroup.Command>
 
-                    <rb:RibbonLabel>
-                        <StackPanel Width="Auto" Orientation="Horizontal">
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="{DynamicResource Horizon_Image_Search}"
-                                       Width="{DynamicResource IconWidth}" Stretch="Uniform"
-                                       Margin="{DynamicResource IconMargin}" />
-                                <TextBlock Text="General zoom" TextWrapping="Wrap" Margin="5,0,5,0"
-                                           VerticalAlignment="Center" HorizontalAlignment="Center" />
-                            </StackPanel>
-                            <Slider Value="1" Minimum="0.25" Maximum="2" x:Name="ZoomSlider" Width="Auto" MinWidth="50" />
-                        </StackPanel>
-                    </rb:RibbonLabel>
-                </rb:RibbonGroup>
                 <rb:RibbonGroup>
                     <rb:RibbonGroup.Command>
                         <rb:RibbonCommand LabelTitle="Tests" />
@@ -128,10 +108,6 @@
             </StackPanel>
 
             <DockPanel DataContext="{Binding Path=AnalyzedLayouts}">
-                <DockPanel.LayoutTransform>
-                    <ScaleTransform ScaleX="{Binding Path=Value, ElementName=ZoomSlider}"
-                                    ScaleY="{Binding Path=Value, ElementName=ZoomSlider}" CenterX="0.5" CenterY="0.5" />
-                </DockPanel.LayoutTransform>
 
                 <Grid DockPanel.Dock="Top">
                     <Grid.ColumnDefinitions>
@@ -139,7 +115,6 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <!--State infos-->
                     <StackPanel Grid.Column="0">
                         <Grid>
                             <Grid.Resources>
