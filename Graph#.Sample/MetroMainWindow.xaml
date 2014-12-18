@@ -1,9 +1,32 @@
 ﻿<controls:MetroWindow x:Class="GraphSharp.Sample.MetroMainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        Title="MetroMainWindow">
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      Title="Graph# Example Application">
+
+    <controls:MetroWindow.LeftWindowCommands>
+        <controls:WindowCommands>
+            <Button Content="Open" Command="{Binding OpenGraphsCommand}" />
+            <Button Content="Save" Command="{Binding SaveGraphsCommand}" />
+        </controls:WindowCommands>
+    </controls:MetroWindow.LeftWindowCommands>
+
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button Content="Notification Test" Click="OnExecuteNotificationTest" />
+            <Button Content="Compound Test" Click="OnExecuteCompoundLayoutTest" />
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+
+    <controls:MetroWindow.Flyouts>
+        <controls:FlyoutsControl>
+            <controls:Flyout x:Name="Flyout" Header="Flyout" Position="Right" Width="200" Theme="Accent">
+                <Button>Relayout</Button>
+            </controls:Flyout>
+        </controls:FlyoutsControl>
+    </controls:MetroWindow.Flyouts>
+
     <Grid>
-        
+        <Button Click="OnShowFlyoutClicked">Show Flyout</Button>
     </Grid>
 </controls:MetroWindow>

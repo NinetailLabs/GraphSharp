@@ -34,7 +34,7 @@ namespace GraphSharp.Sample
 
         private void OnNewLayout(object sender, ExecutedRoutedEventArgs e)
         {
-            var window = new MetroMainWindow();
+            var window = new MetroMainWindow {DataContext = DataContext};
             window.Show();
         }
     }
