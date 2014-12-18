@@ -9,7 +9,7 @@
                       xmlns:sample="clr-namespace:GraphSharp.Sample"
                       xmlns:actions="clr-namespace:MahApps.Metro.Actions;assembly=MahApps.Metro"
                       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-                      Title="Graph# Example Application" WindowStartupLocation="CenterScreen" Width="1850" Height="850">
+                      Title="GraphSharp Example Application" WindowStartupLocation="CenterScreen" Width="1850" Height="850">
 
     <controls:MetroWindow.Resources>
         <ResourceDictionary>
@@ -123,7 +123,12 @@
                               DataContext="{Binding AnalyzedLayouts}"
                               Content="{Binding Path=OverlapRemovalParameters, ElementName=GraphLayout}" />
 
-                    <Button Margin="0,10,0,0" Command="{Binding RelayoutCommand}">Refresh Layout</Button>
+                    <Button Margin="0,10,0,0" HorizontalAlignment="Center" Width="150" Command="{Binding RelayoutCommand}" Style="{StaticResource SquareButtonStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontFamily="Entypo" FontSize="28" Text="&#10227;" Margin="0,0,10,0" />
+                            <TextBlock Text="Refresh Layout" />
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </controls:Flyout>
         </controls:FlyoutsControl>
@@ -155,7 +160,7 @@
                     <actions:SetFlyoutOpenAction TargetObject="{Binding ElementName=Flyout}" Value="True" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            <Rectangle Width="20" Height="15" Fill="{Binding ElementName=Flyout, Path=Foreground}">
+            <Rectangle Width="20" Height="15" Fill="{Binding ElementName=Flyout, Path=Background}">
                 <Rectangle.OpacityMask>
                     <VisualBrush Stretch="Fill">
                         <VisualBrush.Visual>
