@@ -6,6 +6,7 @@
                       xmlns:viewModel="clr-namespace:GraphSharp.Sample.ViewModel"
                       xmlns:sys="clr-namespace:System;assembly=mscorlib"
                       xmlns:graphSharpControls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
+                      xmlns:sample="clr-namespace:GraphSharp.Sample"
                       Title="Graph# Example Application">
 
     <controls:MetroWindow.Resources>
@@ -143,6 +144,7 @@
         <zoom:ZoomControl Grid.Column="1" Grid.ColumnSpan="2">
             <viewModel:PocGraphLayout x:Name="GraphLayout" Graph="{Binding AnalyzedLayouts.Graph}"
                                       LayoutAlgorithmType="{Binding AnalyzedLayouts.LayoutAlgorithmType}"
+                                      sample:LayoutManager.ManagedLayout="True"
                                       OverlapRemovalAlgorithmType="FSA" HighlightAlgorithmType="Simple" />
         </zoom:ZoomControl>
 
