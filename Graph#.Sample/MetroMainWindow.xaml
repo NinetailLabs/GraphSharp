@@ -7,6 +7,8 @@
                       xmlns:sys="clr-namespace:System;assembly=mscorlib"
                       xmlns:graphSharpControls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
                       xmlns:sample="clr-namespace:GraphSharp.Sample"
+                      xmlns:actions="clr-namespace:MahApps.Metro.Actions;assembly=MahApps.Metro"
+                      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                       Title="Graph# Example Application">
 
     <controls:MetroWindow.Resources>
@@ -62,10 +64,8 @@
 
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
-            <controls:Flyout x:Name="Flyout" Header="Flyout" Position="Right" Width="200" Theme="Light">
-                <StackPanel>
-                    <Button>Relayout</Button>
-
+            <controls:Flyout x:Name="Flyout" Header="Options" Position="Right" Width="300" Theme="Accent" IsOpen="True">
+                <StackPanel Margin="0,10,0,0">
                     <StackPanel DataContext="{Binding AnalyzedLayouts}">
                         <Grid>
                             <Grid.Resources>
@@ -125,6 +125,7 @@
                                   Content="{Binding Path=OverlapRemovalParameters, ElementName=GraphLayout}" />
                     </StackPanel>
 
+                    <Button Command="{Binding RelayoutCommand}">Relayout</Button>
                 </StackPanel>
             </controls:Flyout>
         </controls:FlyoutsControl>
@@ -132,9 +133,9 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="250" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="75" />
         </Grid.ColumnDefinitions>
 
         <ListBox Grid.Column="0" Margin="5" ItemsSource="{Binding Path=GraphModels}"
@@ -148,6 +149,32 @@
                                       OverlapRemovalAlgorithmType="FSA" HighlightAlgorithmType="Simple" />
         </zoom:ZoomControl>
 
-        <Button Grid.Column="2" Click="OnShowFlyoutClicked">Show Flyout</Button>
+        <Button Grid.Column="2" Style="{DynamicResource MetroCircleButtonStyle}" Height="40" Width="40"
+                Margin="0,25,0,0" FontFamily="Segoe UI Symbol" FontSize="16"
+                Foreground="{Binding ElementName=Flyout, Path=Foreground}" VerticalAlignment="Top">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <actions:SetFlyoutOpenAction TargetObject="{Binding ElementName=Flyout}" Value="True" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <Rectangle Width="20" Height="15" Fill="{Binding ElementName=Flyout, Path=Foreground}">
+                <Rectangle.OpacityMask>
+                    <VisualBrush Stretch="Fill">
+                        <VisualBrush.Visual>
+                            <Canvas Width="48" Height="48" Clip="F1 M 0,0L 48,0L 48,48L 0,48L 0,0"
+                                    UseLayoutRounding="False">
+                                <Canvas.RenderTransform>
+                                    <ScaleTransform ScaleX="-1"/>
+                                </Canvas.RenderTransform>
+
+                                <Path Width="25" Height="18" Canvas.Left="12" Canvas.Top="15" Stretch="Fill"
+                                      Fill="Black"
+                                      Data="F1 M 12,22L 12,26L 28.25,26L 21,33L 27.5,33L 37,24L 27.5,15L 21,15L 28.25,22L 12,22 Z " />
+                            </Canvas>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Rectangle.OpacityMask>
+            </Rectangle>
+        </Button>
     </Grid>
 </controls:MetroWindow>
