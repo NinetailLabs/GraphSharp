@@ -131,6 +131,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\PocGraphDataTemplates.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -445,6 +449,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\WindowsIcons-license.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Graph#.Controls\GraphSharp.Controls.csproj">
@@ -525,6 +530,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Entypo.ttf" />
     <None Include="Themes\System.Windows.Controls.Theming.BubbleCreme.dll" />
     <None Include="Themes\System.Windows.Controls.Theming.BureauBlack.dll" />
     <None Include="Themes\System.Windows.Controls.Theming.BureauBlue.dll" />
@@ -539,6 +545,9 @@
   </ItemGroup>
   <ItemGroup>
     <SplashScreen Include="Themes\GraphSharp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Entypo-license.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
