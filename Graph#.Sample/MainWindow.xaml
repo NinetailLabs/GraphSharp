@@ -2,13 +2,13 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:sys="clr-namespace:System;assembly=mscorlib"
                  xmlns:rb="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
-                 xmlns:ViewModel="clr-namespace:GraphSharp.Sample.ViewModel"
-                 xmlns:Sample="clr-namespace:GraphSharp.Sample"
-                 xmlns:Controls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
-                 xmlns:Converters="clr-namespace:GraphSharp.Sample.Converters"
+                 xmlns:viewModel="clr-namespace:GraphSharp.Sample.ViewModel"
+                 xmlns:sample="clr-namespace:GraphSharp.Sample"
+                 xmlns:controls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
+                 xmlns:converters="clr-namespace:GraphSharp.Sample.Converters"
                  xmlns:zoom="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
                  x:Class="GraphSharp.Sample.MainWindow" Title="Graph layout PoC" Background="White"
-                 WindowStartupLocation="CenterScreen" WindowState="Maximized" x:Name="root">
+                 WindowStartupLocation="CenterScreen" WindowState="Maximized" x:Name="Root">
     <rb:RibbonWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -16,33 +16,29 @@
                 <ResourceDictionary Source="Resources/PocGraphDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Converters:IntegerToDoubleConverter x:Key="doubleIntConverter" />
+            <converters:IntegerToDoubleConverter x:Key="DoubleIntConverter" />
 
-            <ObjectDataProvider
-				x:Key="algorithmConstraintEnum" MethodName="GetValues"
-				ObjectType="{x:Type sys:Enum}"
-                                >
+            <ObjectDataProvider x:Key="AlgorithmConstraintEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
                 <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="Controls:AlgorithmConstraints" />
+                    <x:Type TypeName="controls:AlgorithmConstraints" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
 
-            <!--Ribbon Commands-->
-            <rb:RibbonCommand x:Key="ExitRCmd"
-				LabelTitle="Exit"
-				SmallImageSource="{StaticResource Horizon_Image_Delete}"
-				LargeImageSource="{StaticResource Horizon_Image_Delete}" />
+            <rb:RibbonCommand x:Key="ExitRCmd" LabelTitle="Exit"
+                              SmallImageSource="{StaticResource Horizon_Image_Delete}"
+                              LargeImageSource="{StaticResource Horizon_Image_Delete}" />
 
             <DataTemplate x:Key="GraphItemTemplate">
-                <Label FontSize="18" FontWeight="Bold" Margin="5,5,5,5" Content="{Binding Path=Name, Mode=OneWay, FallbackValue=NoName}">
+                <Label FontSize="18" FontWeight="Bold" Margin="5,5,5,5"
+                       Content="{Binding Path=Name, Mode=OneWay, FallbackValue=NoName}">
                     <Label.Background>
-                        <SolidColorBrush Color="{DynamicResource MainColor}"/>
+                        <SolidColorBrush Color="{DynamicResource MainColor}" />
                     </Label.Background>
                 </Label>
             </DataTemplate>
         </ResourceDictionary>
     </rb:RibbonWindow.Resources>
-    
+
     <rb:RibbonWindow.CommandBindings>
         <CommandBinding Command="{StaticResource ExitRCmd}" Executed="OnExecuteExit" />
     </rb:RibbonWindow.CommandBindings>
@@ -81,15 +77,17 @@
                     <rb:RibbonGroup.Command>
                         <rb:RibbonCommand LabelTitle="View" />
                     </rb:RibbonGroup.Command>
-                    
+
                     <rb:RibbonLabel>
-                        <StackPanel Width="Auto"
-							Orientation="Horizontal">
+                        <StackPanel Width="Auto" Orientation="Horizontal">
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="{DynamicResource Horizon_Image_Search}" Width="{DynamicResource IconWidth}" Stretch="Uniform" Margin="{DynamicResource IconMargin}" />
-                                <TextBlock Text="General zoom" TextWrapping="Wrap" Margin="5,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                <Image Source="{DynamicResource Horizon_Image_Search}"
+                                       Width="{DynamicResource IconWidth}" Stretch="Uniform"
+                                       Margin="{DynamicResource IconMargin}" />
+                                <TextBlock Text="General zoom" TextWrapping="Wrap" Margin="5,0,5,0"
+                                           VerticalAlignment="Center" HorizontalAlignment="Center" />
                             </StackPanel>
-                            <Slider Value="1" Minimum="0.25" Maximum="2" x:Name="zoomSlider" Width="Auto" MinWidth="50" />
+                            <Slider Value="1" Minimum="0.25" Maximum="2" x:Name="ZoomSlider" Width="Auto" MinWidth="50" />
                         </StackPanel>
                     </rb:RibbonLabel>
                 </rb:RibbonGroup>
@@ -114,52 +112,31 @@
         </rb:Ribbon>
 
         <DockPanel>
-            <!--Graph Selector-->
-            <ListBox ItemsSource="{Binding Path=GraphModels}"
-				SelectedValue="{Binding Path=SelectedGraphModel, Mode=TwoWay}"
-				Margin="5"
-				DockPanel.Dock="Left" ItemTemplate="{DynamicResource GraphItemTemplate}" MaxWidth="300" MinWidth="150" Width="150" />
+             <ListBox ItemsSource="{Binding Path=GraphModels}"
+                     SelectedValue="{Binding Path=SelectedGraphModel, Mode=TwoWay}" Margin="5" DockPanel.Dock="Left"
+                     ItemTemplate="{DynamicResource GraphItemTemplate}" MaxWidth="300" MinWidth="150" Width="150" />
 
-            <StackPanel Orientation="Horizontal"
-				Margin="0,5,5,5"
-				DockPanel.Dock="Top">
-                <TextBlock Width="Auto"
-					Height="Auto"
-					Text="Vertices:"
-					TextWrapping="Wrap"
-					VerticalAlignment="Center"
-					Margin="20,0,10,0" />
-                <TextBlock Width="Auto"
-					Height="Auto"
-					Text="{Binding Path=SelectedGraphModel.Graph.VertexCount}"
-					TextWrapping="Wrap"
-					VerticalAlignment="Center"
-					Margin="0,0,20,0" />
-                <TextBlock Width="Auto"
-					Height="Auto"
-					Text="Edges:"
-					TextWrapping="Wrap"
-					VerticalAlignment="Center"
-					Margin="0,0,10,0" />
-                <TextBlock Width="Auto"
-					Height="Auto"
-					Text="{Binding Path=SelectedGraphModel.Graph.EdgeCount}"
-					TextWrapping="Wrap"
-					VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal" Margin="0,5,5,5" DockPanel.Dock="Top">
+                <TextBlock Width="Auto" Height="Auto" Text="Vertices:" TextWrapping="Wrap" VerticalAlignment="Center"
+                           Margin="20,0,10,0" />
+                <TextBlock Width="Auto" Height="Auto" Text="{Binding Path=SelectedGraphModel.Graph.VertexCount}"
+                           TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,20,0" />
+                <TextBlock Width="Auto" Height="Auto" Text="Edges:" TextWrapping="Wrap" VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Width="Auto" Height="Auto" Text="{Binding Path=SelectedGraphModel.Graph.EdgeCount}"
+                           TextWrapping="Wrap" VerticalAlignment="Center" />
             </StackPanel>
 
             <DockPanel DataContext="{Binding Path=AnalyzedLayouts}">
                 <DockPanel.LayoutTransform>
-                    <ScaleTransform ScaleX="{Binding Path=Value, ElementName=zoomSlider}"
-							ScaleY="{Binding Path=Value, ElementName=zoomSlider}"
-							CenterX="0.5"
-							CenterY="0.5" />
+                    <ScaleTransform ScaleX="{Binding Path=Value, ElementName=ZoomSlider}"
+                                    ScaleY="{Binding Path=Value, ElementName=ZoomSlider}" CenterX="0.5" CenterY="0.5" />
                 </DockPanel.LayoutTransform>
 
                 <Grid DockPanel.Dock="Top">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
                     <!--State infos-->
@@ -167,13 +144,13 @@
                         <Grid>
                             <Grid.Resources>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Margin" Value="3"/>
+                                    <Setter Property="Margin" Value="3" />
                                 </Style>
                                 <Style TargetType="ComboBox">
-                                    <Setter Property="Margin" Value="3"/>
+                                    <Setter Property="Margin" Value="3" />
                                 </Style>
                             </Grid.Resources>
-                            
+
                             <Grid.RowDefinitions>
                                 <RowDefinition />
                                 <RowDefinition />
@@ -185,85 +162,75 @@
                                 <RowDefinition />
                                 <RowDefinition />
                             </Grid.RowDefinitions>
+                            
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" MinWidth="150" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Layout algorithm"/>
-                            <ComboBox Grid.Column="1"
-											ItemsSource="{Binding Path=LayoutAlgorithmFactory.AlgorithmTypes, ElementName=graphLayout}"
-											SelectedValue="{Binding Path=LayoutAlgorithmType}" />
-                            <TextBlock Grid.Row="1" Text="Overlap Removal"/>
-                            <ComboBox Grid.Column="1"
-											Grid.Row="1"
-											ItemsSource="{Binding Source={StaticResource algorithmConstraintEnum}}"
-											SelectedValue="{Binding Path=OverlapRemovalConstraint, ElementName=graphLayout}" />
-                            <TextBlock Grid.Row="2" Text="Overlap Removal Algorithm"/>
-                            <ComboBox Grid.Column="1"
-											Grid.Row="2"
-											ItemsSource="{Binding Path=OverlapRemovalAlgorithmFactory.AlgorithmTypes, ElementName=graphLayout}"
-											SelectedValue="{Binding Path=OverlapRemovalAlgorithmType, ElementName=graphLayout}" />
-                            <TextBlock Grid.Row="3" Text="Edge Routing"/>
-                            <ComboBox Grid.Column="1"
-											Grid.Row="3"
-											ItemsSource="{Binding Source={StaticResource algorithmConstraintEnum}}"
-											SelectedValue="{Binding Path=EdgeRoutingConstraint, ElementName=graphLayout}" />
-                            <TextBlock Grid.Row="4" Text="Edge Routing Algorithm"/>
-                            <ComboBox Grid.Column="1"
-											Grid.Row="4"
-											ItemsSource="{Binding Path=EdgeRoutingAlgorithmFactory.AlgorithmTypes, ElementName=graphLayout}"
-											SelectedValue="{Binding Path=EdgeRoutingAlgorithmType, ElementName=graphLayout}" />
-                            <TextBlock Grid.Row="5" Grid.Column="0" Text="State"/>
-                            <Slider Grid.Column="1"
-											Grid.Row="5"
-											MinWidth="150"
-											Minimum="0"
-											Maximum="{Binding Path=StateCount, Converter={StaticResource doubleIntConverter}, ElementName=graphLayout, FallbackValue=0}"
-											Value="{Binding Path=StateIndex, Converter={StaticResource doubleIntConverter}, ElementName=graphLayout, FallbackValue=0}"
-											TickFrequency="1" />
                             
-                            <TextBlock Text="Computation Time"
-											Grid.Row="7"
-											Grid.Column="0" />
-                            <TextBlock Text="{Binding Path=LayoutState.ComputationTime, ElementName=graphLayout}"
-											Grid.Row="7"
-											Grid.Column="1" />
+                            <TextBlock Text="Layout algorithm" />
+                            <ComboBox Grid.Row="0" Grid.Column="1"
+                                      ItemsSource="{Binding Path=LayoutAlgorithmFactory.AlgorithmTypes, ElementName=GraphLayout}"
+                                      SelectedValue="{Binding Path=LayoutAlgorithmType}" />
+                            
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Overlap Removal" />
+                            <ComboBox Grid.Column="1" Grid.Row="1"
+                                      ItemsSource="{Binding Source={StaticResource AlgorithmConstraintEnum}}"
+                                      SelectedValue="{Binding Path=OverlapRemovalConstraint, ElementName=GraphLayout}" />
+                            
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Overlap Removal Algorithm" />
+                            <ComboBox Grid.Column="1" Grid.Row="2"
+                                      ItemsSource="{Binding Path=OverlapRemovalAlgorithmFactory.AlgorithmTypes, ElementName=GraphLayout}"
+                                      SelectedValue="{Binding Path=OverlapRemovalAlgorithmType, ElementName=GraphLayout}" />
+                            
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Edge Routing" />
+                            <ComboBox Grid.Column="1" Grid.Row="3"
+                                      ItemsSource="{Binding Source={StaticResource AlgorithmConstraintEnum}}"
+                                      SelectedValue="{Binding Path=EdgeRoutingConstraint, ElementName=GraphLayout}" />
+                            
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Edge Routing Algorithm" />
+                            <ComboBox Grid.Column="1" Grid.Row="4"
+                                      ItemsSource="{Binding Path=EdgeRoutingAlgorithmFactory.AlgorithmTypes, ElementName=GraphLayout}"
+                                      SelectedValue="{Binding Path=EdgeRoutingAlgorithmType, ElementName=GraphLayout}" />
+                            
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="State" />
+                            <Slider Grid.Column="1" Grid.Row="5" MinWidth="150" Minimum="0"
+                                    Maximum="{Binding Path=StateCount, Converter={StaticResource DoubleIntConverter}, ElementName=GraphLayout, FallbackValue=0}"
+                                    Value="{Binding Path=StateIndex, Converter={StaticResource DoubleIntConverter}, ElementName=GraphLayout, FallbackValue=0}"
+                                    TickFrequency="1" />
 
-                            <TextBlock Text="Show all states"
-											Grid.Row="8"
-											Grid.Column="0" />
-                            <CheckBox IsChecked="{Binding Path=ShowAllStates, ElementName=graphLayout}"
-											Grid.Row="8"
-											Grid.Column="1" />
+                            <TextBlock Text="Computation Time" Grid.Row="7" Grid.Column="0" />
+                            <TextBlock Text="{Binding Path=LayoutState.ComputationTime, ElementName=GraphLayout}"
+                                       Grid.Row="7" Grid.Column="1" />
+
+                            <TextBlock Text="Show all states" Grid.Row="8" Grid.Column="0" />
+                            <CheckBox IsChecked="{Binding Path=ShowAllStates, ElementName=GraphLayout}" Grid.Row="8"
+                                      Grid.Column="1" />
                         </Grid>
                     </StackPanel>
 
                     <!--Parameters-->
-                    <StackPanel Grid.Column="1"
-							Margin="10,0">
+                    <StackPanel Grid.Column="1" Margin="10,0">
                         <StackPanel.Resources>
                             <Style TargetType="GroupBox">
-                                <Setter Property="Margin" Value="5"/>
+                                <Setter Property="Margin" Value="5" />
                             </Style>
                         </StackPanel.Resources>
 
                         <GroupBox Header="Layout algorithm parameters"
-										Content="{Binding Path=LayoutParameters, ElementName=graphLayout}" />
+                                  Content="{Binding Path=LayoutParameters, ElementName=GraphLayout}" />
                         <GroupBox Header="Overlap removal parameters"
-										Content="{Binding Path=OverlapRemovalParameters, ElementName=graphLayout}" />
+                                  Content="{Binding Path=OverlapRemovalParameters, ElementName=GraphLayout}" />
                         <GroupBox Header="Edge routing parameters"
-										Content="{Binding Path=EdgeRoutingParameters, ElementName=graphLayout}" />
+                                  Content="{Binding Path=EdgeRoutingParameters, ElementName=GraphLayout}" />
                     </StackPanel>
-
                 </Grid>
 
                 <zoom:ZoomControl>
-                    <ViewModel:PocGraphLayout x:Name="graphLayout"
-											Graph="{Binding Path=Graph}"
-											LayoutAlgorithmType="{Binding Path=LayoutAlgorithmType}"
-											Sample:LayoutManager.ManagedLayout="True"
-											OverlapRemovalAlgorithmType="FSA"
-											HighlightAlgorithmType="Simple"/>
+                    <viewModel:PocGraphLayout x:Name="GraphLayout" Graph="{Binding Path=Graph}"
+                                              LayoutAlgorithmType="{Binding Path=LayoutAlgorithmType}"
+                                              sample:LayoutManager.ManagedLayout="True"
+                                              OverlapRemovalAlgorithmType="FSA" HighlightAlgorithmType="Simple" />
                 </zoom:ZoomControl>
             </DockPanel>
         </DockPanel>

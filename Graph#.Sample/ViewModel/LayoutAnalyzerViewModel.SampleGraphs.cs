@@ -8,8 +8,6 @@ namespace GraphSharp.Sample.ViewModel
 	{
 		partial void CreateSampleGraphs()
 		{
-			#region SimpleTree
-
 			var graph = new PocGraph();
 
 			for (int i = 0; i < 8; i++)
@@ -28,8 +26,6 @@ namespace GraphSharp.Sample.ViewModel
 
 			GraphModels.Add(new GraphModel("Fa", graph));
 		    SelectedGraphModel = GraphModels.First();
-
-		    #endregion
 		}
 	}
 }
