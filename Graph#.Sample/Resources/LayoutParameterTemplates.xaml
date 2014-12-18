@@ -7,25 +7,22 @@
                     xmlns:simpleTreeLayout="clr-namespace:GraphSharp.Algorithms.Layout.Simple.Tree;assembly=GraphSharp"
                     xmlns:overlapRemoval="clr-namespace:GraphSharp.Algorithms.OverlapRemoval;assembly=GraphSharp">
 
-    <ObjectDataProvider MethodName="GetValues"
-                        ObjectType="{x:Type system:Enum}"
-                        x:Key="LayoutDirectionEnum">
+    <GridLength x:Key="LabelColumnWidth">175</GridLength>
+    <GridLength x:Key="ControlColumnWidth">150</GridLength>
+    
+    <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type system:Enum}" x:Key="LayoutDirectionEnum">
         <ObjectDataProvider.MethodParameters>
             <x:Type TypeName="layout:LayoutDirection" />
         </ObjectDataProvider.MethodParameters>
     </ObjectDataProvider>
 
-    <ObjectDataProvider MethodName="GetValues"
-                        ObjectType="{x:Type system:Enum}"
-                        x:Key="TreeGenerationTypeEnum">
+    <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type system:Enum}" x:Key="TreeGenerationTypeEnum">
         <ObjectDataProvider.MethodParameters>
             <x:Type TypeName="simpleTreeLayout:SpanningTreeGeneration" />
         </ObjectDataProvider.MethodParameters>
     </ObjectDataProvider>
     
-    <ObjectDataProvider MethodName="GetValues"
-                        ObjectType="{x:Type system:Enum}"
-                        x:Key="SugiyamaEdgeRoutingEnum">
+    <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type system:Enum}" x:Key="SugiyamaEdgeRoutingEnum">
         <ObjectDataProvider.MethodParameters>
             <x:Type TypeName="simpleHierarchicalLayout:SugiyamaEdgeRoutings" />
         </ObjectDataProvider.MethodParameters>
@@ -35,8 +32,8 @@
     <DataTemplate DataType="{x:Type simpleFdpLayout:BoundedFRLayoutParameters}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="{StaticResource LabelColumnWidth}" />
+                <ColumnDefinition Width="{StaticResource ControlColumnWidth}" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -126,8 +123,8 @@
     <DataTemplate DataType="{x:Type simpleHierarchicalLayout:SugiyamaLayoutParameters}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="{StaticResource LabelColumnWidth}" />
+                <ColumnDefinition Width="{StaticResource ControlColumnWidth}" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -186,8 +183,8 @@
     <DataTemplate DataType="{x:Type simpleHierarchicalLayout:EfficientSugiyamaLayoutParameters}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="{StaticResource LabelColumnWidth}" />
+                <ColumnDefinition Width="{StaticResource ControlColumnWidth}" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -238,11 +235,10 @@
     <!-- Meyer's ISOMLayout -->
     <DataTemplate DataType="{x:Type simpleFdpLayout:ISOMLayoutParameters}">
         <StackPanel>
-            <Grid  Width="Auto"
-                   Height="Auto">
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
+                    <ColumnDefinition Width="{StaticResource LabelColumnWidth}" />
+                    <ColumnDefinition Width="{StaticResource ControlColumnWidth}" />
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
@@ -335,11 +331,10 @@
 
     <!--LinLog Parameters-->
     <DataTemplate DataType="{x:Type simpleFdpLayout:LinLogLayoutParameters}">
-        <Grid  Width="Auto"
-               Height="Auto">
+        <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="{StaticResource LabelColumnWidth}" />
+                <ColumnDefinition Width="{StaticResource ControlColumnWidth}" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -399,8 +394,8 @@
     <DataTemplate DataType="{x:Type overlapRemoval:OverlapRemovalParameters}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="{StaticResource LabelColumnWidth}" />
+                <ColumnDefinition Width="{StaticResource ControlColumnWidth}" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -438,8 +433,8 @@
     <DataTemplate DataType="{x:Type simpleTreeLayout:SimpleTreeLayoutParameters}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="{StaticResource LabelColumnWidth}" />
+                <ColumnDefinition Width="{StaticResource ControlColumnWidth}" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>

@@ -59,21 +59,29 @@
 
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
-            <controls:Flyout x:Name="Flyout" Header="Options" Position="Right" Width="300" Theme="Accent" IsOpen="True">
+            <controls:Flyout x:Name="Flyout" Header="Options" Position="Right" Width="350" Theme="Accent" IsOpen="True">
                 <StackPanel Margin="0,10,0,0">
-                    <StackPanel DataContext="{Binding AnalyzedLayouts}">
-                        <Grid>
-                            <Grid.Resources>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Margin" Value="3" />
-                                </Style>
-                                <Style TargetType="ComboBox">
-                                    <Setter Property="Margin" Value="3" />
-                                </Style>
-                            </Grid.Resources>
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBox" BasedOn="{StaticResource MetroTextBox}" >
+                            <Setter Property="Margin" Value="0,0,0,5" />
+                        </Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
+                        <Style TargetType="ComboBox" BasedOn="{StaticResource MetroComboBox}">
+                            <Setter Property="Margin" Value="0,0,0,5" />
+                        </Style>
+                        <Style TargetType="CheckBox" BasedOn="{StaticResource MetroCheckBox}">
+                            <Setter Property="Margin" Value="0,0,0,5" />
+                        </Style>
+                        <Style TargetType="Slider" BasedOn="{StaticResource MetroSlider}" >
+                            <Setter Property="Margin" Value="0,0,10,5" />
+                        </Style>
+                    </StackPanel.Resources>
 
+                    <GroupBox Header="Algorithms">
+                        <Grid DataContext="{Binding AnalyzedLayouts}">
                             <Grid.RowDefinitions>
-                                <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
@@ -81,8 +89,8 @@
                             </Grid.RowDefinitions>
 
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" MinWidth="150" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="{StaticResource LabelColumnWidth}" />
+                                <ColumnDefinition Width="{StaticResource ControlColumnWidth}" />
                             </Grid.ColumnDefinitions>
 
                             <TextBlock Text="Layout algorithm" />
@@ -105,22 +113,17 @@
                                       ItemsSource="{Binding Source={StaticResource AlgorithmConstraintEnum}}"
                                       SelectedValue="{Binding Path=EdgeRoutingConstraint, ElementName=GraphLayout}" />
                         </Grid>
-                    </StackPanel>
+                    </GroupBox>
 
-                    <StackPanel DataContext="{Binding AnalyzedLayouts}" Margin="10,0">
-                        <StackPanel.Resources>
-                            <Style TargetType="GroupBox">
-                                <Setter Property="Margin" Value="5" />
-                            </Style>
-                        </StackPanel.Resources>
+                    <GroupBox Header="Layout algorithm parameters"
+                              DataContext="{Binding AnalyzedLayouts}"
+                              Content="{Binding Path=LayoutParameters, ElementName=GraphLayout}" />
 
-                        <GroupBox Header="Layout algorithm parameters"
-                                  Content="{Binding Path=LayoutParameters, ElementName=GraphLayout}" />
-                        <GroupBox Header="Overlap removal parameters"
-                                  Content="{Binding Path=OverlapRemovalParameters, ElementName=GraphLayout}" />
-                    </StackPanel>
+                    <GroupBox Header="Overlap removal parameters"
+                              DataContext="{Binding AnalyzedLayouts}"
+                              Content="{Binding Path=OverlapRemovalParameters, ElementName=GraphLayout}" />
 
-                    <Button Command="{Binding RelayoutCommand}">Relayout</Button>
+                    <Button Margin="0,10,0,0" Command="{Binding RelayoutCommand}">Refresh Layout</Button>
                 </StackPanel>
             </controls:Flyout>
         </controls:FlyoutsControl>
