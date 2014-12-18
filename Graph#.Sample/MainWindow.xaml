@@ -157,10 +157,6 @@
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
                             </Grid.RowDefinitions>
                             
                             <Grid.ColumnDefinitions>
@@ -187,25 +183,6 @@
                             <ComboBox Grid.Column="1" Grid.Row="3"
                                       ItemsSource="{Binding Source={StaticResource AlgorithmConstraintEnum}}"
                                       SelectedValue="{Binding Path=EdgeRoutingConstraint, ElementName=GraphLayout}" />
-                            
-                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Edge Routing Algorithm" />
-                            <ComboBox Grid.Column="1" Grid.Row="4"
-                                      ItemsSource="{Binding Path=EdgeRoutingAlgorithmFactory.AlgorithmTypes, ElementName=GraphLayout}"
-                                      SelectedValue="{Binding Path=EdgeRoutingAlgorithmType, ElementName=GraphLayout}" />
-                            
-                            <TextBlock Grid.Row="5" Grid.Column="0" Text="State" />
-                            <Slider Grid.Column="1" Grid.Row="5" MinWidth="150" Minimum="0"
-                                    Maximum="{Binding Path=StateCount, Converter={StaticResource DoubleIntConverter}, ElementName=GraphLayout, FallbackValue=0}"
-                                    Value="{Binding Path=StateIndex, Converter={StaticResource DoubleIntConverter}, ElementName=GraphLayout, FallbackValue=0}"
-                                    TickFrequency="1" />
-
-                            <TextBlock Text="Computation Time" Grid.Row="7" Grid.Column="0" />
-                            <TextBlock Text="{Binding Path=LayoutState.ComputationTime, ElementName=GraphLayout}"
-                                       Grid.Row="7" Grid.Column="1" />
-
-                            <TextBlock Text="Show all states" Grid.Row="8" Grid.Column="0" />
-                            <CheckBox IsChecked="{Binding Path=ShowAllStates, ElementName=GraphLayout}" Grid.Row="8"
-                                      Grid.Column="1" />
                         </Grid>
                     </StackPanel>
 
@@ -221,8 +198,6 @@
                                   Content="{Binding Path=LayoutParameters, ElementName=GraphLayout}" />
                         <GroupBox Header="Overlap removal parameters"
                                   Content="{Binding Path=OverlapRemovalParameters, ElementName=GraphLayout}" />
-                        <GroupBox Header="Edge routing parameters"
-                                  Content="{Binding Path=EdgeRoutingParameters, ElementName=GraphLayout}" />
                     </StackPanel>
                 </Grid>
 
