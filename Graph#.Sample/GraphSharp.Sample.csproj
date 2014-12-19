@@ -470,74 +470,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\BubbleCreme.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\BureauBlack.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\BureauBlue.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\ExpressionDark.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\ExpressionLight.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\ShinyBlue.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\ShinyRed.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\TwilightBlue.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\WhistlerBlue.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Entypo.ttf" />
-    <None Include="Themes\System.Windows.Controls.Theming.BubbleCreme.dll" />
-    <None Include="Themes\System.Windows.Controls.Theming.BureauBlack.dll" />
-    <None Include="Themes\System.Windows.Controls.Theming.BureauBlue.dll" />
-    <None Include="Themes\System.Windows.Controls.Theming.dll" />
-    <None Include="Themes\System.Windows.Controls.Theming.ExpressionDark.dll" />
-    <None Include="Themes\System.Windows.Controls.Theming.ExpressionLight.dll" />
-    <None Include="Themes\System.Windows.Controls.Theming.ShinyBlue.dll" />
-    <None Include="Themes\System.Windows.Controls.Theming.ShinyRed.dll" />
-    <None Include="Themes\System.Windows.Controls.Theming.TwilightBlue.dll" />
-    <None Include="Themes\System.Windows.Controls.Theming.WhistlerBlue.dll" />
-    <None Include="Themes\WPFToolkit.dll" />
   </ItemGroup>
   <ItemGroup>
     <SplashScreen Include="Themes\GraphSharp.png" />
