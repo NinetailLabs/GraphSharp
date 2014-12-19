@@ -12,8 +12,6 @@ namespace GraphSharp.Sample.ViewModel
     {
         public ICommand RelayoutCommand { get; private set; }
 
-        public ICommand ContinueLayoutCommand { get; private set; }
-
         public ICommand OpenGraphsCommand { get; private set; }
 
         public ICommand SaveGraphsCommand { get; private set; }
@@ -46,8 +44,6 @@ namespace GraphSharp.Sample.ViewModel
 
         public GraphLayoutViewModel AnalyzedLayouts { get; private set; }
 
-        public PocVertex SampleVertex = new PocVertex("173");
-
         public LayoutAnalyzerViewModel()
         {
             AnalyzedLayouts = new GraphLayoutViewModel
@@ -56,7 +52,6 @@ namespace GraphSharp.Sample.ViewModel
             };
             GraphModels = new ObservableCollection<GraphModel>();
 
-            ContinueLayoutCommand = new RelayCommand(p => ContinueLayout(), p => AnalyzedLayouts != null, "Continue Layout");
             RelayoutCommand = new RelayCommand(p => Relayout(), p => AnalyzedLayouts != null, "Relayout");
             OpenGraphsCommand = new RelayCommand(p => OpenGraphs(), title: "Open Graphs");
             SaveGraphsCommand = new RelayCommand(p => SaveGraphs(), p => GraphModels.Count > 0, "Save Graphs");
@@ -65,11 +60,6 @@ namespace GraphSharp.Sample.ViewModel
         }
 
         partial void CreateSampleGraphs();
-
-        private static void ContinueLayout()
-        {
-            LayoutManager.Instance.ContinueLayout();
-        }
 
         private static void Relayout()
         {
