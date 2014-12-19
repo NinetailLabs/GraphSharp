@@ -156,12 +156,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\BoolToVisibilityConverter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Converters\DoubleToIntegerConverter.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="LayoutManager.cs" />
     <Compile Include="Model\GraphModel.cs">
       <SubType>Code</SubType>
