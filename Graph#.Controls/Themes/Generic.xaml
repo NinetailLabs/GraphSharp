@@ -319,13 +319,6 @@
                                     Canvas.Left="20"
                                     Canvas.Top="20"
                                     ToolTipService.InitialShowDelay="0">
-                                <Border.ToolTip>
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock><Run FontWeight="Bold">CTRL + Wheel:</Run> Zoom In / Out</TextBlock>
-                                        <TextBlock><Run FontWeight="Bold">ALT + Drag:</Run> ZoomBox</TextBlock>
-                                        <TextBlock><Run FontWeight="Bold">(SHIFT +) Drag:</Run> Pan</TextBlock>
-                                    </StackPanel>
-                                </Border.ToolTip>
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel.Resources>
                                         <Style TargetType="{x:Type RadioButton}">
