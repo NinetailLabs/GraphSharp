@@ -242,7 +242,6 @@
     <Compile Include="Algorithms\Layout\Simple\FDP\LinLogLayoutAlgorithm.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Algorithms\Layout\Contextual\RadialTreeLayoutAlgorithm.cs" />
     <Compile Include="Algorithms\Layout\StandardLayoutAlgorithmFactory.cs" />
     <Compile Include="Algorithms\OverlapRemoval\FSAAlgorithm.cs">
       <SubType>Code</SubType>
@@ -371,9 +370,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Algorithms\Layout\Contextual\IContextualLayoutAlgorithmFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Algorithms\Layout\Contextual\RadialTreeLayoutParameters.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Algorithms\Layout\Simple\Circular\CircularLayoutParameters.cs">
