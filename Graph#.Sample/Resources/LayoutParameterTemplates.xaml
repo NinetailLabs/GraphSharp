@@ -6,7 +6,8 @@
                     xmlns:simpleHierarchicalLayout="clr-namespace:GraphSharp.Algorithms.Layout.Simple.Hierarchical;assembly=GraphSharp"
                     xmlns:simpleTreeLayout="clr-namespace:GraphSharp.Algorithms.Layout.Simple.Tree;assembly=GraphSharp"
                     xmlns:overlapRemoval="clr-namespace:GraphSharp.Algorithms.OverlapRemoval;assembly=GraphSharp"
-                    xmlns:circular="clr-namespace:GraphSharp.Algorithms.Layout.Simple.Circular;assembly=GraphSharp">
+                    xmlns:circular="clr-namespace:GraphSharp.Algorithms.Layout.Simple.Circular;assembly=GraphSharp"
+                    xmlns:fdp="clr-namespace:GraphSharp.Algorithms.Layout.Compound.FDP;assembly=GraphSharp">
 
     <GridLength x:Key="LabelColumnWidth">175</GridLength>
     <GridLength x:Key="ControlColumnWidth">150</GridLength>
@@ -119,7 +120,7 @@
                 <Slider Minimum="0"
                         Maximum="1000"
                         Value="{Binding Path=Width}"
-                        Width="100.000333333333"
+                        Width="100.0"
                         Height="22"
                         x:Name="slider" />
                 <TextBlock Text="{Binding Path=Value, ElementName=slider, Mode=Default}"
@@ -155,7 +156,7 @@
                 <Slider Minimum="0"
                         Maximum="5"
                         Value="{Binding Path=AttractionMultiplier}"
-                        Width="100.000333333333"
+                        Width="100.0"
                         Height="22"
                         x:Name="slider2" />
                 <TextBlock Text="{Binding Path=Value, ElementName=slider2, Mode=Default}"
@@ -171,7 +172,7 @@
                 <Slider Minimum="0"
                         Maximum="5"
                         Value="{Binding Path=RepulsiveMultiplier}"
-                        Width="100.000333333333"
+                        Width="100.0"
                         Height="22"
                         x:Name="slider3" />
                 <TextBlock Text="{Binding Path=Value, ElementName=slider3, Mode=Default}"
@@ -588,7 +589,75 @@
                      Grid.Row="7" />
         </Grid>
     </DataTemplate>
-    
+
+    <DataTemplate DataType="{x:Type fdp:CompoundFDPLayoutParameters}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource LabelColumnWidth}" />
+                <ColumnDefinition Width="{StaticResource ControlColumnWidth}" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Column="0" Grid.Row="0" Text="Ideal edge length" />
+            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Path=IdealEdgeLength}" Margin="0,0,0,5" />
+
+            <TextBlock Grid.Column="0" Grid.Row="1" Text="Elastic constant" />
+            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Path=ElasticConstant}" Margin="0,0,0,5" />
+
+            <TextBlock Grid.Column="0" Grid.Row="2" Text="Repulsion constant" />
+            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Path=RepulsionConstant}" Margin="0,0,0,5" />
+
+            <TextBlock Grid.Column="0" Grid.Row="3" Text="Nesting factor" />
+            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=NestingFactor, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="4" Text="Gravitation factor" />
+            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=GravitationFactor, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="5" Text="Phase 1 iterations" />
+            <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=Phase1Iterations, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="6" Text="Phase 2 iterations" />
+            <TextBox Grid.Column="1" Grid.Row="6" Text="{Binding Path=Phase2Iterations, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="7" Text="Phase 3 iterations" />
+            <TextBox Grid.Column="1" Grid.Row="7" Text="{Binding Path=Phase3Iterations, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="8" Text="Phase 2 temperature mult." />
+            <TextBox Grid.Column="1" Grid.Row="8" Text="{Binding Path=Phase2TemperatureInitialMultiplier, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="9" Text="Phase 3 temperature mult." />
+            <TextBox Grid.Column="1" Grid.Row="9" Text="{Binding Path=Phase3TemperatureInitialMultiplier, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="10" Text="Temperature decr." />
+            <TextBox Grid.Column="1" Grid.Row="10" Text="{Binding Path=TemperatureDecreasing, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="11" Text="Temperature factor" />
+            <TextBox Grid.Column="1" Grid.Row="11" Text="{Binding Path=TemperatureFactor, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="12" Text="Displacement limit" />
+            <TextBox Grid.Column="1" Grid.Row="12" Text="{Binding Path=DisplacementLimitMultiplier, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="13" Text="Separation mult." />
+            <TextBox Grid.Column="1" Grid.Row="13" Text="{Binding Path=SeparationMultiplier, UpdateSourceTrigger=PropertyChanged}" />
+        </Grid>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type overlapRemoval:OverlapRemovalParameters}">
         <Grid>
             <Grid.ColumnDefinitions>

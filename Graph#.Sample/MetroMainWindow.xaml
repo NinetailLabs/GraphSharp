@@ -9,7 +9,7 @@
                       xmlns:sample="clr-namespace:GraphSharp.Sample"
                       xmlns:actions="clr-namespace:MahApps.Metro.Actions;assembly=MahApps.Metro"
                       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-                      Title="GraphSharp Example Application" WindowStartupLocation="CenterScreen" Width="1850" Height="850">
+                      Title="GraphSharp Example Application" WindowStartupLocation="CenterScreen" Width="1850" Height="950">
 
     <controls:MetroWindow.Resources>
         <ResourceDictionary>
