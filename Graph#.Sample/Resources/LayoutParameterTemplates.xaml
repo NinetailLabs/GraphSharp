@@ -28,7 +28,74 @@
         </ObjectDataProvider.MethodParameters>
     </ObjectDataProvider>
 
-    <!-- Fruchterman-Reingold datatemplate -->
+    <!-- Fruchterman-Reingold datatemplates -->
+    <DataTemplate DataType="{x:Type simpleFdpLayout:FreeFRLayoutParameters}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource LabelColumnWidth}" />
+                <ColumnDefinition Width="{StaticResource ControlColumnWidth}" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="0"><Run Text="K" /></TextBlock>
+            <TextBlock Text="{Binding Path=K}"
+                       Grid.Column="1"
+                       Grid.Row="0" />
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="1"><Run Text="AttractionMultiplier" /></TextBlock>
+            <StackPanel Margin="0,0,20.853,3.96"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
+                <Slider Minimum="0"
+                        Maximum="5"
+                        Value="{Binding Path=AttractionMultiplier}"
+                        Width="100.000333333333"
+                        Height="22"
+                        x:Name="slider2" />
+                <TextBlock Text="{Binding Path=Value, ElementName=slider2, Mode=Default}"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Center" />
+            </StackPanel>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="2"><Run Text="RepulsiveMultiplier" /></TextBlock>
+            <StackPanel Grid.Column="1"
+                        Grid.Row="2"
+                        Orientation="Horizontal">
+                <Slider Minimum="0"
+                        Maximum="5"
+                        Value="{Binding Path=RepulsiveMultiplier}"
+                        Width="100.000333333333"
+                        Height="22"
+                        x:Name="slider3" />
+                <TextBlock Text="{Binding Path=Value, ElementName=slider3, Mode=Default}"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="3"><Run Text="IterationLimit" /></TextBlock>
+            <TextBlock Text="{Binding Path=IterationLimit}"
+                       Grid.Column="1"
+                       Grid.Row="3" />
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="4"><Run Text="IdealEdgeLength" /></TextBlock>
+            <TextBlock Text="{Binding Path=IdealEdgeLength}"
+                       Grid.Column="1"
+                       Grid.Row="4" />
+        </Grid>
+    </DataTemplate>
+    
     <DataTemplate DataType="{x:Type simpleFdpLayout:BoundedFRLayoutParameters}">
         <Grid>
             <Grid.ColumnDefinitions>
