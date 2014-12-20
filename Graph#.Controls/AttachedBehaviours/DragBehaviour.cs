@@ -213,8 +213,8 @@ namespace GraphSharp.AttachedBehaviours
             var currentX = double.IsNaN(GetX(obj)) ? 0.0 : GetX(obj);
             var currentY = double.IsNaN(GetY(obj)) ? 0.0 : GetY(obj);
 
-            horizontalChange /= currentX < 0 ? 30.0 : 10.0;
-            verticalChange /= currentY < 0 ? 30.0 : 10.0;
+            horizontalChange /= currentX < 0 ? 100.0 : 10.0;
+            verticalChange /= currentY < 0 ? 100.0 : 10.0;
 
             SetX(obj, currentX + horizontalChange);
             SetY(obj, currentY + verticalChange);
