@@ -214,7 +214,7 @@ namespace GraphSharp.Controls
             LayoutAlgorithmProperty = LayoutAlgorithmPropertyKey.DependencyProperty;
             OverlapRemovalAlgorithmProperty = OverlapRemovalAlgorithmPropertyKey.DependencyProperty;
             EdgeRoutingAlgorithmProperty = EdgeRoutingAlgorithmPropertyKey.DependencyProperty;
-            LayoutStateProperty = LayoutStatusPercentPropertyKey.DependencyProperty;
+            LayoutStateProperty = LayoutStatePropertyKey.DependencyProperty;
             HighlightAlgorithmProperty = HighlightAlgorithmPropertyKey.DependencyProperty;
         }
 
@@ -310,7 +310,6 @@ namespace GraphSharp.Controls
             var p = (int) e.NewValue;
             gl.ChangeState(p);
         }
-
 
         /// <summary>
         ///     Coerce Callback of the <code>StateIndex</code> dependency property.
