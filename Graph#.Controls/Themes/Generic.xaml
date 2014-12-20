@@ -374,7 +374,7 @@
                                             LargeChange="1"
                                             SmallChange="0.1"
                                             Orientation="Vertical" />
-                                    <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Zoom,StringFormat='{}{0:F2}x'}"
+                                    <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Zoom,StringFormat='{}{0:P2}'}"
                                                HorizontalAlignment="Center"
                                                FontWeight="Bold" />
                                     <RadioButton Content="1:1"
