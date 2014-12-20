@@ -473,7 +473,7 @@ namespace GraphSharp.Controls.Zoom
 
         private void DoZoomToFill()
         {
-            if (_presenter == null)
+            if (_presenter == null || Mode != ZoomControlModes.Fill)
                 return;
 
             var deltaZoom = Math.Min(
@@ -488,20 +488,11 @@ namespace GraphSharp.Controls.Zoom
         {
             base.OnApplyTemplate();
 
-            //get the presenter, and initialize
             Presenter = GetTemplateChild(PART_Presenter) as ZoomContentPresenter;
             if (Presenter != null)
             {
-                Presenter.SizeChanged += (s, a) =>
-                                             {
-                                                 if (Mode == ZoomControlModes.Fill)
-                                                     DoZoomToFill();
-                                             };
-                Presenter.ContentSizeChanged += (s, a) =>
-                {
-                    if (Mode == ZoomControlModes.Fill)
-                        DoZoomToFill();
-                };
+                Presenter.SizeChanged += (s, a) => DoZoomToFill();
+                Presenter.ContentSizeChanged += (s, a) => DoZoomToFill();
             }
             ZoomToFill();
         }
