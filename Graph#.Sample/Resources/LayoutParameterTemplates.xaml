@@ -112,8 +112,8 @@
             </StackPanel>
 
             <TextBlock Grid.Column="0"
-                       Grid.Row="5"><Run Text="IterationCount" /></TextBlock>
-            <TextBlock Text="{Binding Path=IterationCount}"
+                       Grid.Row="5"><Run Text="IterationLimit" /></TextBlock>
+            <TextBlock Text="{Binding Path=IterationLimit}"
                        Grid.Column="1"
                        Grid.Row="5" />
         </Grid>
@@ -251,7 +251,6 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
-                    <RowDefinition />
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Column="0"
@@ -289,10 +288,10 @@
                         Grid.Row="3" />
 
                 <TextBlock Grid.Column="0"
-                           Grid.Row="4"><Run Text="Radius" /></TextBlock>
+                           Grid.Row="4"><Run Text="InitialRadius" /></TextBlock>
                 <Slider Minimum="0"
                         Maximum="5"
-                        Value="{Binding Path=Radius}"
+                        Value="{Binding Path=InitialRadius}"
                         Grid.Column="1"
                         Grid.Row="4" />
 
@@ -303,28 +302,22 @@
                          Grid.Row="5" />
 
                 <TextBlock Grid.Column="0"
-                           Grid.Row="6"><Run Text="Adaption" /></TextBlock>
-                <TextBox Text="{Binding Path=Adaption}"
+                           Grid.Row="6"><Run Text="InitialAdaption" /></TextBlock>
+                <TextBox Text="{Binding Path=InitialAdaption}"
                          Grid.Column="1"
                          Grid.Row="6" />
 
                 <TextBlock Grid.Column="0"
-                           Grid.Row="7"><Run Text="InitialAdaption" /></TextBlock>
-                <TextBox Text="{Binding Path=InitialAdaption}"
+                           Grid.Row="7"><Run Text="MinAdaption" /></TextBlock>
+                <TextBox Text="{Binding Path=MinAdaption}"
                          Grid.Column="1"
                          Grid.Row="7" />
 
                 <TextBlock Grid.Column="0"
-                           Grid.Row="8"><Run Text="MinAdaption" /></TextBlock>
-                <TextBox Text="{Binding Path=MinAdaption}"
-                         Grid.Column="1"
-                         Grid.Row="8" />
-
-                <TextBlock Grid.Column="0"
-                           Grid.Row="9"><Run Text="CoolingFactor" /></TextBlock>
+                           Grid.Row="8"><Run Text="CoolingFactor" /></TextBlock>
                 <TextBox Text="{Binding Path=CoolingFactor}"
                          Grid.Column="1"
-                         Grid.Row="9" />
+                         Grid.Row="8" />
             </Grid>
         </StackPanel>
     </DataTemplate>
