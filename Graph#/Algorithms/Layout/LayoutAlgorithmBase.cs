@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using QuickGraph;
 
@@ -86,18 +85,15 @@ namespace GraphSharp.Algorithms.Layout
             get { return ProgressChanged != null; }
 	    }
 
-		protected LayoutAlgorithmBase( TGraph visitedGraph ) :
-			this( visitedGraph, null )
-		{
-		}
+	    protected LayoutAlgorithmBase(TGraph visitedGraph) : this(visitedGraph, null)
+	    {
+	    }
 
-		protected LayoutAlgorithmBase( TGraph visitedGraph, IDictionary<TVertex, Point> vertexPositions )
-		{
-		    _visitedGraph = visitedGraph;
-		    _vertexPositions = vertexPositions != null
-		            ? new Dictionary<TVertex, Point>(vertexPositions)
-		            : visitedGraph.Vertices.ToDictionary(v => v, v => new Point());
-		}
+	    protected LayoutAlgorithmBase(TGraph visitedGraph, IDictionary<TVertex, Point> vertexPositions)
+	    {
+	        _visitedGraph = visitedGraph;
+	        _vertexPositions = vertexPositions != null ? new Dictionary<TVertex, Point>(vertexPositions) : new Dictionary<TVertex, Point>(visitedGraph.VertexCount);
+	    }
 
 	    protected virtual void OnIterationEnded(ILayoutIterationEventArgs<TVertex> args)
 		{

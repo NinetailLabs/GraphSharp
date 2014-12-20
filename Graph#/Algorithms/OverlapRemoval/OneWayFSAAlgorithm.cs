@@ -22,30 +22,26 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                 case OneWayFSAWayEnum.Vertical:
                     VerticalImproved();
                     break;
-                default:
-                    break;
             }
         }
 
         protected new double HorizontalImproved()
         {
-            wrappedRectangles.Sort( XComparison );
-            int i = 0, n = wrappedRectangles.Count;
+            WrappedRectangles.Sort( XComparison );
+            int i = 0, n = WrappedRectangles.Count;
 
-            //bal szelso
-            var lmin = wrappedRectangles[0];
+            var lmin = WrappedRectangles[0];
             double sigma = 0, x0 = lmin.CenterX;
-            var gamma = new double[wrappedRectangles.Count];
-            var x = new double[wrappedRectangles.Count];
+            var gamma = new double[WrappedRectangles.Count];
+            var x = new double[WrappedRectangles.Count];
             while ( i < n )
             {
-                var u = wrappedRectangles[i];
+                var u = WrappedRectangles[i];
 
-                //i-vel azonos középponttal rendelkező téglalapok meghatározása
                 int k = i;
                 for ( int j = i + 1; j < n; j++ )
                 {
-                    var v = wrappedRectangles[j];
+                    var v = WrappedRectangles[j];
                     if ( u.CenterX == v.CenterX )
                     {
                         u = v;
@@ -58,14 +54,12 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                 }
                 double g = 0;
 
-                //ne legyenek ugyanabban a pontban
                 for ( int z = i + 1; z <= k; z++ )
                 {
-                    var v = wrappedRectangles[z];
+                    var v = WrappedRectangles[z];
                     v.Rectangle.X += ( z - i ) * 0.0001;
                 }
 
-                //i-k intervallumban lévő téglalapokra erőszámítás a tőlük balra lévőkkel
                 if ( u.CenterX > x0 )
                 {
                     for ( int m = i; m <= k; m++ )
@@ -73,20 +67,19 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                         double ggg = 0;
                         for ( int j = 0; j < i; j++ )
                         {
-                            var f = force( wrappedRectangles[j].Rectangle, wrappedRectangles[m].Rectangle );
+                            var f = Force( WrappedRectangles[j].Rectangle, WrappedRectangles[m].Rectangle );
                             ggg = Math.Max( f.X + gamma[j], ggg );
                         }
-                        var v = wrappedRectangles[m];
+                        var v = WrappedRectangles[m];
                         double gg = v.Rectangle.Left + ggg < lmin.Rectangle.Left ? sigma : ggg;
                         g = Math.Max( g, gg );
                     }
                 }
-                //megjegyezzük az elemek eltolásást x tömbbe
-                //bal szélő elemet újra meghatározzuk
+
                 for ( int m = i; m <= k; m++ )
                 {
                     gamma[m] = g;
-                    var r = wrappedRectangles[m];
+                    var r = WrappedRectangles[m];
                     x[m] = r.Rectangle.Left + g;
                     if ( r.Rectangle.Left < lmin.Rectangle.Left )
                     {
@@ -94,14 +87,12 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                     }
                 }
 
-                //az i-k intervallum négyzeteitől jobbra lévőkkel erőszámítás, legnagyobb erő tárolása
-                // delta = max(0, max{f.x(m,j)|i<=m<=k<j<n})
                 double delta = 0;
                 for ( int m = i; m <= k; m++ )
                 {
                     for ( int j = k + 1; j < n; j++ )
                     {
-                        var f = force( wrappedRectangles[m].Rectangle, wrappedRectangles[j].Rectangle );
+                        var f = Force( WrappedRectangles[m].Rectangle, WrappedRectangles[j].Rectangle );
                         if ( f.X > delta )
                         {
                             delta = f.X;
@@ -114,7 +105,7 @@ namespace GraphSharp.Algorithms.OverlapRemoval
             double cost = 0;
             for ( i = 0; i < n; i++ )
             {
-                var r = wrappedRectangles[i];
+                var r = WrappedRectangles[i];
                 double oldPos = r.Rectangle.Left;
                 double newPos = x[i];
 

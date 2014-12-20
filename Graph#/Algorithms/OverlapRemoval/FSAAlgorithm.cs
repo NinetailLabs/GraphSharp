@@ -15,8 +15,6 @@ namespace GraphSharp.Algorithms.OverlapRemoval
     }
 
     /// <summary>
-    /// Tim Dwyer által JAVA-ban implementált FSA algoritmus portolása .NET alá.
-    /// 
     /// http://adaptagrams.svn.sourceforge.net/viewvc/adaptagrams/trunk/RectangleOverlapSolver/placement/FSA.java?view=markup
     /// </summary>
     public class FSAAlgorithm<TObject, TParam> : OverlapRemovalAlgorithmBase<TObject, TParam>
@@ -43,13 +41,7 @@ namespace GraphSharp.Algorithms.OverlapRemoval
             Debug.WriteLine( "PFS total: time=" + ( t2 - t0 ) );
         }
 
-        /// <summary>
-        /// Megadja a két téglalap kötött fellépõ erõt.
-        /// </summary>
-        /// <param name="vi">Egyik téglalap.</param>
-        /// <param name="vj">Másik téglalap.</param>
-        /// <returns></returns>
-        protected Vector force( Rect vi, Rect vj )
+        protected Vector Force( Rect vi, Rect vj )
         {
             var f = new Vector( 0, 0 );
             Vector d = vj.GetCenter() - vi.GetCenter();
@@ -72,7 +64,7 @@ namespace GraphSharp.Algorithms.OverlapRemoval
             return f;
         }
 
-        protected Vector force2( Rect vi, Rect vj )
+        protected Vector Force2( Rect vi, Rect vj )
         {
             var f = new Vector( 0, 0 );
             Vector d = vj.GetCenter() - vi.GetCenter();
@@ -110,17 +102,15 @@ namespace GraphSharp.Algorithms.OverlapRemoval
 
         protected void Horizontal()
         {
-            wrappedRectangles.Sort( XComparison );
-            int i = 0, n = wrappedRectangles.Count;
+            WrappedRectangles.Sort( XComparison );
+            int i = 0, n = WrappedRectangles.Count;
             while ( i < n )
             {
-                // x_i = x_{i+1} = ... = x_k
                 int k = i;
-                RectangleWrapper<TObject> u = wrappedRectangles[i];
-                //TODO plus 1 check
+                RectangleWrapper<TObject> u = WrappedRectangles[i];
                 for ( int j = i + 1; j < n; j++ )
                 {
-                    RectangleWrapper<TObject> v = wrappedRectangles[j];
+                    RectangleWrapper<TObject> v = WrappedRectangles[j];
                     if ( u.CenterX == v.CenterX )
                     {
                         u = v;
@@ -131,13 +121,13 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                         break;
                     }
                 }
-                // delta = max(0, max{f.x(m,j)|i<=m<=k<j<n})
+
                 double delta = 0;
                 for ( int m = i; m <= k; m++ )
                 {
                     for ( int j = k + 1; j < n; j++ )
                     {
-                        Vector f = force( wrappedRectangles[m].Rectangle, wrappedRectangles[j].Rectangle );
+                        Vector f = Force( WrappedRectangles[m].Rectangle, WrappedRectangles[j].Rectangle );
                         if ( f.X > delta )
                         {
                             delta = f.X;
@@ -146,33 +136,30 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                 }
                 for ( int j = k + 1; j < n; j++ )
                 {
-                    RectangleWrapper<TObject> r = wrappedRectangles[j];
+                    RectangleWrapper<TObject> r = WrappedRectangles[j];
                     r.Rectangle.Offset( delta, 0 );
                 }
                 i = k + 1;
             }
-
         }
 
         protected double HorizontalImproved()
         {
-            wrappedRectangles.Sort( XComparison );
-            int i = 0, n = wrappedRectangles.Count;
+            WrappedRectangles.Sort( XComparison );
+            int i = 0, n = WrappedRectangles.Count;
 
-            //bal szelso
-            RectangleWrapper<TObject> lmin = wrappedRectangles[0];
+            RectangleWrapper<TObject> lmin = WrappedRectangles[0];
             double sigma = 0, x0 = lmin.CenterX;
-            var gamma = new double[wrappedRectangles.Count];
-            var x = new double[wrappedRectangles.Count];
+            var gamma = new double[WrappedRectangles.Count];
+            var x = new double[WrappedRectangles.Count];
             while ( i < n )
             {
-                RectangleWrapper<TObject> u = wrappedRectangles[i];
+                RectangleWrapper<TObject> u = WrappedRectangles[i];
 
-                //i-vel azonos középponttal rendelkezõ téglalapok meghatározása
                 int k = i;
                 for ( int j = i + 1; j < n; j++ )
                 {
-                    RectangleWrapper<TObject> v = wrappedRectangles[j];
+                    RectangleWrapper<TObject> v = WrappedRectangles[j];
                     if ( u.CenterX == v.CenterX )
                     {
                         u = v;
@@ -185,7 +172,6 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                 }
                 double g = 0;
 
-                //i-k intervallumban lévõ téglalapokra erõszámítás a tõlük balra lévõkkel
                 if ( u.CenterX > x0 )
                 {
                     for ( int m = i; m <= k; m++ )
@@ -193,10 +179,10 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                         double ggg = 0;
                         for ( int j = 0; j < i; j++ )
                         {
-                            Vector f = force( wrappedRectangles[j].Rectangle, wrappedRectangles[m].Rectangle );
+                            Vector f = Force( WrappedRectangles[j].Rectangle, WrappedRectangles[m].Rectangle );
                             ggg = Math.Max( f.X + gamma[j], ggg );
                         }
-                        RectangleWrapper<TObject> v = wrappedRectangles[m];
+                        RectangleWrapper<TObject> v = WrappedRectangles[m];
                         double gg =
                             v.Rectangle.Left + ggg < lmin.Rectangle.Left
                                 ? sigma
@@ -204,12 +190,11 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                         g = Math.Max( g, gg );
                     }
                 }
-                //megjegyezzük az elemek eltolásást x tömbbe
-                //bal szélõ elemet újra meghatározzuk
+
                 for ( int m = i; m <= k; m++ )
                 {
                     gamma[m] = g;
-                    RectangleWrapper<TObject> r = wrappedRectangles[m];
+                    RectangleWrapper<TObject> r = WrappedRectangles[m];
                     x[m] = r.Rectangle.Left + g;
                     if ( r.Rectangle.Left < lmin.Rectangle.Left )
                     {
@@ -217,14 +202,12 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                     }
                 }
 
-                //az i-k intervallum négyzeteitõl jobbra lévõkkel erõszámítás, legnagyobb erõ tárolása
-                // delta = max(0, max{f.x(m,j)|i<=m<=k<j<n})
                 double delta = 0;
                 for ( int m = i; m <= k; m++ )
                 {
                     for ( int j = k + 1; j < n; j++ )
                     {
-                        Vector f = force( wrappedRectangles[m].Rectangle, wrappedRectangles[j].Rectangle );
+                        Vector f = Force( WrappedRectangles[m].Rectangle, WrappedRectangles[j].Rectangle );
                         if ( f.X > delta )
                         {
                             delta = f.X;
@@ -237,7 +220,7 @@ namespace GraphSharp.Algorithms.OverlapRemoval
             double cost = 0;
             for ( i = 0; i < n; i++ )
             {
-                RectangleWrapper<TObject> r = wrappedRectangles[i];
+                RectangleWrapper<TObject> r = WrappedRectangles[i];
                 double oldPos = r.Rectangle.Left;
                 double newPos = x[i];
 
@@ -267,16 +250,16 @@ namespace GraphSharp.Algorithms.OverlapRemoval
 
         protected void Vertical()
         {
-            wrappedRectangles.Sort( YComparison );
-            int i = 0, n = wrappedRectangles.Count;
+            WrappedRectangles.Sort( YComparison );
+            int i = 0, n = WrappedRectangles.Count;
             while ( i < n )
             {
                 // y_i = y_{i+1} = ... = y_k
                 int k = i;
-                RectangleWrapper<TObject> u = wrappedRectangles[i];
+                RectangleWrapper<TObject> u = WrappedRectangles[i];
                 for ( int j = i; j < n; j++ )
                 {
-                    RectangleWrapper<TObject> v = wrappedRectangles[j];
+                    RectangleWrapper<TObject> v = WrappedRectangles[j];
                     if ( u.CenterY == v.CenterY )
                     {
                         u = v;
@@ -287,13 +270,12 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                         break;
                     }
                 }
-                // delta = max(0, max{f.y(m,j)|i<=m<=k<j<n})
                 double delta = 0;
                 for ( int m = i; m <= k; m++ )
                 {
                     for ( int j = k + 1; j < n; j++ )
                     {
-                        Vector f = force2( wrappedRectangles[m].Rectangle, wrappedRectangles[j].Rectangle );
+                        Vector f = Force2( WrappedRectangles[m].Rectangle, WrappedRectangles[j].Rectangle );
                         if ( f.Y > delta )
                         {
                             delta = f.Y;
@@ -302,29 +284,28 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                 }
                 for ( int j = k + 1; j < n; j++ )
                 {
-                    RectangleWrapper<TObject> r = wrappedRectangles[j];
+                    RectangleWrapper<TObject> r = WrappedRectangles[j];
                     r.Rectangle.Offset( 0, delta );
                 }
                 i = k + 1;
             }
-
         }
 
         protected double VerticalImproved()
         {
-            wrappedRectangles.Sort( YComparison );
-            int i = 0, n = wrappedRectangles.Count;
-            RectangleWrapper<TObject> lmin = wrappedRectangles[0];
+            WrappedRectangles.Sort( YComparison );
+            int i = 0, n = WrappedRectangles.Count;
+            RectangleWrapper<TObject> lmin = WrappedRectangles[0];
             double sigma = 0, y0 = lmin.CenterY;
-            var gamma = new double[wrappedRectangles.Count];
-            var y = new double[wrappedRectangles.Count];
+            var gamma = new double[WrappedRectangles.Count];
+            var y = new double[WrappedRectangles.Count];
             while ( i < n )
             {
-                RectangleWrapper<TObject> u = wrappedRectangles[i];
+                RectangleWrapper<TObject> u = WrappedRectangles[i];
                 int k = i;
                 for ( int j = i + 1; j < n; j++ )
                 {
-                    RectangleWrapper<TObject> v = wrappedRectangles[j];
+                    RectangleWrapper<TObject> v = WrappedRectangles[j];
                     if ( u.CenterY == v.CenterY )
                     {
                         u = v;
@@ -343,10 +324,10 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                         double ggg = 0;
                         for ( int j = 0; j < i; j++ )
                         {
-                            Vector f = force2( wrappedRectangles[j].Rectangle, wrappedRectangles[m].Rectangle );
+                            Vector f = Force2( WrappedRectangles[j].Rectangle, WrappedRectangles[m].Rectangle );
                             ggg = Math.Max( f.Y + gamma[j], ggg );
                         }
-                        RectangleWrapper<TObject> v = wrappedRectangles[m];
+                        RectangleWrapper<TObject> v = WrappedRectangles[m];
                         double gg =
                             v.Rectangle.Top + ggg < lmin.Rectangle.Top
                                 ? sigma
@@ -357,20 +338,19 @@ namespace GraphSharp.Algorithms.OverlapRemoval
                 for ( int m = i; m <= k; m++ )
                 {
                     gamma[m] = g;
-                    RectangleWrapper<TObject> r = wrappedRectangles[m];
+                    RectangleWrapper<TObject> r = WrappedRectangles[m];
                     y[m] = r.Rectangle.Top + g;
                     if ( r.Rectangle.Top < lmin.Rectangle.Top )
                     {
                         lmin = r;
                     }
                 }
-                // delta = max(0, max{f.x(m,j)|i<=m<=k<j<n})
                 double delta = 0;
                 for ( int m = i; m <= k; m++ )
                 {
                     for ( int j = k + 1; j < n; j++ )
                     {
-                        Vector f = force( wrappedRectangles[m].Rectangle, wrappedRectangles[j].Rectangle );
+                        Vector f = Force( WrappedRectangles[m].Rectangle, WrappedRectangles[j].Rectangle );
                         if ( f.Y > delta )
                         {
                             delta = f.Y;
@@ -384,7 +364,7 @@ namespace GraphSharp.Algorithms.OverlapRemoval
             double cost = 0;
             for ( i = 0; i < n; i++ )
             {
-                RectangleWrapper<TObject> r = wrappedRectangles[i];
+                RectangleWrapper<TObject> r = WrappedRectangles[i];
                 double oldPos = r.Rectangle.Top;
                 double newPos = y[i];
 
