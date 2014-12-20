@@ -57,26 +57,6 @@ namespace GraphSharp.Controls.Zoom
             DependencyProperty.Register("TranslateY", typeof(double), typeof(ZoomControl),
                                         new UIPropertyMetadata(0.0, TranslateYPropertyChanged, TranslateYCoerce));
 
-        public static readonly DependencyProperty ZoomBoxBackgroundProperty =
-            DependencyProperty.Register("ZoomBoxBackground", typeof(Brush), typeof(ZoomControl),
-                                        new UIPropertyMetadata(null));
-
-        public static readonly DependencyProperty ZoomBoxBorderBrushProperty =
-            DependencyProperty.Register("ZoomBoxBorderBrush", typeof(Brush), typeof(ZoomControl),
-                                        new UIPropertyMetadata(null));
-
-        public static readonly DependencyProperty ZoomBoxBorderThicknessProperty =
-            DependencyProperty.Register("ZoomBoxBorderThickness", typeof(Thickness), typeof(ZoomControl),
-                                        new UIPropertyMetadata(null));
-
-        public static readonly DependencyProperty ZoomBoxOpacityProperty =
-            DependencyProperty.Register("ZoomBoxOpacity", typeof(double), typeof(ZoomControl),
-                                        new UIPropertyMetadata(0.5));
-
-        public static readonly DependencyProperty ZoomBoxProperty =
-            DependencyProperty.Register("ZoomBox", typeof(Rect), typeof(ZoomControl),
-                                        new UIPropertyMetadata(new Rect()));
-
         public static readonly DependencyProperty ZoomProperty =
             DependencyProperty.Register("Zoom", typeof(double), typeof(ZoomControl),
                                         new UIPropertyMetadata(1.0, ZoomPropertyChanged));
@@ -106,41 +86,6 @@ namespace GraphSharp.Controls.Zoom
             PreviewMouseDown += (sender, e) => OnMouseDown(e, true);
             MouseDown += (sender, e) => OnMouseDown(e, false);
             MouseUp += ZoomControlMouseUp;
-        }
-
-        public Brush ZoomBoxBackground
-        {
-            get { return (Brush)GetValue(ZoomBoxBackgroundProperty); }
-            set { SetValue(ZoomBoxBackgroundProperty, value); }
-        }
-
-        public Brush ZoomBoxBorderBrush
-        {
-            get { return (Brush)GetValue(ZoomBoxBorderBrushProperty); }
-            set { SetValue(ZoomBoxBorderBrushProperty, value); }
-        }
-
-        public Thickness ZoomBoxBorderThickness
-        {
-            get { return (Thickness)GetValue(ZoomBoxBorderThicknessProperty); }
-            set { SetValue(ZoomBoxBorderThicknessProperty, value); }
-        }
-
-        public double ZoomBoxOpacity
-        {
-            get { return (double)GetValue(ZoomBoxOpacityProperty); }
-            set { SetValue(ZoomBoxOpacityProperty, value); }
-        }
-
-        public Rect ZoomBox
-        {
-            get { return (Rect)GetValue(ZoomBoxProperty); }
-            set { SetValue(ZoomBoxProperty, value); }
-        }
-
-        public Point OrigoPosition
-        {
-            get { return new Point(ActualWidth / 2, ActualHeight / 2); }
         }
 
         public double TranslateX
@@ -241,54 +186,22 @@ namespace GraphSharp.Controls.Zoom
 
         private void ZoomControlMouseUp(object sender, MouseButtonEventArgs e)
         {
-            switch (ModifierMode)
-            {
-                case ZoomViewModifierMode.None:
-                    return;
-                case ZoomViewModifierMode.Pan:
-                    break;
-                case ZoomViewModifierMode.ZoomBox:
-                    ZoomTo(ZoomBox);
-                    break;
-            }
+            if (ModifierMode != ZoomViewModifierMode.Pan)
+                return;
 
             ModifierMode = ZoomViewModifierMode.None;
             PreviewMouseMove -= ZoomControlPreviewMouseMove;
             ReleaseMouseCapture();
         }
 
-        public void ZoomTo(Rect rect)
-        {
-            var deltaZoom = Math.Min(
-                ActualWidth / rect.Width,
-                ActualHeight / rect.Height);
-
-            var startHandlePosition = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
-
-            DoZoom(deltaZoom, OrigoPosition, startHandlePosition, OrigoPosition);
-            ZoomBox = new Rect();
-        }
-
         private void ZoomControlPreviewMouseMove(object sender, MouseEventArgs e)
         {
-            switch (ModifierMode)
-            {
-                case ZoomViewModifierMode.None:
-                    return;
-                case ZoomViewModifierMode.Pan:
-                    var translate = _startTranslate + (e.GetPosition(this) - _mouseDownPos);
-                    TranslateX = translate.X;
-                    TranslateY = translate.Y;
-                    break;
-                case ZoomViewModifierMode.ZoomBox:
-                    var pos = e.GetPosition(this);
-                    var x = Math.Min(_mouseDownPos.X, pos.X);
-                    var y = Math.Min(_mouseDownPos.Y, pos.Y);
-                    var sizeX = Math.Abs(_mouseDownPos.X - pos.X);
-                    var sizeY = Math.Abs(_mouseDownPos.Y - pos.Y);
-                    ZoomBox = new Rect(x, y, sizeX, sizeY);
-                    break;
-            }
+            if (ModifierMode != ZoomViewModifierMode.Pan)
+                return;
+
+            var translate = _startTranslate + (e.GetPosition(this) - _mouseDownPos);
+            TranslateX = translate.X;
+            TranslateY = translate.Y;
         }
 
         private void OnMouseDown(MouseButtonEventArgs e, bool isPreview)
@@ -301,9 +214,6 @@ namespace GraphSharp.Controls.Zoom
                 case ModifierKeys.None:
                     if (!isPreview)
                         ModifierMode = ZoomViewModifierMode.Pan;
-                    break;
-                case ModifierKeys.Alt:
-                    ModifierMode = ZoomViewModifierMode.ZoomBox;
                     break;
                 case ModifierKeys.Control:
                     break;

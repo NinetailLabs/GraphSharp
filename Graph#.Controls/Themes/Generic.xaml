@@ -388,35 +388,13 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="Background"
-                Value="White" />
-        <Setter Property="ZoomBoxBackground">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0.0, 0.0"
-                                     EndPoint="1.0, 1.0">
-                    <GradientStop Color="Silver"
-                                  Offset="0.0" />
-                    <GradientStop Color="DarkGray"
-                                  Offset="1.0" />
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="ZoomBoxBorderBrush"
-                Value="Black" />
-        <Setter Property="ZoomBoxBorderThickness"
-                Value="1" />
-        <Setter Property="ClipToBounds"
-                Value="True" />
+        
+        <Setter Property="Background" Value="White" />
+        <Setter Property="ClipToBounds" Value="True" />
+        
         <Style.Triggers>
-            <Trigger Property="ModifierMode"
-                     Value="Pan">
-                <Setter Property="Cursor"
-                        Value="SizeAll" />
-            </Trigger>
-            <Trigger Property="ModifierMode"
-                     Value="ZoomBox">
-                <Setter Property="Cursor"
-                        Value="Hand" />
+            <Trigger Property="ModifierMode" Value="Pan">
+                <Setter Property="Cursor" Value="SizeAll" />
             </Trigger>
         </Style.Triggers>
     </Style>
