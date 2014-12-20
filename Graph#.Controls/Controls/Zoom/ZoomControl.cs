@@ -7,10 +7,10 @@ using System.Windows.Media.Animation;
 
 namespace GraphSharp.Controls.Zoom
 {
-    [TemplatePart(Name = PART_Presenter, Type = typeof(ZoomContentPresenter))]
+    [TemplatePart(Name = PartPresenter, Type = typeof(ZoomContentPresenter))]
     public class ZoomControl : ContentControl
     {
-        private const string PART_Presenter = "PART_Presenter";
+        private const string PartPresenter = "PART_Presenter";
 
         public static readonly DependencyProperty AnimationLengthProperty =
             DependencyProperty.Register("AnimationLength", typeof(TimeSpan), typeof(ZoomControl),
@@ -61,21 +61,17 @@ namespace GraphSharp.Controls.Zoom
             DependencyProperty.Register("ZoomBoxBackground", typeof(Brush), typeof(ZoomControl),
                                         new UIPropertyMetadata(null));
 
-
         public static readonly DependencyProperty ZoomBoxBorderBrushProperty =
             DependencyProperty.Register("ZoomBoxBorderBrush", typeof(Brush), typeof(ZoomControl),
                                         new UIPropertyMetadata(null));
-
 
         public static readonly DependencyProperty ZoomBoxBorderThicknessProperty =
             DependencyProperty.Register("ZoomBoxBorderThickness", typeof(Thickness), typeof(ZoomControl),
                                         new UIPropertyMetadata(null));
 
-
         public static readonly DependencyProperty ZoomBoxOpacityProperty =
             DependencyProperty.Register("ZoomBoxOpacity", typeof(double), typeof(ZoomControl),
                                         new UIPropertyMetadata(0.5));
-
 
         public static readonly DependencyProperty ZoomBoxProperty =
             DependencyProperty.Register("ZoomBox", typeof(Rect), typeof(ZoomControl),
@@ -107,7 +103,7 @@ namespace GraphSharp.Controls.Zoom
         public ZoomControl()
         {
             PreviewMouseWheel += ZoomControlMouseWheel;
-            PreviewMouseDown += (sender1, e1) => OnMouseDown(e1, true);
+            PreviewMouseDown += (sender, e) => OnMouseDown(e, true);
             MouseDown += (sender, e) => OnMouseDown(e, false);
             MouseUp += ZoomControlMouseUp;
         }
@@ -197,7 +193,7 @@ namespace GraphSharp.Controls.Zoom
             }
         }
 
-        protected ZoomContentPresenter Presenter
+        private ZoomContentPresenter Presenter
         {
             get { return _presenter; }
             set
@@ -375,11 +371,7 @@ namespace GraphSharp.Controls.Zoom
             Point mousePosition = e.GetPosition(this);
 
             var deltaZoom = Math.Max(0.2, Math.Min(2.0, e.Delta / 300.0 + 1));
-            DoZoom(
-                deltaZoom,
-                origoPosition,
-                mousePosition,
-                mousePosition);
+            DoZoom(deltaZoom, origoPosition, mousePosition, mousePosition);
         }
 
         private void DoZoom(double deltaZoom, Point origoPosition, Point startHandlePosition, Point targetHandlePosition)
@@ -418,11 +410,11 @@ namespace GraphSharp.Controls.Zoom
             if (double.IsNaN(toValue) || double.IsInfinity(toValue))
             {
                 if (dp == ZoomProperty)
-                {
                     _isZooming = false;
-                }
+
                 return;
             }
+
             var animation = new DoubleAnimation(toValue, duration);
             if (dp == ZoomProperty)
             {
@@ -432,6 +424,7 @@ namespace GraphSharp.Controls.Zoom
                                                _zoomAnimCount--;
                                                if (_zoomAnimCount > 0)
                                                    return;
+
                                                var zoom = Zoom;
                                                BeginAnimation(ZoomProperty, null);
                                                SetValue(ZoomProperty, zoom);
@@ -439,11 +432,6 @@ namespace GraphSharp.Controls.Zoom
                                            };
             }
             BeginAnimation(dp, animation, HandoffBehavior.Compose);
-        }
-
-        public void ZoomToOriginal()
-        {
-            Mode = ZoomControlModes.Original;
         }
 
         private void DoZoomToOriginal()
@@ -462,7 +450,6 @@ namespace GraphSharp.Controls.Zoom
 
             var tX = -(_presenter.ContentSize.Width - _presenter.DesiredSize.Width) / 2.0;
             var tY = -(_presenter.ContentSize.Height - _presenter.DesiredSize.Height) / 2.0;
-
             return new Vector(tX, tY);
         }
 
@@ -476,10 +463,7 @@ namespace GraphSharp.Controls.Zoom
             if (_presenter == null || Mode != ZoomControlModes.Fill)
                 return;
 
-            var deltaZoom = Math.Min(
-                ActualWidth / _presenter.ContentSize.Width,
-                ActualHeight / _presenter.ContentSize.Height);
-
+            var deltaZoom = Math.Min(ActualWidth/_presenter.ContentSize.Width, ActualHeight/_presenter.ContentSize.Height);
             var initialTranslate = GetInitialTranslate();
             DoZoomAnimation(deltaZoom, initialTranslate.X * deltaZoom, initialTranslate.Y * deltaZoom);
         }
@@ -488,7 +472,7 @@ namespace GraphSharp.Controls.Zoom
         {
             base.OnApplyTemplate();
 
-            Presenter = GetTemplateChild(PART_Presenter) as ZoomContentPresenter;
+            Presenter = GetTemplateChild(PartPresenter) as ZoomContentPresenter;
             if (Presenter != null)
             {
                 Presenter.SizeChanged += (s, a) => DoZoomToFill();
