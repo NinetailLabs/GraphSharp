@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GraphSharp.Algorithms.Layout.Contextual;
 using QuickGraph;
 using GraphSharp.Algorithms.Layout.Simple.Tree;
 using GraphSharp.Algorithms.Layout.Simple.Circular;
@@ -18,7 +19,7 @@ namespace GraphSharp.Algorithms.Layout
     {
         public IEnumerable<string> AlgorithmTypes
         {
-            get { return new[] { "Circular", "Tree", "FR", "BoundedFR", "KK", "ISOM", "LinLog", "EfficientSugiyama", /*"Sugiyama",*/ "CompoundFDP" }; }
+            get { return new[] { "Circular", "Tree", "FR", "BoundedFR", "KK", "ISOM", "LinLog", "EfficientSugiyama", "Sugiyama", "CompoundFDP" }; }
         }
 
         public ILayoutAlgorithm<TVertex, TEdge, TGraph> CreateAlgorithm(string newAlgorithmType, ILayoutContext<TVertex, TEdge, TGraph> context, ILayoutParameters parameters)
@@ -81,7 +82,7 @@ namespace GraphSharp.Algorithms.Layout
             }
             else if (context.Mode == LayoutMode.Compound)
             {
-                var compoundContext = context as ICompoundLayoutContext<TVertex, TEdge, TGraph>;
+                var compoundContext = (ICompoundLayoutContext<TVertex, TEdge, TGraph>) context;
                 switch (newAlgorithmType)
                 {
                     case "CompoundFDP":
@@ -128,8 +129,6 @@ namespace GraphSharp.Algorithms.Layout
             }
         }
 
-        
-
         public bool IsValidAlgorithm(string algorithmType)
         {
             return AlgorithmTypes.Contains(algorithmType);
@@ -163,4 +162,3 @@ namespace GraphSharp.Algorithms.Layout
         }
     }
 }
-

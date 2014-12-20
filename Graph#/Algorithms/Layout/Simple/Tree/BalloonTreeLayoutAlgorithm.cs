@@ -110,7 +110,7 @@ namespace GraphSharp.Algorithms.Layout.Simple.Tree
 
 		private void SetRadius( TVertex v, BalloonData data )
 		{
-			data.r = (int)Math.Max( data.d / 2, Parameters.minRadius );
+			data.r = (int)Math.Max( data.d / 2, Parameters.MinRadius );
 		}
 
 		private void AdjustChildren( TVertex v, BalloonData data, float s )
