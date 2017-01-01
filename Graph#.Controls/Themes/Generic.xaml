@@ -16,6 +16,7 @@
                 <ControlTemplate TargetType="{x:Type controls:EdgeControl}">
                     <Path Stroke="{TemplateBinding Foreground}"
                           StrokeThickness="{TemplateBinding StrokeThickness}"
+						  Fill="{TemplateBinding Fill}"
                           MinWidth="1"
                           MinHeight="1"
                           ToolTip="{TemplateBinding ToolTip}"
