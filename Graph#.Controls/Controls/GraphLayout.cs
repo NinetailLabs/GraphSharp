@@ -583,7 +583,8 @@ namespace GraphSharp.Controls
         /// <param name="stateIndex">The index of the shown layout state.</param>
         protected void ChangeState(int stateIndex)
         {
-            var activeState = _layoutStates[stateIndex];
+			if (stateIndex >= _layoutStates.Count) return;
+			var activeState = _layoutStates[stateIndex];
 
             LayoutState = activeState;
 
