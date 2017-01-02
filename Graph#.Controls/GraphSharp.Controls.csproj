@@ -96,6 +96,7 @@
     <Compile Include="Controls\AnimationContext.cs" />
     <Compile Include="Controls\CompoundVertexControl.cs" />
     <Compile Include="Controls\ContextualGraphLayout.cs" />
+    <Compile Include="Controls\EdgeContentPresenter.cs" />
     <Compile Include="Controls\EdgeControl.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -14,40 +14,44 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:EdgeControl}">
-                    <Path Stroke="{TemplateBinding Foreground}"
+					<Canvas>
+						<Path Stroke="{TemplateBinding Foreground}"
                           StrokeThickness="{TemplateBinding StrokeThickness}"
+						  Fill="{TemplateBinding Fill}"
                           MinWidth="1"
                           MinHeight="1"
                           ToolTip="{TemplateBinding ToolTip}"
                           x:Name="edgePath">
-                        <Path.Data>
-                            <PathGeometry>
-                                <PathGeometry.Figures>
-                                    <MultiBinding Converter="{StaticResource RouteToPathConverter}">
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+							<Path.Data>
+								<PathGeometry>
+									<PathGeometry.Figures>
+										<MultiBinding Converter="{StaticResource RouteToPathConverter}">
+											<Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                  Path="Source.(controls:GraphCanvas.X)" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+											<Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                  Path="Source.(controls:GraphCanvas.Y)" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+											<Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                  Path="Source.ActualWidth" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+											<Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                  Path="Source.ActualHeight" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+											<Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                  Path="Target.(controls:GraphCanvas.X)" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+											<Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                  Path="Target.(controls:GraphCanvas.Y)" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+											<Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                  Path="Target.ActualWidth" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+											<Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                  Path="Target.ActualHeight" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+											<Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                  Path="RoutePoints" />
-                                    </MultiBinding>
-                                </PathGeometry.Figures>
-                            </PathGeometry>
-                        </Path.Data>
-                    </Path>
-                </ControlTemplate>
+										</MultiBinding>
+									</PathGeometry.Figures>
+								</PathGeometry>
+							</Path.Data>
+						</Path>
+						<controls:EdgeContentPresenter Content="{TemplateBinding Edge}" />
+					</Canvas>
+				</ControlTemplate>
             </Setter.Value>
         </Setter>
         <Setter Property="controls:GraphElementBehaviour.HighlightTrigger"

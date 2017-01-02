@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 using GraphSharp.Helpers;
+using System.Windows.Media;
 
 namespace GraphSharp.Controls
 {
@@ -33,6 +34,8 @@ namespace GraphSharp.Controls
         public static readonly DependencyProperty StrokeThicknessProperty = Shape.StrokeThicknessProperty.AddOwner( typeof(EdgeControl),
                                                                                                                     new UIPropertyMetadata(2.0) );
 
+		public static readonly DependencyProperty FillProperty = Shape.FillProperty.AddOwner( typeof(EdgeControl),
+																									new UIPropertyMetadata(null) );
 		#endregion
 
 		#region Properties
@@ -65,8 +68,14 @@ namespace GraphSharp.Controls
             get { return (double)GetValue(StrokeThicknessProperty); }
             set { SetValue(StrokeThicknessProperty, value); }
         }
-        #endregion
-        
+
+		public Brush Fill
+		{
+			get { return (Brush)GetValue(FillProperty); }
+			set { SetValue(FillProperty, value); }
+		}
+		#endregion
+
 		static EdgeControl()
 		{
 			//override the StyleKey
