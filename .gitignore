@@ -2,20 +2,11 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/bin
-/Source/Graph#.Controls/obj/Debug
-/Source/Graph#.Sample/obj/Debug
-/Source/Graph#.Test/bin/Debug
-/Source/Graph#.Test/obj/Debug
+.vs/
+bin/
+obj/
+packages/
 *.suo
-/Source/Graph#/obj/Debug
+*.ide
+*.user
 /Source/Graph#/Algorithms/Layout/Simple/Hierarchical/aakx42lo.l4j
-/Source/GraphSharp.sln.ide
-/Graph#/obj/Debug
-/Graph#.Controls/obj/Debug
-/Graph#.Sample/obj/Debug
-/Graph#.Test/bin/Debug
-/Graph#.Test/obj/Debug
-/GraphSharp.sln.ide
-/packages
-/GraphSharp.sln.DotSettings.user
