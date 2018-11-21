@@ -7,25 +7,19 @@ using System.Windows.Media;
 
 namespace GraphSharp.Controls
 {
-	public class EdgeControl : Control, IPoolObject, IDisposable
+	public partial class EdgeControl : Control, IPoolObject, IDisposable
 	{
 		#region Dependency Properties
 
-		public static readonly DependencyProperty SourceProperty = DependencyProperty.Register( "Source",
-																							   typeof( VertexControl ),
-																							   typeof( EdgeControl ),
-																							   new UIPropertyMetadata( null ) );
+	    public static readonly DependencyProperty SourceProperty = DependencyProperty.Register("Source",
+	        typeof(VertexControl), typeof(EdgeControl), new PropertyMetadata(null, SourceChangedCallback));
 
-		public static readonly DependencyProperty TargetProperty = DependencyProperty.Register( "Target",
-																							   typeof( VertexControl ),
-																							   typeof( EdgeControl ),
-																							   new UIPropertyMetadata( null ) );
+	    public static readonly DependencyProperty TargetProperty = DependencyProperty.Register("Target",
+	        typeof(VertexControl), typeof(EdgeControl), new PropertyMetadata(null, TargetChangedCallback));
 
 		public static readonly DependencyProperty RoutePointsProperty = DependencyProperty.Register( "RoutePoints",
-																									typeof( Point[] ),
-																									typeof( EdgeControl ),
-																									new UIPropertyMetadata(
-																										null ) );
+				typeof( Point[] ),typeof( EdgeControl ),
+				new UIPropertyMetadata( null ) );
 
 		public static readonly DependencyProperty EdgeProperty = DependencyProperty.Register( "Edge", typeof( object ),
 																							 typeof( EdgeControl ),
@@ -42,13 +36,13 @@ namespace GraphSharp.Controls
 		public VertexControl Source
 		{
 			get { return (VertexControl)GetValue( SourceProperty ); }
-			internal set { SetValue( SourceProperty, value ); }
+			set { SetValue( SourceProperty, value ); }
 		}
 
 		public VertexControl Target
 		{
 			get { return (VertexControl)GetValue( TargetProperty ); }
-			internal set { SetValue( TargetProperty, value ); }
+			set { SetValue( TargetProperty, value ); }
 		}
 
 		public Point[] RoutePoints

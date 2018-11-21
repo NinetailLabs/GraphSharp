@@ -3,8 +3,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls" 
 	xmlns:converters="clr-namespace:GraphSharp.Converters;assembly=GraphSharp.Controls"
-	xmlns:attachedBehaviours="clr-namespace:GraphSharp.AttachedBehaviours;assembly=GraphSharp.Controls"
-	xmlns:model="clr-namespace:GraphSharp.Sample.Model">
+	xmlns:model="clr-namespace:GraphSharp.Sample.Model" 
+	xmlns:newFolder1="clr-namespace:GraphSharp.Sample.NewFolder1">
 	
 	<converters:EdgeRouteToPathConverter x:Key="RouteToPathConverter" />
 	
@@ -20,7 +20,7 @@
 	<SolidColorBrush x:Key="SemiHighlightedOutEdgeBrush" Color="#FFD6A51C" />
 	
 	<DataTemplate DataType="{x:Type model:PocVertex}">
-		<TextBlock Text="{Binding Path=ID, Mode=OneWay, FallbackValue=VertexId}" />
+		<TextBlock Text="{Binding Path=ID, Mode=OneWay, FallbackValue=VertexId}" FontSize="{Binding FontSize}" />
     </DataTemplate>
 	
 	<!-- VERTEX CONTROL -->
@@ -30,7 +30,7 @@
 				<ControlTemplate TargetType="{x:Type controls:VertexControl}">
 					<Border Background="{TemplateBinding Background}" 
 							BorderBrush="{TemplateBinding BorderBrush}" 
-							BorderThickness="{TemplateBinding BorderThickness}"
+							BorderThickness="0"
 							CornerRadius="10,10,10,10"
 							Padding="{TemplateBinding Padding}">
 						<ContentPresenter Content="{TemplateBinding Vertex}"/>
@@ -39,13 +39,17 @@
 			</Setter.Value>
 		</Setter>
 		<Setter Property="controls:GraphElementBehaviour.HighlightTrigger" Value="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Self}}"/>
-		<Setter Property="attachedBehaviours:DragBehaviour.IsDragEnabled" Value="True"/>
-		<Setter Property="attachedBehaviours:DragBehaviour.X" Value="{Binding Path=(controls:GraphCanvas.X), Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
-		<Setter Property="attachedBehaviours:DragBehaviour.Y" Value="{Binding Path=(controls:GraphCanvas.Y), Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
+		<Setter Property="newFolder1:DragChildrenBehaviour.IsDragEnabled" Value="True"/>
+		<Setter Property="newFolder1:DragChildrenBehaviour.X" Value="{Binding Path=(controls:GraphCanvas.X), Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
+		<Setter Property="newFolder1:DragChildrenBehaviour.Y" Value="{Binding Path=(controls:GraphCanvas.Y), Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
 		<Setter Property="Background" Value="#FFE3E3E3"/>
-		<Setter Property="BorderThickness" Value="5,3,5,3"/>
-		<Setter Property="Padding" Value="10,5,10,5"/>
+		<!--<Setter Property="BorderThickness" Value="5,3,5,3"/>-->
+		<!-- <Setter Property="Padding" Value="10,5,10,5"/> -->
+
+	    <Setter Property="Padding" Value="2,1,2,1"/>
+
 		<Setter Property="BorderBrush" Value="#FF393939"/>
+        
 		<Style.Triggers>
 			<Trigger Property="controls:GraphElementBehaviour.IsHighlighted" Value="True">
 				<Setter Property="BorderBrush" Value="{StaticResource HighlightedVertexBorderBrush}"/>
@@ -192,11 +196,11 @@
         
         <Setter Property="controls:GraphElementBehaviour.HighlightTrigger"
                 Value="{Binding RelativeSource={RelativeSource Self},Path=IsMouseOver}" />
-        <Setter Property="attachedBehaviours:DragBehaviour.IsDragEnabled"
+        <Setter Property="newFolder1:DragChildrenBehaviour.IsDragEnabled"
                 Value="True" />
-        <Setter Property="attachedBehaviours:DragBehaviour.X"
+        <Setter Property="newFolder1:DragChildrenBehaviour.X"
                 Value="{Binding RelativeSource={RelativeSource Self},Path=(controls:GraphCanvas.X),Mode=TwoWay}" />
-        <Setter Property="attachedBehaviours:DragBehaviour.Y"
+        <Setter Property="newFolder1:DragChildrenBehaviour.Y"
                 Value="{Binding RelativeSource={RelativeSource Self},Path=(controls:GraphCanvas.Y),Mode=TwoWay}" />
         <Setter Property="BorderThickness"
                 Value="22" />

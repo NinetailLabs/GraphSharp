@@ -6,7 +6,7 @@ using System;
 namespace GraphSharp.Controls
 {
 	/// <summary>Logical representation of a vertex.</summary>
-	public class VertexControl : Control, IPoolObject, IDisposable
+	public partial class VertexControl : Control, IPoolObject, IDisposable
 	{
 		public object Vertex
 		{

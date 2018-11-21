@@ -1,17 +1,15 @@
-﻿using GraphSharp.Controls;
+﻿using System;
 using System.ComponentModel;
 using GraphSharp.Sample.Model;
 
 namespace GraphSharp.Sample.ViewModel
 {
-	public class PocGraphLayout : GraphLayout<PocVertex, PocEdge, PocGraph> { }
-
-	public class GraphLayoutViewModel : INotifyPropertyChanged
+    public class GraphLayoutViewModel : INotifyPropertyChanged
 	{
 		private string _layoutAlgorithmType;
 		private PocGraph _graph;
 
-		public string LayoutAlgorithmType
+	    public string LayoutAlgorithmType
 		{
 			get { return _layoutAlgorithmType; }
 			set
@@ -37,7 +35,7 @@ namespace GraphSharp.Sample.ViewModel
 			}
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
+	    public event PropertyChangedEventHandler PropertyChanged;
 		protected void NotifyChanged(string propertyName)
 		{
 			if (PropertyChanged != null)

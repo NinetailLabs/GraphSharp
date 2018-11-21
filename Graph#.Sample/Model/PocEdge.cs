@@ -1,8 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using QuickGraph;
 
 namespace GraphSharp.Sample.Model
 {
+    [Serializable]
 	[DebuggerDisplay( "{Source.ID} -> {Target.ID}" )]
 	public class PocEdge : Edge<PocVertex>
 	{

@@ -166,7 +166,7 @@ namespace GraphSharp.Controls
 
 		#endregion
 
-		private void SetHighlightProperties(TVertex vertex, VertexControl presenter)
+		protected void SetHighlightProperties(TVertex vertex, VertexControl presenter)
 		{
 			object highlightInfo;
 			if ( IsHighlightedVertex( vertex, out highlightInfo ) )
@@ -183,7 +183,7 @@ namespace GraphSharp.Controls
 			}
 		}
 
-		private void SetHighlightProperties( TEdge edge, EdgeControl edgeControl )
+	    protected void SetHighlightProperties( TEdge edge, EdgeControl edgeControl )
 		{
 			object highlightInfo;
 			if (IsHighlightedEdge(edge, out highlightInfo))

@@ -1,6 +1,7 @@
-﻿using System.Globalization;
+﻿using System;
 using System.Linq;
 using GraphSharp.Sample.Model;
+using Scraper.ViewModel.Logs;
 
 namespace GraphSharp.Sample.ViewModel
 {
@@ -10,22 +11,32 @@ namespace GraphSharp.Sample.ViewModel
 		{
 			var graph = new PocGraph();
 
-			for (int i = 0; i < 8; i++)
-			{
-				var v = new PocVertex(i.ToString(CultureInfo.InvariantCulture));
-				graph.AddVertex(v);
-			}
-
-			graph.AddEdge(new PocEdge("0to1", graph.Vertices.ElementAt(0), graph.Vertices.ElementAt(1)));
-			graph.AddEdge(new PocEdge("1to2", graph.Vertices.ElementAt(1), graph.Vertices.ElementAt(2)));
-			graph.AddEdge(new PocEdge("2to3", graph.Vertices.ElementAt(2), graph.Vertices.ElementAt(3)));
-			graph.AddEdge(new PocEdge("2to4", graph.Vertices.ElementAt(2), graph.Vertices.ElementAt(4)));
-			graph.AddEdge(new PocEdge("0to5", graph.Vertices.ElementAt(0), graph.Vertices.ElementAt(5)));
-			graph.AddEdge(new PocEdge("1to7", graph.Vertices.ElementAt(1), graph.Vertices.ElementAt(7)));
-			graph.AddEdge(new PocEdge("4to6", graph.Vertices.ElementAt(4), graph.Vertices.ElementAt(6)));
+		    var from = new PocVertex("Force", 32);
+		    graph.AddVertex(from);
+            Add(graph, from, TestTagViewModel.Create(), 0, 16);
 
 			GraphModels.Add(new GraphModel("Fa", graph));
 		    SelectedGraphModel = GraphModels.First();
+		}
+
+	    private void Add(PocGraph graph, PocVertex from, TestTagViewModelCollection tags, int level, int fontsize)
+	    {
+	        if (tags == null)
+			{
+	            return;
+			}
+	        if (level > 2)
+	        {
+	            return;
+	        }
+	        foreach (TestTagViewModel model in tags)
+	        {
+	            var to = new PocVertex(model.Text, fontsize);
+	            graph.AddVertex(to);
+	            graph.AddEdge(new PocEdge(Guid.NewGuid().ToString(), from, to));
+
+	            Add(graph, to, model.Tags, level + 1, fontsize / 2);
+	        }
 		}
 	}
 }

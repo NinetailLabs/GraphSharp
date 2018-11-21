@@ -4,7 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Windows.Input;
 using GraphSharp.Sample.Model;
-using GraphSharp.Sample.Properties;
+using GraphSharp.Serialization;
 
 namespace GraphSharp.Sample.ViewModel
 {
@@ -17,6 +17,7 @@ namespace GraphSharp.Sample.ViewModel
         public ICommand SaveGraphsCommand { get; private set; }
 
         private GraphModel _selectedGraphModel;
+        private GraphLayoutCommand _commands;
 
         public ObservableCollection<GraphModel> GraphModels { get; private set; }
 
@@ -70,29 +71,49 @@ namespace GraphSharp.Sample.ViewModel
         {
             var ofd = new OpenFileDialog
                         {
+                            FileName = "FA.gml",
                             CheckPathExists = true
                         };
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                //open the file and load the graphs
-                var graph = PocSerializeHelper.LoadGraph(ofd.FileName);
-
-                GraphModels.Add(new GraphModel(Path.GetFileNameWithoutExtension(ofd.FileName), graph));
+                GraphInfo = ofd.FileName.Load<PocGraphInfo>();
             }
         }
 
         private void SaveGraphs()
         {
-            var fd = new FolderBrowserDialog
-                        {
-                            ShowNewFolderButton = true
-                        };
+            var fd = new SaveFileDialog();
             if (fd.ShowDialog() == DialogResult.OK)
             {
-                foreach (var model in GraphModels)
+                Commands = GraphLayoutCommand.Save;
+                PocGraphInfo graphInfo = GraphInfo;
+                graphInfo.Save(fd.FileName);
+            }
+        }
+
+        private PocGraphInfo _graphInfo;
+        public PocGraphInfo GraphInfo
+        {
+            get { return _graphInfo; }
+            set
+            {
+                _graphInfo = value;
+                NotifyChanged(nameof(GraphInfo));
+            }
+        }
+
+
+        public GraphLayoutCommand Commands
+        {
+            get { return _commands; }
+            set
+            {
+                if (_commands != value)
                 {
-                    PocSerializeHelper.SaveGraph(model.Graph, Path.Combine(fd.SelectedPath, string.Format("{0}.{1}", model.Name, Settings.Default.GraphMLExtension)));
+                    _commands = value;
+                    NotifyChanged(nameof(Commands));
                 }
+
             }
         }
 

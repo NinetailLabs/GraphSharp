@@ -2,7 +2,7 @@
 {
 	public class LinLogLayoutParameters : LayoutParametersBase
 	{
-		internal double attractionExponent = 1.0;
+		internal double attractionExponent = 2.5;
 
 		public double AttractionExponent
 		{
@@ -26,7 +26,7 @@
 			}
 		}
 
-		internal double gravitationMultiplier = 0.1;
+		internal double gravitationMultiplier = 0.2;
 
 		public double GravitationMultiplier
 		{

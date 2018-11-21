@@ -70,9 +70,20 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.dll</HintPath>
+    <Reference Include="DotParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotParser.1.0.6\lib\net45\DotParser.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.Core, Version=4.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FSharp.Core.4.5.3\lib\net45\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharpx.Collections, Version=1.17.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FSharpx.Collections.1.17.0\lib\net40\FSharpx.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharpx.Collections.Experimental, Version=1.17.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FSharpx.Collections.Experimental.1.17.0\lib\net40\FSharpx.Collections.Experimental.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharpx.Core, Version=1.8.32.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FSharpx.Core.1.8.32\lib\40\FSharpx.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -90,9 +101,38 @@
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="YC.QuickGraph, Version=3.7.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YC.QuickGraph.3.7.4\lib\net45\YC.QuickGraph.dll</HintPath>
+    </Reference>
+    <Reference Include="YC.QuickGraph.Data, Version=3.7.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YC.QuickGraph.3.7.4\lib\net45\YC.QuickGraph.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="YC.QuickGraph.FSA, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YC.QuickGraph.3.7.4\lib\net45\YC.QuickGraph.FSA.dll</HintPath>
+    </Reference>
+    <Reference Include="YC.QuickGraph.FST, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YC.QuickGraph.3.7.4\lib\net45\YC.QuickGraph.FST.dll</HintPath>
+    </Reference>
+    <Reference Include="YC.QuickGraph.Glee, Version=3.7.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YC.QuickGraph.3.7.4\lib\net45\YC.QuickGraph.Glee.dll</HintPath>
+    </Reference>
+    <Reference Include="YC.QuickGraph.Graphviz, Version=3.7.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YC.QuickGraph.3.7.4\lib\net45\YC.QuickGraph.Graphviz.dll</HintPath>
+    </Reference>
+    <Reference Include="YC.QuickGraph.Petri, Version=3.7.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YC.QuickGraph.3.7.4\lib\net45\YC.QuickGraph.Petri.dll</HintPath>
+    </Reference>
+    <Reference Include="YC.QuickGraphFS, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YC.QuickGraph.3.7.4\lib\net45\YC.QuickGraphFS.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Additions\DragChildrenBehaviour.cs" />
+    <Compile Include="Additions\EdgeControl.cs" />
+    <Compile Include="Additions\EdgeControlCollection.cs" />
+    <Compile Include="Additions\VertexControl.cs" />
     <Compile Include="AttachedBehaviours\DragBehaviour.cs" />
+    <Compile Include="AttachedBehaviours\IDragBehaviour.cs" />
     <Compile Include="Controls\AnimationContext.cs" />
     <Compile Include="Controls\CompoundVertexControl.cs" />
     <Compile Include="Controls\ContextualGraphLayout.cs" />
@@ -151,6 +191,12 @@
       <AutoGen>True</AutoGen>
     </Compile>
     <AppDesigner Include="Properties\" />
+    <Compile Include="Serialization\XmlSerializerEx.cs" />
+    <Compile Include="Serialization\EdgeInfo.cs" />
+    <Compile Include="Serialization\EdgeInfoCollection.cs" />
+    <Compile Include="Serialization\GraphInfo.cs" />
+    <Compile Include="Serialization\VertexInfo.cs" />
+    <Compile Include="Serialization\VertexInfoCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Themes\Generic.xaml">
@@ -171,6 +217,7 @@
     <Compile Include="Controls\GraphLayout.GraphElements.cs" />
     <Compile Include="Controls\PositionChangedEventArgs.cs" />
     <Compile Include="Controls\PositionChangedEventHandler.cs" />
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

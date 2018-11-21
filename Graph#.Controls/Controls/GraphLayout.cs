@@ -52,7 +52,7 @@ namespace GraphSharp.Controls
         protected readonly Dictionary<TEdge, EdgeControl> EdgeControls = new Dictionary<TEdge, EdgeControl>();
         private readonly Queue<TEdge> _edgesAdded = new Queue<TEdge>();
         private readonly Queue<TEdge> _edgesRemoved = new Queue<TEdge>();
-        private readonly List<LayoutState<TVertex, TEdge>> _layoutStates = new List<LayoutState<TVertex, TEdge>>();
+        protected List<LayoutState<TVertex, TEdge>> LayoutStates { get; }  = new List<LayoutState<TVertex, TEdge>>();
         private readonly TimeSpan _notificationLayoutDelay = TimeSpan.FromMilliseconds(5);
         private readonly object _notificationSyncRoot = new object();
         protected readonly Dictionary<TVertex, VertexControl> VertexControls = new Dictionary<TVertex, VertexControl>();
@@ -117,7 +117,7 @@ namespace GraphSharp.Controls
         public override void Relayout()
         {
             //clear the states before
-            _layoutStates.Clear();
+            LayoutStates.Clear();
             Layout(false);
         }
 
@@ -129,14 +129,14 @@ namespace GraphSharp.Controls
 
         public void RecalculateEdgeRouting()
         {
-            foreach (var state in _layoutStates)
+            foreach (var state in LayoutStates)
                 state.RouteInfos = RouteEdges(state.OverlapRemovedPositions, GetLatestVertexSizes());
             ChangeState(StateIndex);
         }
 
         public void RecalculateOverlapRemoval()
         {
-            foreach (var state in _layoutStates)
+            foreach (var state in LayoutStates)
                 state.OverlapRemovedPositions = OverlapRemoval(state.Positions, GetLatestVertexSizes());
             ChangeState(StateIndex);
         }
@@ -422,14 +422,14 @@ namespace GraphSharp.Controls
                 overlapRemovedPositions,
                 edgeRoutingInfos,
                 _stopWatch.Elapsed,
-                _layoutStates.Count,
+                LayoutStates.Count,
                 (message ?? string.Empty));
 
-            _layoutStates.Add(state);
-            StateCount = _layoutStates.Count;
+            LayoutStates.Add(state);
+            StateCount = LayoutStates.Count;
         }
 
-        protected void OnLayoutFinished()
+        protected virtual void OnLayoutFinished()
         {
             _stopWatch.Stop();
             OnLayoutIterationFinished(null);
@@ -583,8 +583,8 @@ namespace GraphSharp.Controls
         /// <param name="stateIndex">The index of the shown layout state.</param>
         protected void ChangeState(int stateIndex)
         {
-			if (stateIndex >= _layoutStates.Count) return;
-			var activeState = _layoutStates[stateIndex];
+			if (stateIndex >= LayoutStates.Count) return;
+			var activeState = LayoutStates[stateIndex];
 
             LayoutState = activeState;
 

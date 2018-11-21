@@ -321,8 +321,8 @@ namespace GraphSharp.Controls
             var p = (int) stateIndex;
 
             if (gl == null) return p;
-            if (p < 0 || gl._layoutStates.Count == 0) return 0;
-            if (p > gl._layoutStates.Count - 1) return gl._layoutStates.Count - 1;
+            if (p < 0 || gl.LayoutStates.Count == 0) return 0;
+            if (p > gl.LayoutStates.Count - 1) return gl.LayoutStates.Count - 1;
             return p;
         }
 

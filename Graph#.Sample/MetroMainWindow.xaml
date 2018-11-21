@@ -1,6 +1,8 @@
 ﻿<controls:MetroWindow x:Class="GraphSharp.Sample.MetroMainWindow"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:zoom="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
                       xmlns:viewModel="clr-namespace:GraphSharp.Sample.ViewModel"
@@ -9,6 +11,8 @@
                       xmlns:sample="clr-namespace:GraphSharp.Sample"
                       xmlns:actions="clr-namespace:MahApps.Metro.Actions;assembly=MahApps.Metro"
                       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                      mc:Ignorable="d" 
+                      d:DataContext="{d:DesignInstance IsDesignTimeCreatable=false, Type={x:Type viewModel:LayoutAnalyzerViewModel}}"
                       Title="GraphSharp Example Application" WindowStartupLocation="CenterScreen" Width="1850" Height="950">
 
     <controls:MetroWindow.Resources>
@@ -147,6 +151,8 @@
 
         <zoom:ZoomControl Grid.Column="1" Grid.ColumnSpan="2">
             <viewModel:PocGraphLayout x:Name="GraphLayout" Graph="{Binding AnalyzedLayouts.Graph}"
+                                      Commands="{Binding Commands, Mode=TwoWay}"
+                                      GraphInfo="{Binding GraphInfo, Mode=TwoWay}"
                                       LayoutAlgorithmType="{Binding AnalyzedLayouts.LayoutAlgorithmType}"
                                       sample:LayoutManager.ManagedLayout="True"
                                       OverlapRemovalAlgorithmType="FSA" HighlightAlgorithmType="Simple" />
