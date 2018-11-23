@@ -11,7 +11,10 @@ namespace GraphSharp.Sample.ViewModel
 
 	    public string LayoutAlgorithmType
 		{
-			get { return _layoutAlgorithmType; }
+	        get
+	        {
+	            return _layoutAlgorithmType;
+	        }
 			set
 			{
 				if (value != _layoutAlgorithmType)
