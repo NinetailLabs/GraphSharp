@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>GraphSharp_Unofficial_NineTailLabs</id>
+        <version>2.0.0</version>
+        <title>GraphSharp (fork/unofficial package)</title>
+        <authors>palesz,andypelzer,NineTailLabs</authors>
+        <owners>NineTailLabs</owners>
+        <projectUrl>https://github.com/andypelzer/GraphSharp</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Graph layout framework and control. This fork is based on https://graphsharp.codeplex.com/. This is not an official release.</description>
+        <summary>Graph layout framework and control</summary>
+        <dependencies>
+            <dependency id="QuickGraph.NETStandard" version="3.8.0" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="./Graph#.Controls/bin/Release/GraphSharp.dll" target="lib\net48" />
+        <file src="./Graph#.Controls/bin/Release/GraphSharp.Controls.dll" target="lib\net48" />
+    </files>
+</package>
