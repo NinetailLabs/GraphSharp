@@ -6,7 +6,8 @@
         <title>GraphSharp (fork/unofficial package)</title>
         <authors>palesz,andypelzer,NineTailLabs</authors>
         <owners>NineTailLabs</owners>
-        <projectUrl>https://github.com/andypelzer/GraphSharp</projectUrl>
+        <projectUrl>https://github.com/NinetailLabs/GraphSharp</projectUrl>
+        <license type="expression">Apache-2.0</license>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Graph layout framework and control. This fork is based on https://graphsharp.codeplex.com/. This is not an official release.</description>
         <summary>Graph layout framework and control</summary>
